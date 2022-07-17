@@ -32,10 +32,10 @@ namespace CarniceriaFinal.Sales.Models
         public float total {get; set;}
         public int status {get; set;}
         public float costosAdicionales {get; set;}
-        public string motivoCostosAdicional {get; set;}
+        public string? motivoCostosAdicional {get; set;}
         public int idFormaPago {get; set;}
-        public string direccion { get; set; }
-        public string referencia { get; set; }
+        public string? direccion { get; set; }
+        public string? referencia { get; set; }
         public int idCiudad { get; set; }
     }
 }

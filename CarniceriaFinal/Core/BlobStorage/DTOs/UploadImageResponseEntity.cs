@@ -7,6 +7,6 @@ namespace CarniceriaFinal.Core.BlobStorage.DTOs
 {
     public class UploadImageResponseEntity
     {
-        public string imageUrl { get; set; }
+        public string? imageUrl { get; set; }
     }
 }

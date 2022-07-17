@@ -7,7 +7,7 @@ namespace CarniceriaFinal.Core
 {
     public class Helper
     {
-        public DateTime getTimeCurrent()
+        public DateTime? getTimeCurrent()
         {
             return DateTime.Now;
         }

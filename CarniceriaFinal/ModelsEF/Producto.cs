@@ -24,7 +24,7 @@ namespace CarniceriaFinal.ModelsEF
         public int IdProducto { get; set; }
         [Column("imgUrl")]
         [StringLength(255)]
-        public string ImgUrl { get; set; } = null!;
+        public string? ImgUrl { get; set; } = null!;
         [Column("descripcion")]
         [StringLength(1000)]
         public string? Descripcion { get; set; }
@@ -32,7 +32,7 @@ namespace CarniceriaFinal.ModelsEF
         public float? Precio { get; set; }
         [Column("titulo")]
         [StringLength(500)]
-        public string Titulo { get; set; } = null!;
+        public string? Titulo { get; set; } = null!;
         [Column("status")]
         public int Status { get; set; }
         [Column("idPromocion")]

@@ -22,7 +22,7 @@ namespace CarniceriaFinal.ModelsEF
         public string? Titulo { get; set; }
         [Column("icon")]
         [StringLength(30)]
-        public string Icon { get; set; } = null!;
+        public string? Icon { get; set; } = null!;
         [Column("status")]
         public int? Status { get; set; }
         [Column("route")]

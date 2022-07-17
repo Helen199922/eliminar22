@@ -8,6 +8,6 @@ namespace CarniceriaFinal.Productos.Models
     public class MeasureUnitEntity
     {
         public int? idUnidad { get; set; }
-        public string unidad { get; set; }
+        public string? unidad { get; set; }
     }
 }

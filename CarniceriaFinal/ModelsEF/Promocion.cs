@@ -19,10 +19,10 @@ namespace CarniceriaFinal.ModelsEF
         [Column("idPromocion")]
         public int IdPromocion { get; set; }
         [Column("fechaExpiracion", TypeName = "datetime")]
-        public DateTime FechaExpiracion { get; set; }
+        public DateTime? FechaExpiracion { get; set; }
         [Column("tipoPromo")]
         [StringLength(50)]
-        public string TipoPromo { get; set; } = null!;
+        public string? TipoPromo { get; set; } = null!;
         [Column("porcentajePromo", TypeName = "double(10,0)")]
         public double PorcentajePromo { get; set; }
 

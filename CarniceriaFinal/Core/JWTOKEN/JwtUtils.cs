@@ -13,7 +13,7 @@ namespace CarniceriaFinal.Core
 {
     public interface IJwtUtils
     {
-        public string generateJwtToken(UserTokenEntity user);
+        public string? generateJwtToken(UserTokenEntity user);
         public int? ValidateToken(string token);
     }
 
@@ -24,7 +24,7 @@ namespace CarniceriaFinal.Core
         {
             Configuration = configuration;
         }
-        public string generateJwtToken(UserTokenEntity user)
+        public string? generateJwtToken(UserTokenEntity user)
         {
             var secret = Configuration.GetValue<string>("AppSettings:Secret");
 

@@ -12,7 +12,7 @@ namespace CarniceriaFinal.Productos.Models
             return this.MemberwiseClone();
         }
         public int? idSubcategoria { get; set; }
-        public string titulo { get; set; }
+        public string? titulo { get; set; }
         public string? descripcion { get; set; }
         public int? status { get; set; }
         public string? UrlImage { get; set; }

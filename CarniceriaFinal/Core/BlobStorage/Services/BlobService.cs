@@ -58,7 +58,7 @@ namespace CarniceriaFinal.Core.BlobStorage.Services
             }
             
         }
-        public string getNamePhoto()
+        public string? getNamePhoto()
         {
             var bytes = new byte[50];
 

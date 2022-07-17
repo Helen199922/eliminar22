@@ -20,7 +20,7 @@ namespace CarniceriaFinal.Core.Email.Services
 {
     public class KeyVaultModel
     {
-        public string ConnectionStringKeyVault { get; set; }
+        public string? ConnectionStringKeyVault { get; set; }
     }
     public class EmailService : IEmailService
     {

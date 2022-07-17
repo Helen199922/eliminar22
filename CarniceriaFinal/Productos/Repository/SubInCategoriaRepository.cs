@@ -105,7 +105,7 @@ namespace CarniceriaFinal.Productos.Repository
             }
 
         }
-        public string DeleteSubInCategorByProductIdAndSubCategoryIdAndCategoryId
+        public string? DeleteSubInCategorByProductIdAndSubCategoryIdAndCategoryId
             (int idProduct, int idSubCategory, int idCategory)
         {
             try

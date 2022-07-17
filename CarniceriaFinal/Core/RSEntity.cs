@@ -8,7 +8,7 @@ namespace CarniceriaFinal.Core
 {
     public class RSEntity<T>
     {
-        public string TypeError { get; set; }
+        public string? TypeError { get; set; }
         public List<string> Message { get; set; }
         public T Data { get; set; }
 

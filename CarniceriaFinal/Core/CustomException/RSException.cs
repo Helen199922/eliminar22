@@ -8,7 +8,7 @@ namespace CarniceriaFinal.Core.CustomException
     public class RSException : Exception
     {
         public List<String> MessagesError { get; set; }
-        public string TypeError { get; set; }
+        public string? TypeError { get; set; }
         public int Code { get; set; }
         public Object DataError { get; set; }
 

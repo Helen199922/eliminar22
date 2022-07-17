@@ -8,8 +8,8 @@ namespace CarniceriaFinal.Productos.DTOs
     public class PromotionEntity
     {
         public int IdPromocion { get; set; }
-        public DateTime FechaExpiracion { get; set; }
-        public string TipoPromo { get; set; }
+        public DateTime? FechaExpiracion { get; set; }
+        public string? TipoPromo { get; set; }
         public double PorcentajePromo { get; set; }
     }
 }

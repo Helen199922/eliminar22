@@ -8,7 +8,7 @@ namespace CarniceriaFinal.Marketing.DTOs
     public class TypeCommunicationEntity
     {
         public int IdTipoComunicacion { get; set; }
-        public string Titulo { get; set; }
+        public string? Titulo { get; set; }
 
     }
 }

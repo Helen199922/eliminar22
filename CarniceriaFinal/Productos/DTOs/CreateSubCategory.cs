@@ -10,7 +10,7 @@ namespace CarniceriaFinal.Productos.DTOs
     public class SimpleProductInSubCategory
     {
         public int idProducto { get; set; }
-        public string titulo { get; set; }
+        public string? titulo { get; set; }
         public Boolean isActivated { get; set; }
 
     }

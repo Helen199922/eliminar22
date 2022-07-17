@@ -626,7 +626,7 @@ namespace CarniceriaFinal.Productos.Servicios
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al actualizar sub categoría");
             }
         }
-        public string DeleteSubInCategorByProductIdAndSubCategoryIdAndCategoryId
+        public string? DeleteSubInCategorByProductIdAndSubCategoryIdAndCategoryId
             (int idProduct, int idSubCategory, int idCategory)
         {
             try

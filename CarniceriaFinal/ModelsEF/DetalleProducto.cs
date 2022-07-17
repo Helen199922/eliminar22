@@ -15,10 +15,10 @@ namespace CarniceriaFinal.ModelsEF
         public int IdDetalleProducto { get; set; }
         [Column("tituloDetalle")]
         [StringLength(100)]
-        public string TituloDetalle { get; set; } = null!;
+        public string? TituloDetalle { get; set; } = null!;
         [Column("descripcion")]
         [StringLength(10000)]
-        public string Descripcion { get; set; } = null!;
+        public string? Descripcion { get; set; } = null!;
         [Column("urlImg")]
         [StringLength(255)]
         public string? UrlImg { get; set; }

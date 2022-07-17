@@ -8,7 +8,7 @@ namespace CarniceriaFinal.Sales.DTOs
     public class SalesStatus
     {
         public int idVentaStatus { get; set; }
-        public string status {get; set;}
-        public string descripcion {get; set;}
+        public string? status {get; set;}
+        public string? descripcion {get; set;}
     }
 }
