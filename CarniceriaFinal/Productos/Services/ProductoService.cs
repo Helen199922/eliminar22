@@ -200,8 +200,9 @@ namespace CarniceriaFinal.Productos.Servicios
                 {
                     detail.IdProducto = productResponse.IdProducto;
                 }
+                if(product.detail != null && product.detail.Count > 0)
+                    await this.SaveDetails(product.detail);
 
-                await this.SaveDetails(product.detail);
                 return "Producto guardado correctamente";
             }
             catch(RSException err)
