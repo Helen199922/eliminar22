@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 namespace CarniceriaFinal.ModelsEF
 {
     [Table("info_bancaria")]
-    [MySqlCollation("utf8_spanish_ci")]
     public partial class InfoBancarium
     {
         [Key]
@@ -15,12 +14,15 @@ namespace CarniceriaFinal.ModelsEF
         public int IdBanco { get; set; }
         [Column("tipoBanco")]
         [StringLength(255)]
+        [MySqlCollation("utf8_spanish_ci")]
         public string? TipoBanco { get; set; }
         [Column("numBanco")]
         [StringLength(255)]
+        [MySqlCollation("utf8_spanish_ci")]
         public string? NumBanco { get; set; }
         [Column("nombreBanco")]
         [StringLength(255)]
+        [MySqlCollation("utf8_spanish_ci")]
         public string? NombreBanco { get; set; }
     }
 }

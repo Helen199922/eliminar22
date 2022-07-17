@@ -49,10 +49,12 @@ namespace CarniceriaFinal.Marketing.Services
                 List<CommunicationEntity> comm = new();
                 foreach (var item in commRepo)
                 {
-                    CommunicationEntity communication = 
-                        IMapper.Map<CommunicationEntity>(
+                    var valroe= IMapper.Map<CommunicationEntity>(
                             item
                         );
+                    CommunicationEntity communication = valroe;
+
+
                     TypeCommunicationEntity typeComm =
                         IMapper.Map<TypeCommunicationEntity>(
                             item.IdTipoComunicacionNavigation
@@ -66,7 +68,7 @@ namespace CarniceriaFinal.Marketing.Services
             {
                 throw new RSException(err.TypeError, err.Code, err.MessagesError);
             }
-            catch (Exception)
+            catch (Exception err)
             {
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener la lista de comunicaciones.");
             }

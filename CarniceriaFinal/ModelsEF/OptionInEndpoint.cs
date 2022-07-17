@@ -8,7 +8,6 @@ namespace CarniceriaFinal.ModelsEF
 {
     [Table("option_in_endpoint")]
     [Index("IdEndPoint", Name = "idEndPoint")]
-    [MySqlCollation("utf8_spanish_ci")]
     public partial class OptionInEndpoint
     {
         [Key]
@@ -19,6 +18,7 @@ namespace CarniceriaFinal.ModelsEF
         public int IdEndPoint { get; set; }
         [Column("descripcion")]
         [StringLength(5)]
+        [MySqlCollation("utf8_spanish_ci")]
         public string? Descripcion { get; set; }
 
         [ForeignKey("IdEndPoint")]

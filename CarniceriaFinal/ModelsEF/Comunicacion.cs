@@ -28,8 +28,8 @@ namespace CarniceriaFinal.ModelsEF
         public int Status { get; set; }
         [Column("fechaInicio", TypeName = "datetime")]
         public DateTime? FechaInicio { get; set; }
-        [Column("fechaExpiracion")]
-        public DateOnly? FechaExpiracion { get; set; }
+        [Column("fechaExpiracion", TypeName = "datetime")]
+        public DateTime? FechaExpiracion { get; set; }
         [Column("urlImage")]
         [StringLength(255)]
         public string UrlImage { get; set; } = null!;

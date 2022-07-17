@@ -13,8 +13,8 @@ namespace CarniceriaFinal.Productos.Models
         }
         public int? idSubcategoria { get; set; }
         public string titulo { get; set; }
-        public string descripcion { get; set; }
+        public string? descripcion { get; set; }
         public int? status { get; set; }
-        public string UrlImage { get; set; }
+        public string? UrlImage { get; set; }
     }
 }

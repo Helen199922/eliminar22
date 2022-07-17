@@ -10,7 +10,6 @@ namespace CarniceriaFinal.ModelsEF
     [Index("IdCategoria", Name = "idCategoria")]
     [Index("IdProducto", Name = "idProducto")]
     [Index("IdSubCategoria", Name = "idSubCategoria")]
-    [MySqlCollation("utf8_spanish_ci")]
     public partial class SubInCategorium
     {
         [Key]

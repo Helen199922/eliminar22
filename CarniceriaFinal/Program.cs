@@ -155,7 +155,7 @@ app.UseRouting();
 
 app.UseCors("CorsPolicy");
 
-
+app.UseMiddleware<JwtMiddleware>();
 
 app.UseEndpoints(endpoints =>
 {

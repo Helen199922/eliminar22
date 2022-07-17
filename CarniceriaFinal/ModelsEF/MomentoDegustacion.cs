@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 namespace CarniceriaFinal.ModelsEF
 {
     [Table("momento_degustacion")]
-    [MySqlCollation("utf8_spanish_ci")]
     public partial class MomentoDegustacion
     {
         public MomentoDegustacion()
@@ -20,12 +19,15 @@ namespace CarniceriaFinal.ModelsEF
         public int IdMomentoDegustacion { get; set; }
         [Column("titulo")]
         [StringLength(255)]
+        [MySqlCollation("utf8_spanish_ci")]
         public string? Titulo { get; set; }
         [Column("descripcion")]
         [StringLength(255)]
+        [MySqlCollation("utf8_spanish_ci")]
         public string? Descripcion { get; set; }
         [Column("urlImage")]
         [StringLength(255)]
+        [MySqlCollation("utf8_spanish_ci")]
         public string? UrlImage { get; set; }
         [Column("hora_inicio", TypeName = "time")]
         public TimeOnly? HoraInicio { get; set; }

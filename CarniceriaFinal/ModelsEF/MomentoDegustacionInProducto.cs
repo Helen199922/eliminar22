@@ -8,7 +8,6 @@ namespace CarniceriaFinal.ModelsEF
 {
     [Table("momento_degustacion_in_producto")]
     [Index("IdProducto", Name = "idProducto")]
-    [MySqlCollation("utf8_spanish_ci")]
     public partial class MomentoDegustacionInProducto
     {
         [Key]
@@ -19,6 +18,7 @@ namespace CarniceriaFinal.ModelsEF
         public int IdProducto { get; set; }
         [Column("descripcion")]
         [StringLength(5)]
+        [MySqlCollation("utf8_spanish_ci")]
         public string? Descripcion { get; set; }
 
         [ForeignKey("IdMomentoDegustacion")]
