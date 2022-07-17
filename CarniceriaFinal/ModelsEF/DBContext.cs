@@ -319,7 +319,7 @@ namespace CarniceriaFinal.ModelsEF
                     .WithMany(p => p.RolInOpcions)
                     .HasForeignKey(d => d.IdRol)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("rol_in_opcion_ibfk_2");
+                    .HasConstraintName("rol_rol");
             });
 
             modelBuilder.Entity<Sexo>(entity =>

@@ -16,9 +16,9 @@ namespace CarniceriaFinal.ModelsEF
         [Key]
         [Column("idOpcion")]
         public int IdOpcion { get; set; }
-        [Column("descrip")]
+        [Column("descripcion")]
         [StringLength(5)]
-        public string? Descrip { get; set; }
+        public string? Descripcion { get; set; }
 
         [ForeignKey("IdOpcion")]
         [InverseProperty("RolInOpcions")]
