@@ -14,8 +14,8 @@ using System.Threading.Tasks;
 
 namespace CarniceriaFinal.Productos.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class ProductoController : ControllerBase
     {
         public readonly DBContext Context;
@@ -28,7 +28,7 @@ namespace CarniceriaFinal.Productos.Controllers
             this.IUnidadMedidaRepository = IUnidadMedidaRepository;
         }
 
-        [HttpGet]
+        [HttpGet(Name = "")]
         public async Task<IActionResult> Get() {
             RSEntity<List<ProductCompleteEntity>> rsEntity = new();
             try
