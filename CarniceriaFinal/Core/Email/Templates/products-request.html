@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title></title>
+</head>
+<body style='background-color: #D6D6D5; color: #000;'>
+    <header style='max-width: 700px; margin: 0 auto; background-color: #fff; border-radius: 25px; overflow: hidden;'>
+        <img width='100%' src='https://zamorano.blob.core.windows.net/images/hpk0wgapnx8dgdfaasf4tc1tsemhyxv7bmlbeodlk0wikprzua.png' alt='Gracias por su compra'>
+        <div style='padding: 1rem;'>
+            <h1 style='text-align: center; color: #000;'>¡Gracias por Preferirnos!</h1>
+            <p style='text-align: center; color: #000;'>Disfruta de nuestros cortes listos para preparar y vivir las mejores experiencias con los tuyos</p>
+        </div>
+    </header>
+
+    <div style='max-width: 700px; margin: 0 auto; border-radius: 25px; overflow: hidden; background-color: #fff; margin-top: 1rem; padding-bottom: 1rem; color: #000;'>
+        <div style='padding: 1rem;'>
+            <h2 style='text-align: center; color: #000;'>Procesamos correctamente tu pedido <strong>{{userName}}</strong></h2>
+            <section style='padding: 1.5rem;'>
+                <p style="color: #000;">Recuerda enviar el respaldo de tu pago a {{email}}.</p>
+                <p style="margin-bottom: 5px; color: #000;"><strong>Número de pedido: </strong>#{{numPedido}}</p>
+                <p style="color: #000;">Las cuentas a las que puedes hacer el pago mediante depósito o transferencia son:</p>
+                <p style="color: #000;"><strong>Ruc: </strong>0958657843001</p>
+                <p style="color: #000;"><strong>Nombre: </strong>Carnicería Zamorano</p>
+                <p style="color: #000;"><strong>Correo electrónico: </strong>carniceriazamorano@gmail.com</p>
+            </section>
+            <div style='max-width: 80%;margin: 0 auto;'>
+                <table style='border-collapse: collapse; border: 1px solid #69899F; width: 100%;'>
+                    <tr>
+                        <th style='border: 2px solid #69899F; color: #3E5260;padding:10px;'>Banco</th>
+                        <th style='border: 2px solid #69899F; color: #3E5260;padding:10px;'>Tipo de Cuenta</th>
+                        <th style='border: 2px solid #69899F; color: #3E5260;padding:10px;'>Número de Cuenta</th>
+                    </tr>
+                    {{bankDetail}}
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div style='max-width: 700px; margin: 0 auto; border-radius: 25px; overflow: hidden; background-color: #fff; margin-top: 1rem; padding-bottom: 1rem; color: #000;'>
+        <div style='padding: 1rem;'>
+            <h2 style='text-align: center; color: #000;'>Detalle de la venta: <strong>${{total}}</strong></h2>
+            <section style='padding: 1.5rem;'>
+                <p style='text-align: center;color: #000;'><strong>Detalle de productos</strong></p>
+
+                {{productDetail}}
+
+                <div style='width: 50%; border-bottom: 1px solid #541313;'></div>
+
+                <p style='margin: 0px; color: #000;'><strong>Transporte: </strong>{{transporte}}</p>
+                <p style='margin: 0px; color: #000;'><strong>Descuentos: </strong>{{descuento}}</p>
+                <p style='margin: 0px; color: #000;'><strong>SubTotal: </strong>{{subTotal}}</p>
+                <p style='color: #000;'><strong>Total: </strong>{{total}}</p>
+            </section>
+            <p style="text-align: center; color: #000;">Contáctanos, estamos al tanto de tu pedido. Tus detalles fueron recibidos correctamente</p>
+            <div style="width: 100%; display: flex; margin-left: 1.5rem;">
+                <a style="padding: 1rem 2rem; border-radius: 25px; background-color: #00A884; text-decoration: none; color: #fff; font-weight: 700; box-shadow: 1px 1px 10px #000;" href="https://web.whatsapp.com/" target="_blank">Whatsapp</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
