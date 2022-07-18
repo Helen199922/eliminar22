@@ -67,12 +67,12 @@ builder.Services.AddSwaggerGen();
 
 
 
-//if (builder.Environment.IsProduction())
-//{
-//    builder.Configuration.AddAzureKeyVault(
-//        new Uri($"https://carniceria-zamorano-key.vault.azure.net/"),
-//        new DefaultAzureCredential());
-//}
+if (builder.Environment.IsProduction())
+{
+    builder.Configuration.AddAzureKeyVault(
+        new Uri($"https://carniceria-zamorano-key.vault.azure.net/"),
+        new DefaultAzureCredential());
+}
 
 builder.Services.AddControllers()
     .AddJsonOptions(configure =>
