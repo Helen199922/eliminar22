@@ -66,51 +66,13 @@ builder.Services.AddSwaggerGen();
 
 
 
+
 if (builder.Environment.IsProduction())
 {
     builder.Configuration.AddAzureKeyVault(
-        new Uri($"https://{builder.Configuration["KeyVault:Vault"]}.vault.azure.net/"),
-        new DefaultAzureCredential(new DefaultAzureCredentialOptions
-            {
-                ManagedIdentityClientId = builder.Configuration["KeyVault:ClientId"]
-            }
-        )
-    );
+        new Uri($"https://carniceria-zamorano-key.vault.azure.net/"),
+        new DefaultAzureCredential());
 }
-
-//if (builder.Environment.IsDevelopment())
-//{
-
-//    builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
-//    {
-//        var root = config.Build();
-//        builder.Configuration.AddAzureKeyVault(
-//            new Uri($"https://{builder.Configuration["KeyVault:Vault"]}.vault.azure.net/"),
-//            root["KeyVault:ClientId"],
-//            root["KeyVault:ClientSecret"]
-//        );
-//    });
-
-
-
-//    ConfigurationBuilder builder2 = new ConfigurationBuilder();
-//    builder2.AddAzureKeyVault(
-//        new Uri($"https://{builder.Configuration["KeyVault:Vault"]}.vault.azure.net/"), 
-        
-//    );
-
-//    IConfiguration configuration = builder2.Build();
-//    Console.WriteLine(configuration["MySecret"]);
-//}
-
-//builder.Configuration.AddAzureKeyVault(
-//    new Uri($"https://{builder.Configuration["KeyVault:Vault"]}.vault.azure.net/"),
-//    new ClientCertificateCredential(
-//        builder.Configuration["AzureADDirectoryId"],
-//        builder.Configuration["AzureADApplicationId"],
-//        x509Certificate
-//   )
-//);
 
 builder.Services.AddControllers()
     .AddJsonOptions(configure =>
