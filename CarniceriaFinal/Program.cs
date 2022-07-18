@@ -74,8 +74,8 @@ if (builder.Environment.IsProduction())
         new DefaultAzureCredential());
 
     //var connetionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    var connection = builder.Configuration["ConnectionString--mysql"];
-
+    var connection = builder.Configuration["ConnectionString:mysql"];
+    Console.WriteLine(connection);
     builder.Services.AddDbContext<DBContext>(
             options =>
             options.
