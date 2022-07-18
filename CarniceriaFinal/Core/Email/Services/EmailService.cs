@@ -54,7 +54,7 @@ namespace CarniceriaFinal.Core.Email.Services
             await client.ConnectAsync("smtp.sendgrid.net", 587, SecureSocketOptions.StartTls);
             await client.AuthenticateAsync(
                 userName: "apikey",
-                password: _Configuration["sendgrid-test"]
+                password: _Configuration["SendGrid:ClientSecret"]
             );
 
             Console.WriteLine("Sending email");

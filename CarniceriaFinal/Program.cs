@@ -81,6 +81,10 @@ if (builder.Environment.IsProduction())
             options.
             UseMySql(connection, ServerVersion.AutoDetect(connection))
     );
+
+    builder.Services.AddSingleton(x => new BlobServiceClient(
+        builder.Configuration.GetValue<string>(builder.Configuration["ConnectionString:AzureBlobStorage"]))
+    );
 }
 
 builder.Services.AddControllers()
@@ -114,9 +118,8 @@ builder.Services.AddCors(opt =>
 
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
-builder.Services.AddSingleton(x => new BlobServiceClient(
-    builder.Configuration.GetValue<string>("ConnectionStrings:AzureBlobStorageConnectionString"))
-);
+
+
 builder.Services.AddSingleton<IBlobService, BlobService>();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
