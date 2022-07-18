@@ -72,6 +72,15 @@ if (builder.Environment.IsProduction())
     builder.Configuration.AddAzureKeyVault(
         new Uri($"https://carniceria-zamorano-key.vault.azure.net/"),
         new DefaultAzureCredential());
+
+    //var connetionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    var connection = builder.Configuration["ConnectionString--mysql"];
+
+    builder.Services.AddDbContext<DBContext>(
+            options =>
+            options.
+            UseMySql(connection, ServerVersion.AutoDetect(connection))
+    );
 }
 
 builder.Services.AddControllers()
@@ -84,12 +93,6 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "CarniceriaFinalFinal", Version = "v1" });
 });
-var connetionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<DBContext>(
-        options =>
-        options.
-        UseMySql(connetionString, ServerVersion.AutoDetect(connetionString))
-    );
 
 builder.Services.AddTransient<IHostedService, SaleStateManagement>();
 
