@@ -24,23 +24,24 @@ namespace CarniceriaFinal.Core.Email.Services
     }
     public class EmailService : IEmailService
     {
+
         private const string templatePath = @"Core/Email/Templates/{0}.html";
-        private readonly IConfiguration _Configuration;
-        public EmailService(IConfiguration IConfiguration)
+        private readonly DTOs.MailSettings _mailOptions;
+        public EmailService(IOptions<DTOs.MailSettings> mailOptions)
         {
-            this._Configuration = IConfiguration;
+            _mailOptions = mailOptions.Value;
         }
         public async Task<string> SendEmailAsync(EmailRequest mailRequest)
         {
             //var client = new SendGridClient(_Configuration["sendgrid-test"]);
-
+            
             using var message = new MimeMessage();
             message.From.Add(new MailboxAddress(
-                "Carnicería Zamorano",
-                "jimy.coxr@ug.edu.ec"
+                _mailOptions.DisplayName,//"Carnicería Zamorano",//displayname
+                _mailOptions.Mail//"jimy.coxr@ug.edu.ec"//email
             ));
             message.To.Add(new MailboxAddress(
-                "Carnicería Zamorano",
+                _mailOptions.DisplayName,//"Carnicería Zamorano", //displayname
                 mailRequest.ToEmail
             ));
             message.Subject = mailRequest.Subject;
@@ -50,11 +51,14 @@ namespace CarniceriaFinal.Core.Email.Services
             };
             message.Body = bodyBuilder.ToMessageBody();
 
+            //var val = _Configuration.GetValue<DTOs.MailSettings>("");
+
             using var client = new MailKit.Net.Smtp.SmtpClient();
-            await client.ConnectAsync("smtp.sendgrid.net", 587, SecureSocketOptions.StartTls);
+            await client.ConnectAsync(_mailOptions.Host, _mailOptions.Port, SecureSocketOptions.StartTls);
+            //await client.ConnectAsync("smtp.sendgrid.net", 587, SecureSocketOptions.StartTls);
             await client.AuthenticateAsync(
                 userName: "apikey",
-                password: _Configuration["SendGrid:ClientSecret"]
+                password: _mailOptions.Password
             );
 
             Console.WriteLine("Sending email");

@@ -72,21 +72,80 @@ if (builder.Environment.IsProduction())
     builder.Configuration.AddAzureKeyVault(
         new Uri($"https://carniceria-zamorano-key.vault.azure.net/"),
         new DefaultAzureCredential());
-
-    //var connetionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    var connection = builder.Configuration["ConnectionString:mysql"];
-    Console.WriteLine(connection);
-    builder.Services.AddDbContext<DBContext>(
-            options =>
-            options.
-            UseMySql(connection, ServerVersion.AutoDetect(connection))
-    );
-
-    builder.Services.AddSingleton(x => new BlobServiceClient(
-        builder.Configuration.GetValue<string>(builder.Configuration["ConnectionString:AzureBlobStorage"]))
-    );
 }
 
+var connection = builder.Configuration["ConnectionString:mysql"];
+Console.WriteLine(connection);
+builder.Services.AddDbContext<DBContext>(
+        options =>
+        options.
+        UseMySql(connection, ServerVersion.AutoDetect(connection))
+);
+
+builder.Services.AddSingleton(x => new BlobServiceClient(
+    builder.Configuration.GetValue<string>(builder.Configuration["ConnectionString:AzureBlobStorage"]))
+);
+
+
+
+builder.Services.Configure<MailSettings>(x =>
+    {
+        x.Password = builder.Configuration["SendGridPass:ClientSecret"];
+        x.DisplayName = builder.Configuration.GetSection("MailSettings:DisplayName").Get<String>();
+        x.Host = builder.Configuration.GetSection("MailSettings:Host").Get<String>();
+        x.Mail = builder.Configuration.GetSection("MailSettings:Mail").Get<String>();
+        x.Port = 587;
+    }
+);
+
+//if (builder.Environment.IsDevelopment())
+//{
+
+//    var connection = builder.Configuration["ConnectionString:mysql"];
+//    Console.WriteLine(connection);
+//    builder.Services.AddDbContext<DBContext>(
+//            options =>
+//            options.
+//            UseMySql(connection, ServerVersion.AutoDetect(connection))
+//    );
+
+//    builder.Services.AddSingleton(x => new BlobServiceClient(
+//        builder.Configuration.GetValue<string>(Environment.GetEnvironmentVariable("ConnectionString:AzureBlobStorage")))
+//    );
+
+//    builder.Services.Configure<MailSettings>(x =>
+//        new MailSettings()
+//        {
+
+//            Password = Environment.GetEnvironmentVariable("SendGrid:ClientSecret"),
+//            DisplayName = builder.Configuration.GetSection("MailSettings:DisplayName").Get<String>(),
+//            Host = builder.Configuration.GetSection("MailSettings:Host").Get<String>(),
+//            Mail = builder.Configuration.GetSection("MailSettings:Mail").Get<String>(),
+//            Port = 587
+//        }
+//    );
+//}
+
+//builder.Services.Configure<MailSettings>(x =>
+//    new MailSettings()
+//    {
+
+//        Password = builder.Configuration["SendGrid:ClientSecret"],
+//        DisplayName = builder.Configuration.GetSection("MailSettings:DisplayName").Get<String>(),
+//        Host = builder.Configuration.GetSection("MailSettings:Host").Get<String>(),
+//        Mail = builder.Configuration.GetSection("MailSettings:Mail").Get<String>(),
+//        Port = 587
+//    }
+//);
+//var valor = new MailSettings()
+//{
+
+//    Password = builder.Configuration["SendGrid:ClientSecret"],
+//    DisplayName = builder.Configuration.GetSection("MailSettings:DisplayName").Get<String>(),
+//    Host = builder.Configuration.GetSection("MailSettings:Host").Get<String>(),
+//    Mail = builder.Configuration.GetSection("MailSettings:Mail").Get<String>(),
+//    Port = 587
+//};
 builder.Services.AddControllers()
     .AddJsonOptions(configure =>
     {
@@ -121,7 +180,7 @@ builder.Services.AddSingleton(mapper);
 
 
 builder.Services.AddSingleton<IBlobService, BlobService>();
-builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+
 
 
 builder.Services.AddScoped<IProductoService, ProductoService>();
