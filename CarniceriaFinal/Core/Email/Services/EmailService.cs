@@ -35,48 +35,49 @@ namespace CarniceriaFinal.Core.Email.Services
         {
             //var client = new SendGridClient(_Configuration["sendgrid-test"]);
             
-            using var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(
-                _mailOptions.DisplayName,//"Carnicería Zamorano",//displayname
-                _mailOptions.Mail//"jimy.coxr@ug.edu.ec"//email
-            ));
-            message.To.Add(new MailboxAddress(
-                _mailOptions.DisplayName,//"Carnicería Zamorano", //displayname
-                mailRequest.ToEmail
-            ));
-            message.Subject = mailRequest.Subject;
-            var bodyBuilder = new BodyBuilder
-            {
-                HtmlBody = mailRequest.Body
-            };
-            message.Body = bodyBuilder.ToMessageBody();
+            //using var message = new MimeMessage();
+            //message.From.Add(new MailboxAddress(
+            //    _mailOptions.DisplayName,//"Carnicería Zamorano",//displayname
+            //    _mailOptions.Mail//"jimy.coxr@ug.edu.ec"//email
+            //));
+            //message.To.Add(new MailboxAddress(
+            //    _mailOptions.DisplayName,//"Carnicería Zamorano", //displayname
+            //    mailRequest.ToEmail
+            //));
+            //message.Subject = mailRequest.Subject;
+            //var bodyBuilder = new BodyBuilder
+            //{
+            //    HtmlBody = mailRequest.Body
+            //};
+            //message.Body = bodyBuilder.ToMessageBody();
 
-            //var val = _Configuration.GetValue<DTOs.MailSettings>("");
+            ////var val = _Configuration.GetValue<DTOs.MailSettings>("");
 
-            using var client = new MailKit.Net.Smtp.SmtpClient();
-            await client.ConnectAsync(_mailOptions.Host, _mailOptions.Port, SecureSocketOptions.StartTls);
-            //await client.ConnectAsync("smtp.sendgrid.net", 587, SecureSocketOptions.StartTls);
-            await client.AuthenticateAsync(
-                userName: "apikey",
-                password: _mailOptions.Password
-            );
+            //using var client = new MailKit.Net.Smtp.SmtpClient();
+            //await client.ConnectAsync(_mailOptions.Host, _mailOptions.Port, SecureSocketOptions.StartTls);
+            ////await client.ConnectAsync("smtp.sendgrid.net", 587, SecureSocketOptions.StartTls);
+            //await client.AuthenticateAsync(
+            //    userName: "apikey",
+            //    password: _mailOptions.Password
+            //);
 
-            Console.WriteLine("Sending email");
-            await client.SendAsync(message);
-            Console.WriteLine("Email sent");
+            //Console.WriteLine("Sending email");
+            //await client.SendAsync(message);
+            //Console.WriteLine("Email sent");
 
-            await client.DisconnectAsync(true);
+            //await client.DisconnectAsync(true);
 
-            //var from = new EmailAddress("jimy.coxr@ug.edu.ec", mailRequest.Subject);
-            //var to = new EmailAddress(mailRequest.ToEmail);
-            //var msg = MailHelper.CreateSingleEmail(from, to, mailRequest.Subject, "", mailRequest.Body);
-            //var email = await client.SendEmailAsync(msg);
+            ////var from = new EmailAddress("jimy.coxr@ug.edu.ec", mailRequest.Subject);
+            ////var to = new EmailAddress(mailRequest.ToEmail);
+            ////var msg = MailHelper.CreateSingleEmail(from, to, mailRequest.Subject, "", mailRequest.Body);
+            ////var email = await client.SendEmailAsync(msg);
 
-            return "Correo enviado correctamente";
+            return _mailOptions.ToString();
         }
         
         public async Task<string> SendEmailToProductRequest(EmailProductsRequest mailRequest)
         {
+            var value = "";
             try
             {
                 string accounts = "";
@@ -120,14 +121,14 @@ namespace CarniceriaFinal.Core.Email.Services
                     ToEmail = mailRequest.email
                 };
 
-                await this.SendEmailAsync(emailData);
+                value = await this.SendEmailAsync(emailData);
                 
             }
             catch (Exception err)
             {
                 //throw new RSException(err.TypeError, err.Code, err.MessagesError);
             }
-            return "Email Enviado";
+            return value;
         }
         private string GetEmailBody(string templateName)
         {

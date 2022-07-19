@@ -14,6 +14,11 @@ namespace CarniceriaFinal.Core.Email.DTOs
         public string? Host { get; set; }
         public int Port { get; set; }
 
+        public override string ToString()
+        {
+            return String.Concat(Mail," || " , DisplayName, " || ", Password, " || ", Host, " || ", Port);
+        }
+
     }
     public class EmailRequest
     {
