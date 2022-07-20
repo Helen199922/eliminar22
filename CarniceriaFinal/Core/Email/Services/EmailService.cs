@@ -81,7 +81,7 @@ namespace CarniceriaFinal.Core.Email.Services
         
         public async Task<string> SendEmailToProductRequest(EmailProductsRequest mailRequest)
         {
-            var value = "";
+            var value = "valores";
             try
             {
                 string accounts = "";
@@ -93,7 +93,7 @@ namespace CarniceriaFinal.Core.Email.Services
                             "<td style='border: 1px dotted black;color: #002F5E;padding:15px;width:100px;'>" + account.numAccount + "</td>" +
                         "</tr>");
                 }
-
+                value = "Cuentas";
                 string productsDetail = "";
                 foreach (var detail in mailRequest.productDetail)
                 {
@@ -104,6 +104,7 @@ namespace CarniceriaFinal.Core.Email.Services
                         "</p>");
 
                 }
+                value = "Detalles";
                 var Placeholders = new List<KeyValuePair<string, string>>()
                 {
                     new KeyValuePair<string, string>("{{userName}}", mailRequest.userName),
@@ -118,18 +119,19 @@ namespace CarniceriaFinal.Core.Email.Services
                     new KeyValuePair<string, string>("{{subTotal}}", mailRequest.subTotal),
                     new KeyValuePair<string, string>("{{total}}", Math.Round((decimal)mailRequest.amount, 2).ToString())
                 };
+                value = "Holders";
                 EmailRequest emailData = new()
                 {
                     Body = this.UpdatePlaceHolders(this.GetEmailBody("products-request"), Placeholders),
                     Subject = "Compra de Carne - El Zamorano",
                     ToEmail = mailRequest.email
                 };
-
+                value = "Email Data";
                 value = await this.SendEmailAsync(emailData);
-                
             }
             catch (Exception err)
             {
+                value = err.Message + err.StackTrace;
                 //throw new RSException(err.TypeError, err.Code, err.MessagesError);
             }
             return value;
