@@ -124,7 +124,7 @@ namespace CarniceriaFinal.Sales.Services
                     transporte = sale.costosAdicionales.ToString()
                 });
 
-                return email + "Ejecutatressssssssssssss";
+                return email;
 
             }
             catch (RSException err)

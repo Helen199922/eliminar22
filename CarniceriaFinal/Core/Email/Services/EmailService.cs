@@ -35,17 +35,13 @@ namespace CarniceriaFinal.Core.Email.Services
         }
         public async Task<string> SendEmailAsync(EmailRequest mailRequest)
         {
-
-
-            //var client = new SendGridClient(_Configuration["sendgrid-test"]);
-
             using var message = new MimeMessage();
             message.From.Add(new MailboxAddress(
-                _mailOptions.DisplayName,//"Carnicería Zamorano",//displayname
-                _mailOptions.Mail//"jimy.coxr@ug.edu.ec"//email
+                _mailOptions.DisplayName,
+                _mailOptions.Mail
             ));
             message.To.Add(new MailboxAddress(
-                _mailOptions.DisplayName,//"Carnicería Zamorano", //displayname
+                _mailOptions.DisplayName,
                 mailRequest.ToEmail
             ));
             message.Subject = mailRequest.Subject;
@@ -55,31 +51,21 @@ namespace CarniceriaFinal.Core.Email.Services
             };
             message.Body = bodyBuilder.ToMessageBody();
 
-            //var val = _Configuration.GetValue<DTOs.MailSettings>("");
-
             using var client = new MailKit.Net.Smtp.SmtpClient();
             await client.ConnectAsync(_mailOptions.Host, _mailOptions.Port, SecureSocketOptions.StartTls);
-            //await client.ConnectAsync("smtp.sendgrid.net", 587, SecureSocketOptions.StartTls);
             await client.AuthenticateAsync(
                 userName: "apikey",
                 password: _mailOptions.Password
             );
 
             await client.SendAsync(message);
-
             await client.DisconnectAsync(true);
-
-            //var from = new EmailAddress("jimy.coxr@ug.edu.ec", mailRequest.Subject);
-            //var to = new EmailAddress(mailRequest.ToEmail);
-            //var msg = MailHelper.CreateSingleEmail(from, to, mailRequest.Subject, "", mailRequest.Body);
-            //var email = await client.SendEmailAsync(msg);
-
-            return "Enviar data : " + _mailOptions.ToString();
+            return "Correo enviado correctamente";
         }
         
         public async Task<string> SendEmailToProductRequest(EmailProductsRequest mailRequest)
         {
-            var value = "aaa";
+            var value = "";
             try
             {
                 string accounts = "";
@@ -121,11 +107,10 @@ namespace CarniceriaFinal.Core.Email.Services
                     Subject = "Compra de Carne - El Zamorano",
                     ToEmail = mailRequest.email
                 };
-                value += await this.SendEmailAsync(emailData);
+                await this.SendEmailAsync(emailData);
             }
             catch (Exception err)
             {
-                value += err.Message + err.StackTrace;
                 //throw new RSException(err.TypeError, err.Code, err.MessagesError);
             }
             return value;

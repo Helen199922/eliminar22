@@ -97,15 +97,6 @@ builder.Services.Configure<MailSettings>(x =>
     x.Port = 587;
 });
 
-//var valor = new MailSettings()
-//{
-
-//    Password = builder.Configuration["SendGrid:ClientSecret"],
-//    DisplayName = builder.Configuration.GetSection("MailSettings:DisplayName").Get<String>(),
-//    Host = builder.Configuration.GetSection("MailSettings:Host").Get<String>(),
-//    Mail = builder.Configuration.GetSection("MailSettings:Mail").Get<String>(),
-//    Port = 587
-//};
 builder.Services.AddControllers()
     .AddJsonOptions(configure =>
     {
