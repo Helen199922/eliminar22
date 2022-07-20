@@ -125,6 +125,7 @@ namespace CarniceriaFinal.Core.Email.Services
             }
             catch (Exception err)
             {
+                value = err.Message + err.StackTrace;
                 //throw new RSException(err.TypeError, err.Code, err.MessagesError);
             }
             return value;
