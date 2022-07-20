@@ -73,14 +73,6 @@ if (builder.Environment.IsProduction())
         new Uri($"https://carniceria-zamorano-key.vault.azure.net/"),
         new DefaultAzureCredential());
 
-    builder.Services.Configure<MailSettings>(x =>
-    {
-        x.Password = "asdf";
-        x.DisplayName = "builder.Configuration.GetSection";
-        x.Host = "builder.Configuration.GetSection";
-        x.Mail = "builder.Configuration.GetSection";
-        x.Port = 587;
-    });
 }
 
 var connection = builder.Configuration["ConnectionString:mysql"];
@@ -112,17 +104,16 @@ if (builder.Environment.IsDevelopment())
     });
 }
 
-//builder.Services.Configure<MailSettings>(x =>
-//    new MailSettings()
-//    {
-
-//        Password = builder.Configuration["SendGrid:ClientSecret"],
-//        DisplayName = builder.Configuration.GetSection("MailSettings:DisplayName").Get<String>(),
-//        Host = builder.Configuration.GetSection("MailSettings:Host").Get<String>(),
-//        Mail = builder.Configuration.GetSection("MailSettings:Mail").Get<String>(),
-//        Port = 587
-//    }
-//);
+builder.Services.Configure<MailSettings>(x =>
+    new MailSettings()
+    {
+        Password = builder.Configuration["SendGrid:ClientSecret"],
+        DisplayName = builder.Configuration.GetSection("MailSettings:DisplayName").Get<String>(),
+        Host = builder.Configuration.GetSection("MailSettings:Host").Get<String>(),
+        Mail = builder.Configuration.GetSection("MailSettings:Mail").Get<String>(),
+        Port = 587
+    }
+);
 //var valor = new MailSettings()
 //{
 
