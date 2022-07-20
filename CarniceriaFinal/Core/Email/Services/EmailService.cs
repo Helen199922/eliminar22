@@ -27,14 +27,18 @@ namespace CarniceriaFinal.Core.Email.Services
 
         private const string templatePath = @"Core/Email/Templates/{0}.html";
         private readonly DTOs.MailSettings _mailOptions;
-        public EmailService(IOptions<DTOs.MailSettings> mailOptions)
+        private readonly IConfiguration configuration;
+        public EmailService(IOptions<DTOs.MailSettings> mailOptions, IConfiguration _configuration)
         {
+            configuration = _configuration;
             _mailOptions = mailOptions.Value;
         }
         public async Task<string> SendEmailAsync(EmailRequest mailRequest)
         {
-            //var client = new SendGridClient(_Configuration["sendgrid-test"]);
             
+
+            //var client = new SendGridClient(_Configuration["sendgrid-test"]);
+
             //using var message = new MimeMessage();
             //message.From.Add(new MailboxAddress(
             //    _mailOptions.DisplayName,//"Carnicería Zamorano",//displayname
@@ -72,7 +76,7 @@ namespace CarniceriaFinal.Core.Email.Services
             ////var msg = MailHelper.CreateSingleEmail(from, to, mailRequest.Subject, "", mailRequest.Body);
             ////var email = await client.SendEmailAsync(msg);
 
-            return _mailOptions.ToString();
+            return _mailOptions.ToString() + "  " + configuration["SendGridPass:ClientSecret"] + " - " + configuration["MailSettings:Host"];
         }
         
         public async Task<string> SendEmailToProductRequest(EmailProductsRequest mailRequest)
