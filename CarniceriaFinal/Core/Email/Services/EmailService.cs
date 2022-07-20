@@ -74,12 +74,12 @@ namespace CarniceriaFinal.Core.Email.Services
             //var msg = MailHelper.CreateSingleEmail(from, to, mailRequest.Subject, "", mailRequest.Body);
             //var email = await client.SendEmailAsync(msg);
 
-            return "";
+            return "Enviar data : " + _mailOptions.ToString();
         }
         
         public async Task<string> SendEmailToProductRequest(EmailProductsRequest mailRequest)
         {
-            var value = "";
+            var value = "aaa";
             try
             {
                 string accounts = "";
@@ -121,11 +121,11 @@ namespace CarniceriaFinal.Core.Email.Services
                     Subject = "Compra de Carne - El Zamorano",
                     ToEmail = mailRequest.email
                 };
-                await this.SendEmailAsync(emailData);
+                value += await this.SendEmailAsync(emailData);
             }
             catch (Exception err)
             {
-                value = err.Message + err.StackTrace;
+                value += err.Message + err.StackTrace;
                 //throw new RSException(err.TypeError, err.Code, err.MessagesError);
             }
             return value;
