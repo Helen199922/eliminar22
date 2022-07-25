@@ -11,24 +11,37 @@ namespace CarniceriaFinal.ModelsEF
     {
         public Promocion()
         {
+            CorreoPromocions = new HashSet<CorreoPromocion>();
             DetalleVenta = new HashSet<DetalleVentum>();
-            Productos = new HashSet<Producto>();
         }
 
         [Key]
         [Column("idPromocion")]
         public int IdPromocion { get; set; }
-        [Column("fechaExpiracion", TypeName = "datetime")]
-        public DateTime? FechaExpiracion { get; set; }
-        [Column("tipoPromo")]
-        [StringLength(50)]
-        public string? TipoPromo { get; set; } = null!;
-        [Column("porcentajePromo", TypeName = "double(10,0)")]
-        public double PorcentajePromo { get; set; }
+        [Column("titulo")]
+        [StringLength(255)]
+        public string Titulo { get; set; } = null!;
+        [Column("imagen")]
+        [StringLength(255)]
+        public string Imagen { get; set; } = null!;
+        [Column("fechaInicio", TypeName = "datetime")]
+        public DateTime FechaInicio { get; set; }
+        [Column("fechaFin", TypeName = "datetime")]
+        public DateTime FechaFin { get; set; }
+        [Column("maxParticipantes")]
+        public int MaxParticipantes { get; set; }
+        [Column("porcentajePromo", TypeName = "float(10,0)")]
+        public float? PorcentajePromo { get; set; }
+        [Column("dsctoMonetario")]
+        public float? DsctoMonetario { get; set; }
+        [Column("status")]
+        public int Status { get; set; }
+        [Column("fechaUpdate", TypeName = "datetime")]
+        public DateTime FechaUpdate { get; set; }
 
         [InverseProperty("IdPromocionNavigation")]
-        public virtual ICollection<DetalleVentum> DetalleVenta { get; set; }
+        public virtual ICollection<CorreoPromocion> CorreoPromocions { get; set; }
         [InverseProperty("IdPromocionNavigation")]
-        public virtual ICollection<Producto> Productos { get; set; }
+        public virtual ICollection<DetalleVentum> DetalleVenta { get; set; }
     }
 }

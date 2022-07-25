@@ -11,6 +11,7 @@ namespace CarniceriaFinal.ModelsEF
     {
         public MomentoDegustacion()
         {
+            MomentoDegustacionInPreparacions = new HashSet<MomentoDegustacionInPreparacion>();
             MomentoDegustacionInProductos = new HashSet<MomentoDegustacionInProducto>();
         }
 
@@ -19,21 +20,22 @@ namespace CarniceriaFinal.ModelsEF
         public int IdMomentoDegustacion { get; set; }
         [Column("titulo")]
         [StringLength(255)]
-        [MySqlCollation("utf8_spanish_ci")]
-        public string? Titulo { get; set; }
+        public string Titulo { get; set; } = null!;
         [Column("descripcion")]
-        [StringLength(255)]
-        [MySqlCollation("utf8_spanish_ci")]
-        public string? Descripcion { get; set; }
+        [StringLength(500)]
+        public string Descripcion { get; set; } = null!;
         [Column("urlImage")]
         [StringLength(255)]
-        [MySqlCollation("utf8_spanish_ci")]
-        public string? UrlImage { get; set; }
-        [Column("hora_inicio", TypeName = "time")]
-        public TimeOnly? HoraInicio { get; set; }
-        [Column("hora_fin", TypeName = "time")]
-        public TimeOnly? HoraFin { get; set; }
+        public string UrlImage { get; set; } = null!;
+        [Column("hora_inicio", TypeName = "datetime")]
+        public DateTime? HoraInicio { get; set; }
+        [Column("hora_fin", TypeName = "datetime")]
+        public DateTime? HoraFin { get; set; }
+        [Column("status")]
+        public int Status { get; set; }
 
+        [InverseProperty("IdMomentoDegustacionNavigation")]
+        public virtual ICollection<MomentoDegustacionInPreparacion> MomentoDegustacionInPreparacions { get; set; }
         [InverseProperty("IdMomentoDegustacionNavigation")]
         public virtual ICollection<MomentoDegustacionInProducto> MomentoDegustacionInProductos { get; set; }
     }

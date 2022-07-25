@@ -20,26 +20,35 @@ namespace CarniceriaFinal.ModelsEF
         public virtual DbSet<Ciudad> Ciudads { get; set; } = null!;
         public virtual DbSet<Cliente> Clientes { get; set; } = null!;
         public virtual DbSet<Comunicacion> Comunicacions { get; set; } = null!;
+        public virtual DbSet<CorreoPromocion> CorreoPromocions { get; set; } = null!;
+        public virtual DbSet<CorreoPromocionInUser> CorreoPromocionInUsers { get; set; } = null!;
         public virtual DbSet<DetalleProducto> DetalleProductos { get; set; } = null!;
         public virtual DbSet<DetalleVentum> DetalleVenta { get; set; } = null!;
         public virtual DbSet<Endpoint> Endpoints { get; set; } = null!;
+        public virtual DbSet<EventoEspecial> EventoEspecials { get; set; } = null!;
         public virtual DbSet<FormaPago> FormaPagos { get; set; } = null!;
         public virtual DbSet<Impuesto> Impuestos { get; set; } = null!;
         public virtual DbSet<InfoBancarium> InfoBancaria { get; set; } = null!;
+        public virtual DbSet<MembresiaInUsuario> MembresiaInUsuarios { get; set; } = null!;
+        public virtual DbSet<Membresium> Membresia { get; set; } = null!;
         public virtual DbSet<MetodosHttp> MetodosHttps { get; set; } = null!;
         public virtual DbSet<Modulo> Modulos { get; set; } = null!;
         public virtual DbSet<ModuloInOpcion> ModuloInOpcions { get; set; } = null!;
         public virtual DbSet<MomentoDegustacion> MomentoDegustacions { get; set; } = null!;
+        public virtual DbSet<MomentoDegustacionInPreparacion> MomentoDegustacionInPreparacions { get; set; } = null!;
         public virtual DbSet<MomentoDegustacionInProducto> MomentoDegustacionInProductos { get; set; } = null!;
         public virtual DbSet<Opcion> Opcions { get; set; } = null!;
         public virtual DbSet<OptionInEndpoint> OptionInEndpoints { get; set; } = null!;
         public virtual DbSet<Persona> Personas { get; set; } = null!;
+        public virtual DbSet<PreparacionProducto> PreparacionProductos { get; set; } = null!;
         public virtual DbSet<Producto> Productos { get; set; } = null!;
         public virtual DbSet<Promocion> Promocions { get; set; } = null!;
+        public virtual DbSet<PromocionInProducto> PromocionInProductos { get; set; } = null!;
         public virtual DbSet<Provincium> Provincia { get; set; } = null!;
         public virtual DbSet<Rol> Rols { get; set; } = null!;
         public virtual DbSet<RolInOpcion> RolInOpcions { get; set; } = null!;
         public virtual DbSet<Sexo> Sexos { get; set; } = null!;
+        public virtual DbSet<StatusEmail> StatusEmails { get; set; } = null!;
         public virtual DbSet<SubCategorium> SubCategoria { get; set; } = null!;
         public virtual DbSet<SubInCategorium> SubInCategoria { get; set; } = null!;
         public virtual DbSet<TipoComunicacion> TipoComunicacions { get; set; } = null!;
@@ -54,7 +63,7 @@ namespace CarniceriaFinal.ModelsEF
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseMySql("server=carniceria-zamorano-db.mysql.database.azure.com;database=carniceria;user=zamoranoservidor;password=12345678#!C0rn3", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.28-mysql"));
+                optionsBuilder.UseMySql("server=carniceria-zamorano-db.mysql.database.azure.com;userid=zamoranoservidor;password=12345678#!C0rn3;database=carniceria", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.28-mysql"));
             }
         }
 
@@ -108,6 +117,42 @@ namespace CarniceriaFinal.ModelsEF
                     .HasConstraintName("comunicacion_ibfk_1");
             });
 
+            modelBuilder.Entity<CorreoPromocion>(entity =>
+            {
+                entity.HasKey(e => e.IdCorreo)
+                    .HasName("PRIMARY");
+
+                entity.Property(e => e.IdCorreo).ValueGeneratedNever();
+
+                entity.HasOne(d => d.IdPromocionNavigation)
+                    .WithMany(p => p.CorreoPromocions)
+                    .HasForeignKey(d => d.IdPromocion)
+                    .HasConstraintName("correo_promocion_ibfk_1");
+            });
+
+            modelBuilder.Entity<CorreoPromocionInUser>(entity =>
+            {
+                entity.HasKey(e => e.IdCorreoPromocionInUser)
+                    .HasName("PRIMARY");
+
+                entity.HasOne(d => d.IdCorreoPromocionNavigation)
+                    .WithMany(p => p.CorreoPromocionInUsers)
+                    .HasForeignKey(d => d.IdCorreoPromocion)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("correo_promocion_in_user_ibfk_3");
+
+                entity.HasOne(d => d.IdEstatusEmailNavigation)
+                    .WithMany(p => p.CorreoPromocionInUsers)
+                    .HasForeignKey(d => d.IdEstatusEmail)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("correo_promocion_in_user_ibfk_2");
+
+                entity.HasOne(d => d.IdUsuarioNavigation)
+                    .WithMany(p => p.CorreoPromocionInUsers)
+                    .HasForeignKey(d => d.IdUsuario)
+                    .HasConstraintName("correo_promocion_in_user_ibfk_1");
+            });
+
             modelBuilder.Entity<DetalleProducto>(entity =>
             {
                 entity.HasKey(e => e.IdDetalleProducto)
@@ -152,6 +197,12 @@ namespace CarniceriaFinal.ModelsEF
                     .HasConstraintName("endpoints_ibfk_1");
             });
 
+            modelBuilder.Entity<EventoEspecial>(entity =>
+            {
+                entity.HasKey(e => e.IdEventoEspecial)
+                    .HasName("PRIMARY");
+            });
+
             modelBuilder.Entity<FormaPago>(entity =>
             {
                 entity.HasKey(e => e.IdFormaPago)
@@ -167,6 +218,28 @@ namespace CarniceriaFinal.ModelsEF
             modelBuilder.Entity<InfoBancarium>(entity =>
             {
                 entity.HasKey(e => e.IdBanco)
+                    .HasName("PRIMARY");
+            });
+
+            modelBuilder.Entity<MembresiaInUsuario>(entity =>
+            {
+                entity.HasKey(e => e.IdMembresiaInUsuario)
+                    .HasName("PRIMARY");
+
+                entity.HasOne(d => d.IdMembresiaNavigation)
+                    .WithMany(p => p.MembresiaInUsuarios)
+                    .HasForeignKey(d => d.IdMembresia)
+                    .HasConstraintName("membresia_in_usuario_ibfk_1");
+
+                entity.HasOne(d => d.IdUsuarioNavigation)
+                    .WithMany(p => p.MembresiaInUsuarios)
+                    .HasForeignKey(d => d.IdUsuario)
+                    .HasConstraintName("membresia_in_usuario_ibfk_2");
+            });
+
+            modelBuilder.Entity<Membresium>(entity =>
+            {
+                entity.HasKey(e => e.IdMembresia)
                     .HasName("PRIMARY");
             });
 
@@ -205,6 +278,25 @@ namespace CarniceriaFinal.ModelsEF
             {
                 entity.HasKey(e => e.IdMomentoDegustacion)
                     .HasName("PRIMARY");
+            });
+
+            modelBuilder.Entity<MomentoDegustacionInPreparacion>(entity =>
+            {
+                entity.HasKey(e => new { e.IdMomentoDegustacion, e.IdPreparacionProducto })
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+
+                entity.HasOne(d => d.IdMomentoDegustacionNavigation)
+                    .WithMany(p => p.MomentoDegustacionInPreparacions)
+                    .HasForeignKey(d => d.IdMomentoDegustacion)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("momento_degustacion_in_preparacion_ibfk_1");
+
+                entity.HasOne(d => d.IdPreparacionProductoNavigation)
+                    .WithMany(p => p.MomentoDegustacionInPreparacions)
+                    .HasForeignKey(d => d.IdPreparacionProducto)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("momento_degustacion_in_preparacion_ibfk_2");
             });
 
             modelBuilder.Entity<MomentoDegustacionInProducto>(entity =>
@@ -268,15 +360,35 @@ namespace CarniceriaFinal.ModelsEF
                     .HasConstraintName("persona_ibfk_1");
             });
 
+            modelBuilder.Entity<PreparacionProducto>(entity =>
+            {
+                entity.HasKey(e => e.IdPreparacionProducto)
+                    .HasName("PRIMARY");
+
+                entity.HasMany(d => d.IdProductos)
+                    .WithMany(p => p.IdPreparacionProductos)
+                    .UsingEntity<Dictionary<string, object>>(
+                        "PreparacionProductoInProducto",
+                        l => l.HasOne<Producto>().WithMany().HasForeignKey("IdProducto").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("preparacion_producto_in_producto_ibfk_2"),
+                        r => r.HasOne<PreparacionProducto>().WithMany().HasForeignKey("IdPreparacionProducto").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("preparacion_producto_in_producto_ibfk_1"),
+                        j =>
+                        {
+                            j.HasKey("IdPreparacionProducto", "IdProducto").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+
+                            j.ToTable("preparacion_producto_in_producto");
+
+                            j.HasIndex(new[] { "IdProducto" }, "idProducto");
+
+                            j.IndexerProperty<int>("IdPreparacionProducto").ValueGeneratedOnAdd().HasColumnName("idPreparacionProducto");
+
+                            j.IndexerProperty<int>("IdProducto").HasColumnName("idProducto");
+                        });
+            });
+
             modelBuilder.Entity<Producto>(entity =>
             {
                 entity.HasKey(e => e.IdProducto)
                     .HasName("PRIMARY");
-
-                entity.HasOne(d => d.IdPromocionNavigation)
-                    .WithMany(p => p.Productos)
-                    .HasForeignKey(d => d.IdPromocion)
-                    .HasConstraintName("promo_promocion");
 
                 entity.HasOne(d => d.IdUnidadNavigation)
                     .WithMany(p => p.Productos)
@@ -289,6 +401,20 @@ namespace CarniceriaFinal.ModelsEF
             {
                 entity.HasKey(e => e.IdPromocion)
                     .HasName("PRIMARY");
+            });
+
+            modelBuilder.Entity<PromocionInProducto>(entity =>
+            {
+                entity.HasOne(d => d.IdProductoNavigation)
+                    .WithMany()
+                    .HasForeignKey(d => d.IdProducto)
+                    .HasConstraintName("promocion_in_producto_ibfk_1");
+
+                entity.HasOne(d => d.IdPromocionNavigation)
+                    .WithMany()
+                    .HasForeignKey(d => d.IdPromocion)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("promocion_in_producto_ibfk_2");
             });
 
             modelBuilder.Entity<Provincium>(entity =>
@@ -326,6 +452,14 @@ namespace CarniceriaFinal.ModelsEF
             {
                 entity.HasKey(e => e.IdSexo)
                     .HasName("PRIMARY");
+            });
+
+            modelBuilder.Entity<StatusEmail>(entity =>
+            {
+                entity.HasKey(e => e.IdEstatusEmail)
+                    .HasName("PRIMARY");
+
+                entity.Property(e => e.IdEstatusEmail).ValueGeneratedNever();
             });
 
             modelBuilder.Entity<SubCategorium>(entity =>

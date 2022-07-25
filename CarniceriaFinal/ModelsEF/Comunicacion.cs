@@ -32,7 +32,7 @@ namespace CarniceriaFinal.ModelsEF
         public DateTime? FechaExpiracion { get; set; }
         [Column("urlImage")]
         [StringLength(255)]
-        public string? UrlImage { get; set; } = null!;
+        public string UrlImage { get; set; } = null!;
         [Column("urlBtn")]
         [StringLength(255)]
         public string? UrlBtn { get; set; }

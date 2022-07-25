@@ -110,5 +110,16 @@ namespace CarniceriaFinal.Security.Repository
                 throw RSException.ErrorQueryDB("Obtener todos los usuario");
             }
         }
+        public async Task<List<Usuario>> GetProfileInfo()
+        {
+            try
+            {
+                return await Context.Usuarios.Include(x => x.IdPersonaNavigation).ToListAsync();
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Obtener todos los usuario");
+            }
+        }
     }
 }

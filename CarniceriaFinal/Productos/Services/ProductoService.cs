@@ -45,9 +45,7 @@ namespace CarniceriaFinal.Productos.Servicios
                     var product = IMapper.Map<ProductTableAdminEntity>(item);
                     products.Add(product);
                     var lastProduct = products.Last();
-                    if (item.IdPromocionNavigation != null)
-                        lastProduct.NamePromotion = item.IdPromocionNavigation.TipoPromo;
-                    else lastProduct.NamePromotion = "";
+                    lastProduct.NamePromotion = "";
                     
                     lastProduct.NameCategories = new();
                     if (item.SubInCategoria == null) continue;
@@ -85,7 +83,6 @@ namespace CarniceriaFinal.Productos.Servicios
 
                 ProductAdminCompleteEntity productComplete = new();
                 productComplete.product = IMapper.Map<ProductEntity>(productsRepo);
-                productComplete.promotion = IMapper.Map<PromotionEntity>(productsRepo.IdPromocionNavigation);
                 productComplete.unidadMedida = IMapper.Map<MeasureUnitEntity>(productsRepo.IdUnidadNavigation);
                 productComplete.detail = IMapper.Map<List<ProductDetailEntity>>(productsRepo.DetalleProductos);
                 productComplete.categories = await this.ICategoriaService.GetAllCategoriesAndSubCategoriesByProductId(idProduct);
@@ -112,7 +109,6 @@ namespace CarniceriaFinal.Productos.Servicios
                     products.Add(new()
                     {
                         product = IMapper.Map<ProductEntity>(item),
-                        promotion = IMapper.Map<PromotionEntity>(item.IdPromocionNavigation),
                         unidadMedida = IMapper.Map<MeasureUnitEntity>(item.IdUnidadNavigation),
                         detail = IMapper.Map<List<ProductDetailEntity>>(item.DetalleProductos)
                     });
@@ -177,23 +173,13 @@ namespace CarniceriaFinal.Productos.Servicios
             {
                 product.Status = 1;
                 Boolean isNullPromotion = false;
-                if(product.IdPromocion == null)
-                {
-                    product.IdPromocion = 1;
-                    isNullPromotion = true;
-                }
-                if (IPromocionRepository.GetPromocionById(product.IdPromocion.Value).Result == null)
-                    throw RSException.NoData("No hemos encontrado la promoción solicitada");
 
                 if (IUnidadMedidaRepository.GetUnidadMedidaById(product.IdUnidad).Result == null)
                     throw RSException.NoData("No hemos encontrado la unidad de medida solicitada");
                 
                 var productRepo = IMapper.Map<Producto>(product);
 
-                if (isNullPromotion)
-                {
-                    productRepo.IdPromocion = null;
-                }
+
                 var productResponse = await this.IProductoRepo.SaveProduct(productRepo);
 
                 foreach (var detail in product.detail)

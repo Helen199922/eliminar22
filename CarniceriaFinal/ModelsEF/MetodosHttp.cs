@@ -19,7 +19,6 @@ namespace CarniceriaFinal.ModelsEF
         public int IdMetodo { get; set; }
         [Column("tipoMetodo")]
         [StringLength(255)]
-        [MySqlCollation("utf8_spanish_ci")]
         public string? TipoMetodo { get; set; }
 
         [InverseProperty("IdMetodoNavigation")]

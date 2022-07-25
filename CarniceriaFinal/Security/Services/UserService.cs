@@ -182,6 +182,35 @@ namespace CarniceriaFinal.User.Services
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener los usuarios.");
             }
         }
-        
+        public async Task<List<DetailUserEntity>> GetProfileInfo()
+        {
+            try
+            {
+                var response = await IUserRepository.GetAllUser();
+                if (response == null || response.Count == 0)
+                {
+                    return new List<DetailUserEntity>();
+                }
+                List<DetailUserEntity> details = new();
+                DetailUserEntity detail = null;
+                foreach (var item in response)
+                {
+                    detail = new();
+                    detail.usuario = IMapper.Map<UserEntity>(item);
+                    detail.persona = IMapper.Map<PersonEntity>(item.IdPersonaNavigation);
+                    details.Add(detail);
+                }
+                return details;
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception err)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener los usuarios.");
+            }
+        }
+
     }
 }

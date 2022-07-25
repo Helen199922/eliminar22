@@ -20,11 +20,9 @@ namespace CarniceriaFinal.ModelsEF
         public int IdEndPoint { get; set; }
         [Column("endPoint")]
         [StringLength(255)]
-        [MySqlCollation("utf8_spanish_ci")]
         public string? EndPoint1 { get; set; }
         [Column("pathEndpoint")]
         [StringLength(255)]
-        [MySqlCollation("utf8_spanish_ci")]
         public string? PathEndpoint { get; set; }
         [Column("isPublic")]
         public int IsPublic { get; set; }

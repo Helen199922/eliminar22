@@ -11,6 +11,12 @@ namespace CarniceriaFinal.ModelsEF
     [Index("IdRol", Name = "rolUSR_rolUSR")]
     public partial class Usuario
     {
+        public Usuario()
+        {
+            CorreoPromocionInUsers = new HashSet<CorreoPromocionInUser>();
+            MembresiaInUsuarios = new HashSet<MembresiaInUsuario>();
+        }
+
         [Key]
         [Column("idUsuario")]
         public int IdUsuario { get; set; }
@@ -26,6 +32,9 @@ namespace CarniceriaFinal.ModelsEF
         public int? IdPersona { get; set; }
         [Column("status")]
         public int? Status { get; set; }
+        [Column("perfilImage")]
+        [StringLength(255)]
+        public string? PerfilImage { get; set; }
 
         [ForeignKey("IdPersona")]
         [InverseProperty("Usuarios")]
@@ -33,5 +42,9 @@ namespace CarniceriaFinal.ModelsEF
         [ForeignKey("IdRol")]
         [InverseProperty("Usuarios")]
         public virtual Rol? IdRolNavigation { get; set; }
+        [InverseProperty("IdUsuarioNavigation")]
+        public virtual ICollection<CorreoPromocionInUser> CorreoPromocionInUsers { get; set; }
+        [InverseProperty("IdUsuarioNavigation")]
+        public virtual ICollection<MembresiaInUsuario> MembresiaInUsuarios { get; set; }
     }
 }

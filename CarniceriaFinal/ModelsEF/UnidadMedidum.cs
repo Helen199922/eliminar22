@@ -19,7 +19,7 @@ namespace CarniceriaFinal.ModelsEF
         public int IdUnidad { get; set; }
         [Column("unidad")]
         [StringLength(10)]
-        public string? Unidad { get; set; } = null!;
+        public string Unidad { get; set; } = null!;
 
         [InverseProperty("IdUnidadNavigation")]
         public virtual ICollection<Producto> Productos { get; set; }

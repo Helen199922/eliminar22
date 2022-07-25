@@ -26,7 +26,7 @@ namespace CarniceriaFinal.ModelsEF
         [Column("idProducto")]
         public int? IdProducto { get; set; }
         [Column("descuento")]
-        public double? Descuento { get; set; }
+        public float? Descuento { get; set; }
 
         [ForeignKey("IdProducto")]
         [InverseProperty("DetalleVenta")]

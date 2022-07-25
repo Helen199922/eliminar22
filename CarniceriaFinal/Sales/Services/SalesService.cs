@@ -73,7 +73,6 @@ namespace CarniceriaFinal.Sales.Services
                     finalAmount += (productValue.Precio.Value * item.cantidad);
                     subTotal += (productValue.Precio.Value * item.cantidad);
                     discount += discount;
-                    item.idPromocion = productValue.IdPromocion;
                     //if(item.idPromocion != null) para validar la promoción - pila para el módulo
                     //    
                     item.descuentoTotal = 0;
@@ -164,7 +163,6 @@ namespace CarniceriaFinal.Sales.Services
                     finalAmount += (productValue.Precio.Value * item.cantidad);
                     subTotal += (productValue.Precio.Value * item.cantidad);
                     discount += discount;
-                    item.idPromocion = productValue.IdPromocion;
                     //if(item.idPromocion != null) para validar la promoción - pila para el módulo
                     //    
                     item.descuentoTotal = 0;

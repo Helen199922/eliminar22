@@ -18,7 +18,6 @@ namespace CarniceriaFinal.ModelsEF
         public int IdEndPoint { get; set; }
         [Column("descripcion")]
         [StringLength(5)]
-        [MySqlCollation("utf8_spanish_ci")]
         public string? Descripcion { get; set; }
 
         [ForeignKey("IdEndPoint")]

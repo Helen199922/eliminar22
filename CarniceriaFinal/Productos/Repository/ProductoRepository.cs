@@ -23,7 +23,6 @@ namespace CarniceriaFinal.Productos
             try
             {
                 return await Context.Productos
-                    .Include(x => x.IdPromocionNavigation)
                     .Include(x => x.SubInCategoria)
                     .ThenInclude(x => x.IdCategoriaNavigation)
                     .Where(x => x.SubInCategoria.Any(y => y.IdSubCategoria == idSubCategory))
@@ -54,7 +53,6 @@ namespace CarniceriaFinal.Productos
             try
             {
                 return await Context.Productos
-                    .Include(x => x.IdPromocionNavigation)
                     .Include(x => x.SubInCategoria)
                     .ThenInclude(x => x.IdCategoriaNavigation)
                     .ToListAsync();
@@ -70,7 +68,6 @@ namespace CarniceriaFinal.Productos
             try
             {
                 return await Context.Productos
-                    .Include(x => x.IdPromocionNavigation)
                     .Include(x => x.IdUnidadNavigation)
                     .Include(x => x.DetalleProductos)
                     .Where(x => x.IdProducto == idProduct)
@@ -87,7 +84,6 @@ namespace CarniceriaFinal.Productos
             try
             {
                 return await Context.Productos
-                    .Include(x => x.IdPromocionNavigation)
                     .Include(x => x.IdUnidadNavigation)
                     .Include(x => x.DetalleProductos)
                     .ToListAsync();
@@ -222,7 +218,6 @@ namespace CarniceriaFinal.Productos
                 productDetail.Precio = product.Precio;
                 productDetail.Titulo = product.Titulo;
                 productDetail.Status = product.Status;
-                productDetail.IdPromocion = product.IdPromocion;
                 productDetail.IdUnidad = product.IdUnidad;
                 productDetail.Stock = product.Stock;
                 productDetail.MinimaUnidad = product.MinimaUnidad;
