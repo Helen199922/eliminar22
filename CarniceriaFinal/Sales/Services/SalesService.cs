@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 
 namespace CarniceriaFinal.Sales.Services
 {
+
     public class SalesService : ISalesService
     {
         private readonly IUserRepository IUserRepository;
@@ -59,23 +60,34 @@ namespace CarniceriaFinal.Sales.Services
                 List<DetailProductsEntity> salesDetails = new();
                 foreach (var item in sale.detalleVenta)
                 {
+                    float discountInDetail = 0;
                     var productValue = await this.IProductoRepository.FindProductById(item.idProducto);
                     if (productValue == null) throw RSException.BadRequest("El producto no se encontró");
 
-                    salesDetails.Add(new DetailProductsEntity {
+                    
+                    if (item.idPromocion != null)
+                    {
+                        discountInDetail = await getDiscountTotalByProductAndPromotion(item);
+                        if(discountInDetail == 0)
+                            item.idPromocion = null;
+                    }
+
+
+                    item.precio = productValue.Precio.Value;
+                    item.descuentoTotal = discountInDetail;
+                    subTotal += (productValue.Precio.Value * item.cantidad);
+                    finalAmount += (productValue.Precio.Value * item.cantidad) - discountInDetail;
+
+                    discount += discountInDetail;
+
+
+                    salesDetails.Add(new DetailProductsEntity
+                    {
                         amount = productValue.Precio.Value.ToString(),
                         product = productValue.Titulo,
                         quantity = item.cantidad.ToString(),
                         finalAmount = Math.Round((productValue.Precio.Value * item.cantidad), 2).ToString()
                     });
-
-                    item.precio = productValue.Precio.Value;
-                    finalAmount += (productValue.Precio.Value * item.cantidad);
-                    subTotal += (productValue.Precio.Value * item.cantidad);
-                    discount += discount;
-                    //if(item.idPromocion != null) para validar la promoción - pila para el módulo
-                    //    
-                    item.descuentoTotal = 0;
                 }
                 sale.total = finalAmount;
 
@@ -135,7 +147,6 @@ namespace CarniceriaFinal.Sales.Services
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al guardar la venta");
             }
         }
-
         public async Task<string> CreateSaleUser(SaleNoUserRequestEntity sale)
         {
             try
@@ -148,8 +159,23 @@ namespace CarniceriaFinal.Sales.Services
                 List<DetailProductsEntity> salesDetails = new();
                 foreach (var item in sale.detalleVenta)
                 {
+                    float discountInDetail = 0;
                     var productValue = await this.IProductoRepository.FindProductById(item.idProducto);
                     if (productValue == null) throw RSException.BadRequest("El producto no se encontró");
+
+                    if (item.idPromocion != null)
+                    {
+                        discountInDetail = await getDiscountTotalByProductAndPromotion(item);
+                        if (discountInDetail == 0)
+                            item.idPromocion = null;
+                    }
+
+                    item.precio = productValue.Precio.Value;
+                    item.descuentoTotal = discountInDetail;
+                    subTotal += (productValue.Precio.Value * item.cantidad);
+                    finalAmount += (productValue.Precio.Value * item.cantidad) - discountInDetail;
+
+                    discount += discountInDetail;
 
                     salesDetails.Add(new DetailProductsEntity
                     {
@@ -159,13 +185,6 @@ namespace CarniceriaFinal.Sales.Services
                         finalAmount = Math.Round((productValue.Precio.Value * item.cantidad), 2).ToString()
                     });
 
-                    item.precio = productValue.Precio.Value;
-                    finalAmount += (productValue.Precio.Value * item.cantidad);
-                    subTotal += (productValue.Precio.Value * item.cantidad);
-                    discount += discount;
-                    //if(item.idPromocion != null) para validar la promoción - pila para el módulo
-                    //    
-                    item.descuentoTotal = 0;
                 }
                 sale.total = finalAmount;
 
@@ -466,6 +485,34 @@ namespace CarniceriaFinal.Sales.Services
             catch (Exception err)
             {
                 return new();
+            }
+        }
+        private async Task<float> getDiscountTotalByProductAndPromotion(SaleDetailEntity sale)
+        {
+            try
+            {
+                var promInPrdct = await this.IProductoRepository
+                    .getPromotionByIdAndProduct(sale.idPromocion.Value, sale.idProducto);
+
+                if (promInPrdct == null || promInPrdct.IdProductoNavigation == null
+                    || promInPrdct.IdPromocionNavigation == null)
+                    return 0;
+
+                var product = promInPrdct.IdProductoNavigation;
+                var promotion = promInPrdct.IdPromocionNavigation;
+
+                var discount = promotion.PorcentajePromo != null
+                    ? ((promotion.PorcentajePromo / 100) * product.Precio)
+                    : promotion.DsctoMonetario != null
+                    ? promotion.DsctoMonetario
+                    : 0;
+
+                return (float)Math.Round((decimal)(sale.cantidad * discount), 2);
+
+            }
+            catch (Exception err)
+            {
+                return 0;
             }
         }
     }

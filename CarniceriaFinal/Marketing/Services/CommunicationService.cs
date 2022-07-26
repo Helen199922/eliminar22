@@ -16,30 +16,14 @@ namespace CarniceriaFinal.Marketing.Services
     public class CommunicationService : ICommunicationService
     {
         private readonly ICommunicationRepository ICommunicationRepository;
+        private readonly IPromotionRepository IPromotionRepository;
         private readonly IMapper IMapper;
-        public CommunicationService(ICommunicationRepository commRepo, IMapper IMapper)
+        public CommunicationService(ICommunicationRepository commRepo, IMapper IMapper, IPromotionRepository iPromotionRepository)
         {
             this.ICommunicationRepository = commRepo;
             this.IMapper = IMapper;
+            IPromotionRepository = iPromotionRepository;
         }
-        //public async Task<string> CreatePromotion(Promocion promotion)
-        //{
-        //    try
-        //    {
-        //        await IPromotionRepository.CreatePromotion(promotion);
-        //        return "Promoción creada correctamente";
-        //    }
-        //    catch (RSException err)
-        //    {
-        //        throw new RSException(err.TypeError, err.Code, err.MessagesError);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw new RSException("error", 500).SetMessage("Ha ocurrido un error al crear la promoción.");
-        //    }
-
-        //}
-
         public async Task<List<CommunicationEntity>> GetAll()
         {
             try
@@ -73,6 +57,22 @@ namespace CarniceriaFinal.Marketing.Services
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener la lista de comunicaciones.");
             }
 
+        }
+        public async Task<CommunicationHomeEntity> GetCommunicationHome()
+        {
+            CommunicationHomeEntity comm = new();
+            try
+            {
+                var promotion = await IPromotionRepository.getLastPromotion();
+
+
+                comm.promotion = IMapper.Map<PromotionEntity>(promotion);
+                
+            }
+            catch (Exception err)
+            {
+            }
+            return comm;
         }
     }
 }

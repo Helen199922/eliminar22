@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace CarniceriaFinal.Marketing.DTOs
 {
+    public class CommunicationHomeEntity
+    {
+        public PromotionEntity promotion { get; set; }
+        public Object membership { get; set; }
+        public Object specialDay { get; set; }
+    }
     public class CommunicationEntity
     {
         public int IdComunicacion { get; set; }

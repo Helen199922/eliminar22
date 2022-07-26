@@ -11,6 +11,7 @@ namespace CarniceriaFinal.Core.JWTOKEN.Services.IServices
     {
         Task<UserEntity> GetUserById(int idUser);
         Task<Boolean> IsPublicEndPoint(string endPoint, string method);
+        Task<Boolean> IsOnlyForUSer(string endPoint, string method);
         Task<Boolean> FindOptionByIdRolAndMethodAndEndPoint(int idRol, string endPoint, string method);
     }
 }

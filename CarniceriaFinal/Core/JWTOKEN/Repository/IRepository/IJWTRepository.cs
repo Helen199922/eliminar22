@@ -10,6 +10,7 @@ namespace CarniceriaFinal.Core.JWTOKEN.Repository.IRepository
     {
         Opcion FindOptionByIdRolAndMethodAndEndPoint(int idRol, string endPoint, string method);
         Task<Boolean> IsPublicEndPoint(string endPoint, string method);
+        Task<Boolean> IsOnlyForUSer(string endPoint, string method);
         Task<Usuario> GetUserById(int idUser);
     }
 }

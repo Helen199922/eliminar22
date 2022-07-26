@@ -17,20 +17,6 @@ namespace CarniceriaFinal.Marketing.Repository
             Context = _Context;
         }
 
-        //public async Task<Promocion> CreateComunication(Promocion promotion)
-        //{
-        //    try
-        //    {
-        //        await Context.Promocions.AddAsync(promotion);
-        //        await Context.SaveChangesAsync();
-        //        return promotion;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw RSException.ErrorQueryDB("Promocion");
-        //    }
-        //}
-
         public async Task<List<Comunicacion>> GetAll()
         {
             try

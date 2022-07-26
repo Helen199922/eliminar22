@@ -10,5 +10,6 @@ namespace CarniceriaFinal.Marketing.Interfaces.IRepository
     {
         Task<List<Promocion>> GetAll();
         Task<Promocion> CreatePromotion(Promocion promotion);
+        Task<Promocion> getLastPromotion();
     }
 }

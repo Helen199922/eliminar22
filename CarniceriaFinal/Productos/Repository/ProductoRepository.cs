@@ -164,7 +164,113 @@ namespace CarniceriaFinal.Productos
                 throw RSException.ErrorQueryDB("obtener productos por categorya");
             }
         }
+        public async Task<Promocion> promotionConvert(int idProduct)
+        {
+            try
+            {
+                using (var _Context = new DBContext())
+                {
+                    var option = await _Context.PromocionInProductos.Where(x => (
+                        DateTime.Compare(x.IdPromocionNavigation.FechaFin, DateTime.Now) >= 0
+                        && DateTime.Compare(x.IdPromocionNavigation.FechaInicio, DateTime.Now) <= 0
+                        && x.IdProducto == idProduct
+                        && x.IdPromocionNavigation.Status == 1
+                    ))
+                    .Include(x => x.IdPromocionNavigation)
+                    .FirstOrDefaultAsync();
 
+
+                    if (option == null) return null;
+
+                    return option?.IdPromocionNavigation ?? null;
+                }
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("obtener promocion de categoria");
+            }
+        }
+        public async Task<List<Producto>> getAllProductsPromotions()
+        {
+            try
+            {
+                using (var _Context = new DBContext())
+                {
+                    List<Producto> productsPromo = new();
+                    var products = await _Context.PromocionInProductos.Where(x => (
+                        DateTime.Compare(x.IdPromocionNavigation.FechaFin, DateTime.Now) >= 0
+                        && DateTime.Compare(x.IdPromocionNavigation.FechaInicio, DateTime.Now) <= 0
+                        && x.IdPromocionNavigation.Status == 1
+                    ))
+                    .Include(x => x.IdProductoNavigation)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                    foreach (var product in products)
+                    {
+                        productsPromo.Add(product.IdProductoNavigation);
+                    }
+                    
+                    return productsPromo;
+                }
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("obtener productos con promocion");
+            }
+        }
+
+        public async Task<Promocion> getPromotionActivate()
+        {
+            try
+            {
+                using (var _Context = new DBContext())
+                {
+                    var promotion = await _Context.PromocionInProductos.Where(x => (
+                        DateTime.Compare(x.IdPromocionNavigation.FechaFin, DateTime.Now) >= 0
+                        && DateTime.Compare(x.IdPromocionNavigation.FechaInicio, DateTime.Now) <= 0
+                        && x.IdPromocionNavigation.Status == 1
+                    ))
+                    .Include(x => x.IdPromocionNavigation)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+
+                    if (promotion == null) return null;
+                    return promotion.IdPromocionNavigation;
+                }
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("obtener promocio activa");
+            }
+        }
+        public async Task<PromocionInProducto> getPromotionByIdAndProduct(int idPromotion, int idProduct)
+        {
+            try
+            {
+                using (var _Context = new DBContext())
+                {
+                    var promotion = await _Context.PromocionInProductos.Where(x => (
+                        x.IdPromocionNavigation.Status == 1
+                        && x.IdPromocion == idPromotion
+                        && x.IdProducto == idProduct
+                        && DateTime.Compare(x.IdPromocionNavigation.FechaFin, DateTime.Now) >= 0
+                        && DateTime.Compare(x.IdPromocionNavigation.FechaInicio, DateTime.Now) <= 0
+                    ))
+                    .Include(x => x.IdProductoNavigation)
+                    .Include(x => x.IdPromocionNavigation)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+
+                    if (promotion == null) return null;
+                    return promotion;
+                }
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("obtener promocio activa");
+            }
+        }
         public async Task<List<SubCategorium>> FindsubCategoryByCategoryId(int idSubCategory)
         {
             try

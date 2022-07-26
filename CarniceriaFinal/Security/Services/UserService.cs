@@ -4,6 +4,7 @@ using CarniceriaFinal.Autenticacion.Services.IServices;
 using CarniceriaFinal.Cliente.Models;
 using CarniceriaFinal.Core.CustomException;
 using CarniceriaFinal.ModelsEF;
+using CarniceriaFinal.Security.DTOs;
 using CarniceriaFinal.Security.IRepository;
 using CarniceriaFinal.Security.Services.IServices;
 using CarniceriaFinal.User.DTOs;
@@ -182,25 +183,24 @@ namespace CarniceriaFinal.User.Services
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener los usuarios.");
             }
         }
-        public async Task<List<DetailUserEntity>> GetProfileInfo()
+        public async Task<ProfileUserEntity> GetProfileInfo(int idUser)
         {
             try
             {
-                var response = await IUserRepository.GetAllUser();
-                if (response == null || response.Count == 0)
-                {
-                    return new List<DetailUserEntity>();
-                }
-                List<DetailUserEntity> details = new();
-                DetailUserEntity detail = null;
-                foreach (var item in response)
-                {
-                    detail = new();
-                    detail.usuario = IMapper.Map<UserEntity>(item);
-                    detail.persona = IMapper.Map<PersonEntity>(item.IdPersonaNavigation);
-                    details.Add(detail);
-                }
-                return details;
+                var userDetail = await IUserRepository.GetProfileInfo(idUser);
+                if (userDetail == null)
+                    throw RSException.Unauthorized("No hemos encontrado el usuario o no tiene los permisos para acceder a él.");
+
+                ProfileUserEntity profile = new();
+                profile.username = userDetail.Username ?? "";
+                profile.password = userDetail.Password ?? "";
+                profile.profileImage= userDetail.PerfilImage;
+                profile.email = userDetail.IdPersonaNavigation?.Email ?? "";
+                profile.nombre = userDetail.IdPersonaNavigation?.Nombre ?? "";
+                profile.apellido = userDetail.IdPersonaNavigation?.Apellido ?? "";
+                profile.direccion = userDetail.IdPersonaNavigation?.Direccion1 ?? "";
+
+                return profile;
             }
             catch (RSException err)
             {
@@ -208,9 +208,29 @@ namespace CarniceriaFinal.User.Services
             }
             catch (Exception err)
             {
-                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener los usuarios.");
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener el perfil.");
             }
         }
+        public async Task<ProfileUserEntity> UpdateProfileInfo(ProfileUserEntity profile, int idUser)
+        {
+            try
+            {
+                var userDetail = await IUserRepository.GetUserByUserNameOrEmail(profile.username, profile.email, idUser);
 
+                if (userDetail != null)
+                    throw RSException.Unauthorized("El nuevo nombre de usuario o email ya está en uso.");
+
+                await IUserRepository.UpdateProfileInfo(profile, idUser);
+                return profile;
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception err)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al actualizar el perfil.");
+            }
+        }
     }
 }

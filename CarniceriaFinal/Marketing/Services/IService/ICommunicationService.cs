@@ -9,5 +9,6 @@ namespace CarniceriaFinal.Marketing.Services.IService
     public interface ICommunicationService
     {
         public Task<List<CommunicationEntity>> GetAll();
+        Task<CommunicationHomeEntity> GetCommunicationHome();
     }
 }

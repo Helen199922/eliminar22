@@ -35,6 +35,7 @@ namespace CarniceriaFinal.Core.Security
 
             Microsoft.AspNetCore.Http.Endpoint endpointBeingHit = context.Features.Get<IEndpointFeature>()?.Endpoint;
             ControllerActionDescriptor actionDescriptor = endpointBeingHit?.Metadata?.GetMetadata<ControllerActionDescriptor>();
+
             var endPoint = actionDescriptor?.ActionName;
             string method = httpRequestFeature.Method;
 
@@ -45,7 +46,7 @@ namespace CarniceriaFinal.Core.Security
                 await _next(context);
                 return;
             }
-
+            
             if (token != null)
             {
                 await attachUserToContext(context, token, JwtUtils, endPoint, method, JwtService);
@@ -60,6 +61,13 @@ namespace CarniceriaFinal.Core.Security
             try
             {
                 var userId = _JwtUtils.ValidateToken(token);
+                Boolean isOnlyForUser = await JwtService.IsOnlyForUSer(endPoint, method);
+                if (isOnlyForUser)
+                {
+                    var idUserRequest = context.GetRouteData().Values["idUser"];
+                    if(int.Parse((string)(idUserRequest ?? "0")) != userId)
+                        return;
+                }
                 var user = await JwtService.GetUserById(userId.Value);
 
                 var auth = await JwtService.FindOptionByIdRolAndMethodAndEndPoint(user.idRol.Value, endPoint, method);

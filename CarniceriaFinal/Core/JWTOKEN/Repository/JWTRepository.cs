@@ -57,6 +57,28 @@ namespace CarniceriaFinal.Core.JWTOKEN.Repository
                 throw RSException.ErrorQueryDB("Opcion");
             }
         }
+        public async Task<Boolean> IsOnlyForUSer(string endPoint, string method)
+        {
+            try
+            {
+                using (var _Context = new DBContext())
+                {
+                    ModelsEF.Endpoint option = await _Context.Endpoints
+                    .Include(x => x.IdMetodoNavigation)
+                    .Where(x => x.EndPoint1 == endPoint && x.IdMetodoNavigation.TipoMetodo == method)
+                    .FirstOrDefaultAsync();
+
+                    if (option == null) return false;
+
+                    return option.IsPublic.Equals(3);
+                }
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Opcion");
+            }
+        }
+        
         public async Task<Usuario> GetUserById(int idUser)
         {
             try

@@ -22,5 +22,6 @@ namespace CarniceriaFinal.Productos.Servicios
         void DeleteProductDetail(int idProductDetail);
         Task<string> EnableProduct(int idProduct);
         Task<string> UpdateStock(int idProduct, int stock);
+        Task<PromotionsInProduct> getAllProductsPromotions();
     }
 }

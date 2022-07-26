@@ -33,5 +33,18 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [HttpGet("communication-home")]
+        public async Task<IActionResult> GetCommunicationHome()
+        {
+            RSEntity<CommunicationHomeEntity> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await ICommunicationService.GetCommunicationHome()));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
     }
 }

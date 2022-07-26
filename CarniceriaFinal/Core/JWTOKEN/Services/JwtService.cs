@@ -47,6 +47,19 @@ namespace CarniceriaFinal.Core.JWTOKEN.Services
                 return false;
             }
         }
+        public async Task<Boolean> IsOnlyForUSer(string endPoint, string method)
+        {
+            try
+            {
+                return await JWTRepository.IsOnlyForUSer(endPoint, method);
+
+
+            }
+            catch (Exception err)
+            {
+                return false;
+            }
+        }
 
         public async Task<Boolean> FindOptionByIdRolAndMethodAndEndPoint(int idRol, string endPoint, string method)
         {

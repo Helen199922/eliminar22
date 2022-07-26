@@ -42,5 +42,29 @@ namespace CarniceriaFinal.Marketing.Repository
                 throw RSException.ErrorQueryDB("List Promocion");
             }
         }
+        public async Task<Promocion> getLastPromotion()
+        {
+            try
+            {
+                using (var _Context = new DBContext())
+                {
+                    var option = await _Context.Promocions.Where(x => (
+                        DateTime.Compare(x.FechaFin, DateTime.Now) >= 0
+                        && DateTime.Compare(x.FechaInicio, DateTime.Now) <= 0
+                        && x.Status == 1
+                    ))
+                    .FirstOrDefaultAsync();
+
+
+                    if (option == null) return null;
+
+                    return option;
+                }
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("obtener promociones disponibles");
+            }
+        }
     }
 }

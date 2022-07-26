@@ -245,9 +245,11 @@ namespace CarniceriaFinal.Productos.Servicios
         {
             try
             {
-                return IMapper.Map<List<ProductEntity>>(
+                var products = IMapper.Map<List<ProductEntity>>(
                     await IProductoRepo.FindProductsBySubCategory(idCategory, idSubCategory)
                 );
+
+                return await promotionConvert(products);
             }
             catch (RSException err)
             {
@@ -258,14 +260,54 @@ namespace CarniceriaFinal.Productos.Servicios
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al consultar el producto");
             }
         }
+        private async Task<List<ProductEntity>> promotionConvert(List<ProductEntity> products)
+        {
+            try
+            {
+
+                foreach (var product in products)
+                {
+                    try
+                    {
+                        var promotion = await IProductoRepo.promotionConvert(product.IdProducto ?? 0);
+                        if (promotion == null)
+                            continue;
+
+                        product.ProductPromotionEntity = new();
+                        product.ProductPromotionEntity.oldValue = product.Precio;
+                        var promotionValue = promotion.PorcentajePromo != null 
+                            ? "%" + promotion.PorcentajePromo 
+                            : promotion.DsctoMonetario != null
+                            ? "$" + promotion.DsctoMonetario  
+                            : "";
+                        product.ProductPromotionEntity.promotionValue = promotionValue;
+                        var newValue = promotion.PorcentajePromo != null
+                            ? product.Precio - ((promotion.PorcentajePromo / 100) * product.Precio)
+                            : promotion.DsctoMonetario != null
+                            ? (product.Precio - promotion.DsctoMonetario)
+                            : 0;
+
+                        product.ProductPromotionEntity.newValue = (float?)Math.Round((decimal)newValue.Value, 2);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+            }
+            return products;
+        }
 
         public async Task<List<ProductEntity>> FindProductsByCategoryId(int idCategory)
         {
             try
             {
-                return IMapper.Map<List<ProductEntity>>(
+                var products = IMapper.Map<List<ProductEntity>>(
                     await IProductoRepo.FindProductByCategoryId(idCategory)
                 );
+                return await promotionConvert(products);
             }
             catch (RSException err)
             {
@@ -410,5 +452,45 @@ namespace CarniceriaFinal.Productos.Servicios
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al actualizar stock del producto");
             }
         }
+        public async Task<PromotionsInProduct> getAllProductsPromotions()
+        {
+            try
+            {
+                PromotionsInProduct productsWithPromo = new();
+                productsWithPromo.products = new();
+
+                var promotion = await IProductoRepo.getPromotionActivate();
+
+                if(promotion == null)
+                {
+                    productsWithPromo.hasPromotion = false;
+                    productsWithPromo.finish = DateTime.Now;
+                    return productsWithPromo;
+                }
+
+                productsWithPromo.hasPromotion = true;
+                productsWithPromo.title = promotion.Titulo;
+                productsWithPromo.finish = promotion.FechaFin;
+
+                var products = IMapper.Map<List<ProductEntity>>(
+                    await IProductoRepo.getAllProductsPromotions()
+                );
+
+                var productsDetail = await promotionConvert(products);
+
+                productsWithPromo.products = productsDetail;
+                
+                return productsWithPromo;
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener productos con promocion");
+            }
+        }
+
     }
 }

@@ -60,6 +60,7 @@ namespace CarniceriaFinal.Core
 
             //Producto Response
             CreateMap<Promocion, PromotionEntity>();
+            CreateMap<PromotionEntity, Promocion>();
             CreateMap<UnidadMedidum, MeasureUnitEntity>();
             CreateMap<DetalleProducto, ProductDetailEntity>();
             CreateMap<ProductDetailEntity, DetalleProducto>();

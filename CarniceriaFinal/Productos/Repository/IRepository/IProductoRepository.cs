@@ -28,5 +28,9 @@ namespace CarniceriaFinal.Productos.Repository
         Task<Producto> FindProductById(int idProduct);
         Task<List<Producto>> GetSimpleProductsByIdSubCategories(int idSubCategory);
         Task<List<Producto>> GetAllProductsSubCategory();
+        Task<Promocion> promotionConvert(int idProduct);
+        Task<List<Producto>> getAllProductsPromotions();
+        Task<Promocion> getPromotionActivate();
+        Task<PromocionInProducto> getPromotionByIdAndProduct(int idPromotion, int idProduct);
     }
 }

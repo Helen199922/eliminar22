@@ -1,5 +1,6 @@
 ﻿using CarniceriaFinal.Autenticacion.DTOs;
 using CarniceriaFinal.Cliente.Models;
+using CarniceriaFinal.Security.DTOs;
 using CarniceriaFinal.User.DTOs;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,7 @@ namespace CarniceriaFinal.Security.Services.IServices
         Task<UserEntity> CreateUserByRol(DetailUserEntity user);
         Task<PersonEntity> GetPersonByUserName(string username);
         Task<PersonEntity> ManagementPerson(PersonEntity person);
+        Task<ProfileUserEntity> GetProfileInfo(int idUser);
+        Task<ProfileUserEntity> UpdateProfileInfo(ProfileUserEntity profile, int idUser);
     }
 }

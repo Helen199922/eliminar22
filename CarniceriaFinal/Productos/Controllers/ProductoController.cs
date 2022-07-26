@@ -106,6 +106,19 @@ namespace CarniceriaFinal.Productos.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [HttpGet("products-promotion")]
+        public async Task<IActionResult> getAllProductsPromotions()
+        {
+            RSEntity<PromotionsInProduct> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await ProductoService.getAllProductsPromotions()));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
         [HttpGet("by-category/{idCategory}")]
         public async Task<IActionResult> FindProductsByCategoryId(int idCategory)
         {
@@ -187,38 +200,7 @@ namespace CarniceriaFinal.Productos.Controllers
             {
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
-        }
-        //[Authorize]
-        //[HttpPost("guardar-detalle")]
-        //public async Task<IActionResult> SaveDetails([FromBody] List<ProductDetailEntity> detalle)
-        //{
-        //    RSEntity<string> rsEntity = new();
-        //    try
-        //    {
-        //        await ProductoService.SaveDetails(detalle);
-        //        return Ok(rsEntity.Send("correctamente"));
-        //    }
-        //    catch (RSException err)
-        //    {
-        //        return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
-        //    }
-        //}
-
-        //[HttpPut("product-detail")]
-        //public IActionResult UpdateProductDetail([FromBody] ProductDetailEntity product)
-        //{
-        //    RSEntity<string> rsEntity = new();
-        //    try
-        //    {
-        //        ProductoService.UpdateProductDetail(product);
-        //        return Ok(rsEntity.Send("correctamente"));
-        //    }
-        //    catch (RSException err)
-        //    {
-        //        return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
-        //    }
-        //}
-
+        } 
         [HttpDelete("product-detail/{idProduct}")]
         public IActionResult DeleteProductDetail(int idProduct)
         {
