@@ -1,4 +1,5 @@
-﻿using CarniceriaFinal.ModelsEF;
+﻿using CarniceriaFinal.Marketing.DTOs;
+using CarniceriaFinal.ModelsEF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,10 @@ namespace CarniceriaFinal.Marketing.Interfaces.IService
 {
     public interface IPromotionService
     {
-        Task<string> CreatePromotion(Promocion promotion);
-        Task<List<Promocion>> GetAll();
+        Task<List<PromotionEntity>> GetAll();
+        Task<string> CreatePromotion(PromotionEntity promotionDetail);
+        Task<string> UpdatePromotion(PromotionEntity promotionDetail);
+        Task<string> StatusPromotion(int status, int idPromotion);
 
     }
 }

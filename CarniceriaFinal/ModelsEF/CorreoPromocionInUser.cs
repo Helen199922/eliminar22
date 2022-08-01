@@ -23,6 +23,8 @@ namespace CarniceriaFinal.ModelsEF
         public int? IdCorreoPromocion { get; set; }
         [Column("fechaUpdate", TypeName = "datetime")]
         public DateTime FechaUpdate { get; set; }
+        [Column("fechaSender", TypeName = "datetime")]
+        public DateTime FechaSender { get; set; }
 
         [ForeignKey("IdCorreoPromocion")]
         [InverseProperty("CorreoPromocionInUsers")]

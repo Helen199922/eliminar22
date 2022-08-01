@@ -38,6 +38,9 @@ namespace CarniceriaFinal.ModelsEF
         public int Status { get; set; }
         [Column("fechaUpdate", TypeName = "datetime")]
         public DateTime FechaUpdate { get; set; }
+        [Column("color")]
+        [StringLength(255)]
+        public string? Color { get; set; }
 
         [InverseProperty("IdPromocionNavigation")]
         public virtual ICollection<CorreoPromocion> CorreoPromocions { get; set; }

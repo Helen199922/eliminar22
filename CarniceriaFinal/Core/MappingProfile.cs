@@ -59,8 +59,10 @@ namespace CarniceriaFinal.Core
             
 
             //Producto Response
-            CreateMap<Promocion, PromotionEntity>();
+            CreateMap<Promocion, PromotionSimpleEntity>();
+            CreateMap<PromotionSimpleEntity, Promocion>();
             CreateMap<PromotionEntity, Promocion>();
+            CreateMap<Promocion, PromotionEntity>();
             CreateMap<UnidadMedidum, MeasureUnitEntity>();
             CreateMap<DetalleProducto, ProductDetailEntity>();
             CreateMap<ProductDetailEntity, DetalleProducto>();
@@ -86,6 +88,12 @@ namespace CarniceriaFinal.Core
             //Productos en categorias
             CreateMap<SimpleProductInSubCategory, Producto>();
             CreateMap<Producto, SimpleProductInSubCategory>();
+
+            //EMAIL Promociones
+            CreateMap<CorreoPromocion, EmailEntity>();
+            CreateMap<EmailEntity, CorreoPromocion>();
+            CreateMap<EmailCreateEntity, CorreoPromocion>();
+            CreateMap<CorreoPromocion, EmailCreateEntity>();
         }
     }
 }

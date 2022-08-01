@@ -165,8 +165,11 @@ builder.Services.AddScoped<ICitiesRepository, CitiesRepository>();
 builder.Services.AddScoped<ICitiesServices, CitiesServices>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IBankInfoRepository, BankInfoRepository>();
+builder.Services.AddScoped<IPromotionalEmailRepository, PromotionalEmailRepository>();
+builder.Services.AddScoped<IPromotionService, PromotionService>();
+builder.Services.AddScoped<IPromotionalEmailService, PromotionalEmailService>();
 
-
+builder.Services.AddSingleton<IMultiEmailService, MultiEmailService>();
 
 var app = builder.Build();
 

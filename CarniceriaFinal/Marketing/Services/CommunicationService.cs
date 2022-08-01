@@ -66,7 +66,7 @@ namespace CarniceriaFinal.Marketing.Services
                 var promotion = await IPromotionRepository.getLastPromotion();
 
 
-                comm.promotion = IMapper.Map<PromotionEntity>(promotion);
+                comm.promotion = IMapper.Map<PromotionSimpleEntity>(promotion);
                 
             }
             catch (Exception err)

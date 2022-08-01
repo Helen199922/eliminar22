@@ -15,6 +15,7 @@ using SendGrid.Helpers.Mail;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
+using CarniceriaFinal.Marketing.DTOs;
 
 namespace CarniceriaFinal.Core.Email.Services
 {
@@ -114,6 +115,65 @@ namespace CarniceriaFinal.Core.Email.Services
                 //throw new RSException(err.TypeError, err.Code, err.MessagesError);
             }
             return value;
+        }
+
+        public async Task SendPromoEmailRequest(List<UserToSendPromoEmailEntity> usersToEmail, PromoSendgridResponseEntity sendResponse)
+        {
+            var value = "";
+            try
+            {
+                string accounts = "";
+                var Placeholders = new List<KeyValuePair<string, string>>();
+
+                var client = new SendGridClient(_mailOptions.Password);
+                var tasks = new List<Task<UserToSendPromoEmailEntity>>();
+
+                    foreach (var user in usersToEmail)
+                    {
+                        var message = new SendGridMessage
+                        {
+                            From = new EmailAddress(_mailOptions.Mail, _mailOptions.DisplayName),
+                            Subject = "Compra de Carne - El Zamorano",
+                            HtmlContent = this.UpdatePlaceHolders(this.GetEmailBody("products-request"), Placeholders),
+                        };
+
+                        message.AddTo(new EmailAddress(user.email, user.nameUser));
+
+                        tasks.Add(Task.Run( async () =>
+                        {
+                            user.statusSenderGrid = await client.SendEmailAsync(message);
+
+                            return user;
+                        }));
+                        //var response = await client.SendEmailAsync(message);
+                        //response.IsSuccessStatusCode
+
+                    };
+
+
+                    var resp = Task.WhenAll(tasks);
+                    await resp;
+
+                    foreach (var response in resp.Result)
+                    {
+                        if (response.statusSenderGrid.IsSuccessStatusCode) sendResponse.sent.Add(new()
+                        {
+                            idPromotionalEmail = response.idEmail,
+                            idUser = response.idUser
+                        });
+                        else sendResponse.wrong.Add(new()
+                        {
+                            idPromotionalEmail = response.idEmail,
+                            idUser = response.idUser
+                        });
+                }
+
+
+            }
+            catch (Exception err)
+            {
+                //throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
         }
         private string GetEmailBody(string templateName)
         {

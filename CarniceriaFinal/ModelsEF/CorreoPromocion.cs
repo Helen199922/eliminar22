@@ -34,6 +34,8 @@ namespace CarniceriaFinal.ModelsEF
         public DateTime FechaUpdate { get; set; }
         [Column("idPromocion")]
         public int IdPromocion { get; set; }
+        [Column("isSendingEmails")]
+        public int IsSendingEmails { get; set; }
 
         [ForeignKey("IdPromocion")]
         [InverseProperty("CorreoPromocions")]

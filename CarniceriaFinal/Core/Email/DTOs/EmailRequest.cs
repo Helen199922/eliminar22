@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CarniceriaFinal.Marketing.DTOs;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,6 @@ namespace CarniceriaFinal.Core.Email.DTOs
         public string? Subject { get; set; }
         public string? Body { get; set; }
         public List<IFormFile> Attachments { get; set; }
-        //public List<KeyValuePair<string, string>> PlaceHolders { get; set; }
     }
     public class AccountsEntity
     {

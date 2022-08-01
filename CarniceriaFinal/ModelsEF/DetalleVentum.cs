@@ -20,7 +20,7 @@ namespace CarniceriaFinal.ModelsEF
         [Column("cantidad")]
         public int? Cantidad { get; set; }
         [Column("precio")]
-        public double? Precio { get; set; }
+        public float? Precio { get; set; }
         [Column("idPromocion")]
         public int? IdPromocion { get; set; }
         [Column("idProducto")]

@@ -35,6 +35,8 @@ namespace CarniceriaFinal.ModelsEF
         [Column("perfilImage")]
         [StringLength(255)]
         public string? PerfilImage { get; set; }
+        [Column("receiveEmail")]
+        public int? ReceiveEmail { get; set; }
 
         [ForeignKey("IdPersona")]
         [InverseProperty("Usuarios")]

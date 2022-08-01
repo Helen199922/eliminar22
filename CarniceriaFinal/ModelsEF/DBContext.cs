@@ -122,8 +122,6 @@ namespace CarniceriaFinal.ModelsEF
                 entity.HasKey(e => e.IdCorreo)
                     .HasName("PRIMARY");
 
-                entity.Property(e => e.IdCorreo).ValueGeneratedNever();
-
                 entity.HasOne(d => d.IdPromocionNavigation)
                     .WithMany(p => p.CorreoPromocions)
                     .HasForeignKey(d => d.IdPromocion)
@@ -138,7 +136,7 @@ namespace CarniceriaFinal.ModelsEF
                 entity.HasOne(d => d.IdCorreoPromocionNavigation)
                     .WithMany(p => p.CorreoPromocionInUsers)
                     .HasForeignKey(d => d.IdCorreoPromocion)
-                    .OnDelete(DeleteBehavior.SetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("correo_promocion_in_user_ibfk_3");
 
                 entity.HasOne(d => d.IdEstatusEmailNavigation)
