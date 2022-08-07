@@ -62,8 +62,9 @@ namespace CarniceriaFinal.Marketing.Repository
                             return productsToPromo;
 
                         var productSelected = productsToPromo
-                            .Where(promo => productByPromotion.Any(y => y.idProduct != promo.idProduct))
+                            .Where(promo => !productByPromotion.Any(y => y.idProduct == promo.idProduct))
                             .ToList();
+
                         if (productByPromotion != null && productByPromotion.Count > 0)
                             productByPromotion.AddRange(productSelected);
 
