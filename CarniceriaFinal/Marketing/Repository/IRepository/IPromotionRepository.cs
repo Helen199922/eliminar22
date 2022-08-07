@@ -1,4 +1,5 @@
-﻿using CarniceriaFinal.ModelsEF;
+﻿using CarniceriaFinal.Marketing.DTOs;
+using CarniceriaFinal.ModelsEF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,6 @@ namespace CarniceriaFinal.Marketing.Interfaces.IRepository
         Task<Promocion> UpdatePromotion(Promocion promotion);
         Task<Promocion> StatusPromotion(int status, int idPromotion);
         Task<Promocion> PromotionIsActivate(int idPromotion);
-
+        Task<List<PromotionProductEntity>> GetAllProductsByIdPromotion(int? idPromotion);
     }
 }

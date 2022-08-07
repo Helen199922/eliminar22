@@ -9,17 +9,17 @@ namespace CarniceriaFinal.ModelsEF
     [Keyless]
     [Table("promocion_in_producto")]
     [Index("IdProducto", Name = "idProducto")]
-    [Index("IdPromocion", Name = "promocion_in_producto_ibfk_2")]
+    [Index("IdPromocion", Name = "idPromocion")]
     public partial class PromocionInProducto
     {
-        [Column("idProducto")]
-        public int? IdProducto { get; set; }
         [Column("idPromocion")]
-        public int? IdPromocion { get; set; }
+        public int IdPromocion { get; set; }
+        [Column("idProducto")]
+        public int IdProducto { get; set; }
 
         [ForeignKey("IdProducto")]
-        public virtual Producto? IdProductoNavigation { get; set; }
+        public virtual Producto IdProductoNavigation { get; set; } = null!;
         [ForeignKey("IdPromocion")]
-        public virtual Promocion? IdPromocionNavigation { get; set; }
+        public virtual Promocion IdPromocionNavigation { get; set; } = null!;
     }
 }

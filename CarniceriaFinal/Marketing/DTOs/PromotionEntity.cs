@@ -26,4 +26,15 @@ namespace CarniceriaFinal.Marketing.DTOs
         public int? Status { get; set; }
         public DateTime? FechaUpdate { get; set; }
     }
+    public class PromotionProductEntity
+    {
+        public int idProduct { get; set; }
+        public string titulo { get; set; }
+        public int stock { get; set; }
+        public Boolean isActivate { get; set; }
+    }
+    public class PromotionProductRequestEntity
+    {
+        public int? idPromotion { get; set; }
+    }
 }

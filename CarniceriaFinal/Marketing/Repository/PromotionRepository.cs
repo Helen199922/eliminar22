@@ -1,4 +1,5 @@
 ﻿using CarniceriaFinal.Core.CustomException;
+using CarniceriaFinal.Marketing.DTOs;
 using CarniceriaFinal.Marketing.Interfaces.IRepository;
 using CarniceriaFinal.ModelsEF;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,78 @@ namespace CarniceriaFinal.Marketing.Repository
             catch (Exception)
             {
                 throw RSException.ErrorQueryDB("Lista de Promociones");
+            }
+        }
+        public async Task<List<PromotionProductEntity>> GetAllProductsByIdPromotion(int? idPromotion)
+        {
+            try
+            {
+                using (var _Context = new DBContext())
+                {
+                    if (idPromotion != null && idPromotion > 0)
+                    {
+                        var productByPromotion = await _Context.PromocionInProductos
+                            .Include(x => x.IdProductoNavigation)
+                            .Where(x => x.IdPromocion == idPromotion
+                                        && x.IdProductoNavigation.Status == 1
+                                        && x.IdProductoNavigation != null
+                            )
+                            .Select(y => new PromotionProductEntity
+                            {
+                                idProduct = y.IdProducto,
+                                titulo = y.IdProductoNavigation.Titulo,
+                                stock = y.IdProductoNavigation.Stock,
+                                isActivate = true
+                            })
+                            .AsNoTracking()
+                            .ToListAsync();
+
+                        var productsToPromo = await GetAllProductsEnableToPromotion();
+
+                        if (productByPromotion.Count == 0)
+                            return productsToPromo;
+
+                        var productSelected = productsToPromo
+                            .Where(promo => productByPromotion.Any(y => y.idProduct != promo.idProduct))
+                            .ToList();
+                        if (productByPromotion != null && productByPromotion.Count > 0)
+                            productByPromotion.AddRange(productSelected);
+
+                        return productByPromotion;
+                    }
+                    
+                    return await GetAllProductsEnableToPromotion();
+                }
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Productos por promoción");
+            }
+        }
+        private async Task<List<PromotionProductEntity>> GetAllProductsEnableToPromotion()
+        {
+            try
+            {
+                using (var _Context = new DBContext())
+                {
+                    var products = await _Context.Productos
+                            .Where(x => x.Status == 1)
+                            .Select(y => new PromotionProductEntity
+                            {
+                                idProduct = y.IdProducto,
+                                titulo = y.Titulo,
+                                stock = y.Stock,
+                                isActivate = false
+                            })
+                            .AsNoTracking()
+                            .ToListAsync();
+
+                    return products;
+                }
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Productos por promoción");
             }
         }
         public async Task<Promocion> getLastPromotion()

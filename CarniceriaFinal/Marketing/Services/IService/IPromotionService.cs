@@ -13,6 +13,6 @@ namespace CarniceriaFinal.Marketing.Interfaces.IService
         Task<string> CreatePromotion(PromotionEntity promotionDetail);
         Task<string> UpdatePromotion(PromotionEntity promotionDetail);
         Task<string> StatusPromotion(int status, int idPromotion);
-
+        Task<List<PromotionProductEntity>> GetAllProductsByIdPromotion(int? idPromotion);
     }
 }

@@ -30,7 +30,7 @@ namespace CarniceriaFinal.ModelsEF
         public DateTime FechaFin { get; set; }
         [Column("maxParticipantes")]
         public int MaxParticipantes { get; set; }
-        [Column("porcentajePromo", TypeName = "float(10,0)")]
+        [Column("porcentajePromo", TypeName = "float(10,2)")]
         public float? PorcentajePromo { get; set; }
         [Column("dsctoMonetario")]
         public float? DsctoMonetario { get; set; }

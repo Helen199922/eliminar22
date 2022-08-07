@@ -54,6 +54,7 @@ namespace CarniceriaFinal.Core
                     var sales = ISaleManagementHelper.getPendingSalesIDs(sale);
                     if (sales.Count == 0)
                         return;
+                    var tasks = new List<Task>();
 
                     foreach (var item in sales)
                     {
@@ -61,12 +62,16 @@ namespace CarniceriaFinal.Core
                         var saleToUpdate = ISaleManagementHelper.SaleEntityToUpdate(item);
                         if (saleToUpdate != null)
                         {
-                            Context.Venta.Update(saleToUpdate);
-                            await Context.SaveChangesAsync();
+                            tasks.Add(Task.Run(async () =>
+                            {
+                                Context.Venta.Update(saleToUpdate);
+                                await Context.SaveChangesAsync();
+                            }));
                         }
                     }
+                    await Task.WhenAll(tasks);
                 }
-                catch(Exception)
+                catch(Exception err)
                 {
                     return;
                 }

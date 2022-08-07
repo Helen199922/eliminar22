@@ -93,5 +93,25 @@ namespace CarniceriaFinal.Marketing.Services
             }
 
         }
+        public async Task<List<PromotionProductEntity>> GetAllProductsByIdPromotion(int? idPromotion)
+        {
+            try
+            {
+                var response = await IPromotionRepository.GetAllProductsByIdPromotion(idPromotion);
+                if (response == null)
+                    return new();
+
+                return response;
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener la lista de productos para promociones.");
+            }
+
+        }
     }
 }

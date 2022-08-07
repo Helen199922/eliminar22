@@ -34,6 +34,20 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [HttpGet("products-to-promo/{idPromotion}")]
+        public async Task<IActionResult> GetAllProductsByIdPromotion(int? idPromotion)
+        {
+            RSEntity<List<PromotionProductEntity>> rsEntity = new();
+            try
+            {
+                var result = await IPromotionService.GetAllProductsByIdPromotion(idPromotion);
+                return Ok(rsEntity.Send(result));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> CreatePromotion([FromBody] PromotionEntity promo)
         {

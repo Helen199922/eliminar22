@@ -50,6 +50,7 @@ namespace CarniceriaFinal.Core.SaleStateHosted
             try
             {
                 saleToUpdate = IMapper.Map<Ventum>(sale);
+                saleToUpdate.IdImpuesto = null;
                 return saleToUpdate;
             }
             catch (Exception)

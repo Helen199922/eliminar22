@@ -406,13 +406,12 @@ namespace CarniceriaFinal.ModelsEF
                 entity.HasOne(d => d.IdProductoNavigation)
                     .WithMany()
                     .HasForeignKey(d => d.IdProducto)
-                    .HasConstraintName("promocion_in_producto_ibfk_1");
+                    .HasConstraintName("promocion_in_producto_ibfk_2");
 
                 entity.HasOne(d => d.IdPromocionNavigation)
                     .WithMany()
                     .HasForeignKey(d => d.IdPromocion)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("promocion_in_producto_ibfk_2");
+                    .HasConstraintName("promocion_in_producto_ibfk_1");
             });
 
             modelBuilder.Entity<Provincium>(entity =>
