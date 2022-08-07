@@ -83,9 +83,9 @@ builder.Services.AddDbContext<DBContext>(
         UseMySql(connection, ServerVersion.AutoDetect(connection))
 );
 
-builder.Services.AddSingleton(x => new BlobServiceClient(
-    builder.Configuration.GetValue<string>(builder.Configuration["ConnectionString:AzureBlobStorage"]))
-);
+var vale = builder.Configuration["ConnectionString:AzureBlobStorage"];
+
+builder.Services.AddSingleton(x => new BlobServiceClient(builder.Configuration["ConnectionString:AzureBlobStorage"]));
 
 
 builder.Services.Configure<MailSettings>(x =>
