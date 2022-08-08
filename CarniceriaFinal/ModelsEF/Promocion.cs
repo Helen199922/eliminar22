@@ -13,6 +13,7 @@ namespace CarniceriaFinal.ModelsEF
         {
             CorreoPromocions = new HashSet<CorreoPromocion>();
             DetalleVenta = new HashSet<DetalleVentum>();
+            PromocionInProductos = new HashSet<PromocionInProducto>();
         }
 
         [Key]
@@ -46,5 +47,7 @@ namespace CarniceriaFinal.ModelsEF
         public virtual ICollection<CorreoPromocion> CorreoPromocions { get; set; }
         [InverseProperty("IdPromocionNavigation")]
         public virtual ICollection<DetalleVentum> DetalleVenta { get; set; }
+        [InverseProperty("IdPromocionNavigation")]
+        public virtual ICollection<PromocionInProducto> PromocionInProductos { get; set; }
     }
 }

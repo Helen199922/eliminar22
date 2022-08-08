@@ -25,6 +25,7 @@ namespace CarniceriaFinal.Marketing.DTOs
         public float? DsctoMonetario { get; set; }
         public int? Status { get; set; }
         public DateTime? FechaUpdate { get; set; }
+        public List<int> pruductsInPromo { get; set; }
     }
     public class PromotionProductEntity
     {

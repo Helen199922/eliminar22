@@ -403,13 +403,16 @@ namespace CarniceriaFinal.ModelsEF
 
             modelBuilder.Entity<PromocionInProducto>(entity =>
             {
+                entity.HasKey(e => e.IdPromocionInProducto)
+                    .HasName("PRIMARY");
+
                 entity.HasOne(d => d.IdProductoNavigation)
-                    .WithMany()
+                    .WithMany(p => p.PromocionInProductos)
                     .HasForeignKey(d => d.IdProducto)
                     .HasConstraintName("promocion_in_producto_ibfk_2");
 
                 entity.HasOne(d => d.IdPromocionNavigation)
-                    .WithMany()
+                    .WithMany(p => p.PromocionInProductos)
                     .HasForeignKey(d => d.IdPromocion)
                     .HasConstraintName("promocion_in_producto_ibfk_1");
             });

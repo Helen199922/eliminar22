@@ -230,5 +230,56 @@ namespace CarniceriaFinal.Marketing.Repository
                 throw RSException.ErrorQueryDB("Cambiar estado de promoción");
             }
         }
+        public async Task<Boolean> UpdateListPruductsInPromo(List<int> pruductsInPromo, int idPromotion)
+        {
+            try
+            {
+                using (var _Context = new DBContext())
+                {
+
+                    var productsInPromotion = await _Context.PromocionInProductos.Where(x => (
+                        x.IdPromocion == idPromotion
+                    ))
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                    var productToDelete = productsInPromotion
+                        .Where(x => !pruductsInPromo.Any(y => y == x.IdProducto))
+                        .ToList();
+
+                    if(productToDelete != null && productToDelete.Count > 0)
+                    {
+                        _Context.PromocionInProductos.RemoveRange(productToDelete);
+                        await _Context.SaveChangesAsync();
+                    }
+
+                    pruductsInPromo = pruductsInPromo.Where(x => !productsInPromotion.Any(y => y.IdProducto == x))
+                                      .ToList();
+
+                    if (pruductsInPromo != null && pruductsInPromo.Count > 0)
+                    {
+                        foreach (var productId in pruductsInPromo)
+                        {
+
+                            PromocionInProducto promoInProduct = new()
+                            {
+                                IdProducto = productId,
+                                IdPromocion = idPromotion
+                            };
+                            await _Context.PromocionInProductos.AddAsync(promoInProduct);
+                        }
+                        await _Context.SaveChangesAsync();
+                    }
+
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Cambiar estado de promoción");
+            }
+        }
+
+        
     }
 }

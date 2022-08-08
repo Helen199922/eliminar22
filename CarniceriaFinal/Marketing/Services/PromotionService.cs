@@ -43,7 +43,8 @@ namespace CarniceriaFinal.Marketing.Services
                 promotionDetail.FechaUpdate = DateTime.Now;
                 Promocion promo = IMapper.Map<Promocion>(promotionDetail);
 
-                await IPromotionRepository.CreatePromotion(promo);
+                Promocion promoCreated = await IPromotionRepository.CreatePromotion(promo);
+                await UpdateListPruductsInPromo(promotionDetail.pruductsInPromo, promoCreated.IdPromocion);
                 return "Promoción creada correctamente";
             }
             catch (RSException err)
@@ -64,6 +65,8 @@ namespace CarniceriaFinal.Marketing.Services
                 Promocion promo = IMapper.Map<Promocion>(promotionDetail);
 
                 await IPromotionRepository.UpdatePromotion(promo);
+
+                await UpdateListPruductsInPromo(promotionDetail.pruductsInPromo, promotionDetail.idPromocion.Value);
                 return "Promoción actualizada correctamente";
             }
             catch (RSException err)
@@ -110,6 +113,24 @@ namespace CarniceriaFinal.Marketing.Services
             catch (Exception)
             {
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener la lista de productos para promociones.");
+            }
+
+        }
+        private async Task<Boolean> UpdateListPruductsInPromo(List<int> pruductsInPromo, int idPromotion)
+        {
+            try
+            {
+                await IPromotionRepository.UpdateListPruductsInPromo(pruductsInPromo, idPromotion);
+
+                return true;
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener la guardar la lista de productos para promoción.");
             }
 
         }
