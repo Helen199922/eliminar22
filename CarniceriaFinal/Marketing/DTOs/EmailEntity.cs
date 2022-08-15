@@ -15,6 +15,7 @@ namespace CarniceriaFinal.Marketing.DTOs
     {
         public int idCorreo { get; set; }
         public string imagen { get; set; }
+        public string imageProducts { get; set; }
         public string urlPromocion { get; set; }
         public string titulo { get; set; }
         public string descripcion { get; set; }

@@ -51,5 +51,21 @@ namespace CarniceriaFinal.Core.BlobStorage.Controllers
             }
 
         }
+        [HttpPost("upload-multi-image")]
+        public async Task<IActionResult> Postblob(List<UploadMultiImageEntity> data)
+        {
+            RSEntity<List<UploadMultiImageResponseEntity>> rsEntity = new();
+            try
+            {
+                var image = await _blobService.UploadMultiFileBlobAsync(data);
+                return Ok(rsEntity.Send(image));
+
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+
+        }
     }
 }

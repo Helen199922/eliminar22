@@ -58,6 +58,35 @@ namespace CarniceriaFinal.Core.BlobStorage.Services
             }
             
         }
+
+        public async Task<List<UploadMultiImageResponseEntity>> UploadMultiFileBlobAsync(List<UploadMultiImageEntity> data)
+        {
+
+            try
+            {
+                List<UploadMultiImageResponseEntity> images = new();
+
+                foreach (var image in data)
+                {
+                    if (image.image == null || image.contentType == null) continue;
+
+                    var response = await UploadFileBlobAsync(image.image, image.contentType);
+                    images.Add(new()
+                    {
+                        imageUrl = response.imageUrl,
+                        idImage = image.idImage
+                    });
+                }
+
+                return images;
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al subir la lista de imagenes. Intente más tarde.");
+            }
+
+        }
+
         public string? getNamePhoto()
         {
             var bytes = new byte[50];

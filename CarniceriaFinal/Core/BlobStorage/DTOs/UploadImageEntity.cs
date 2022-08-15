@@ -10,4 +10,10 @@ namespace CarniceriaFinal.Core.BlobStorage.DTOs
         public string? image { get; set; }
         public string? contentType { get; set; }
     }
+    public class UploadMultiImageEntity
+    {
+        public int idImage { get; set; }
+        public string? image { get; set; }
+        public string? contentType { get; set; }
+    }
 }

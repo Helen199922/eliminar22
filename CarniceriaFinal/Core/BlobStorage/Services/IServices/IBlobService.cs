@@ -11,5 +11,6 @@ namespace CarniceriaFinal.Core.BlobStorage.Services.IServices
     {
         public Uri GetBlobAsync(string name);
         public Task<UploadImageResponseEntity> UploadFileBlobAsync(string image, string contentType);
+        Task<List<UploadMultiImageResponseEntity>> UploadMultiFileBlobAsync(List<UploadMultiImageEntity> data);
     }
 }
