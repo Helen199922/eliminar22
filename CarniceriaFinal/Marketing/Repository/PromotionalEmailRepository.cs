@@ -67,7 +67,7 @@ namespace CarniceriaFinal.Marketing.Repository
                 using (var _Context = new DBContext())
                 {
                     var newEmail = await _Context.CorreoPromocions
-                    .Where(x => x.IdCorreo == email.IdCorreo)
+                    .Where(x => x.IdPromocion == email.IdPromocion)
                     .FirstOrDefaultAsync();
                     newEmail.FechaUpdate = DateTime.Now;
                     newEmail.Imagen = email.Imagen;
