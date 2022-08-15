@@ -280,40 +280,6 @@ namespace CarniceriaFinal.Marketing.Services
             }
             return promotionalUsers;
         }
-        //private async Task<List<UserPromotionalEmailEntity>> GetUserStatusByIdEmail(int idCorreoPromotion)
-        //{
-        //    List<UserPromotionalEmailEntity> promotionalUsers = new();
-        //    try
-        //    {
-        //        var users = await IPromotionalEmailRepo.GetUserStatusByIdEmail(idCorreoPromotion);
-        //        if (users == null || users.Count == 0)
-        //            return promotionalUsers;
 
-        //        foreach (var user in users)
-        //        {
-        //            try
-        //            {
-        //                promotionalUsers.Add(new()
-        //                {
-        //                    email = user.IdUsuarioNavigation.IdPersonaNavigation.Email != null
-        //                        ? user.IdUsuarioNavigation.IdPersonaNavigation.Email : "",
-        //                    statusSender = user.IdEstatusEmailNavigation.Titulo,
-        //                    usuario = user.IdUsuarioNavigation.Username != null
-        //                        ? user.IdUsuarioNavigation.Username : "",
-        //                    enableToSend = DateTime.Compare(user.FechaSender, DateTime.Now) < 0 
-        //                                    ? user.FechaSender.AddDays(1)
-        //                                    : DateTime.Now
-        //                });
-        //            }
-        //            catch (Exception err)
-        //            {
-        //            }
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //    }
-        //        return promotionalUsers;
-        //}
     }
 }

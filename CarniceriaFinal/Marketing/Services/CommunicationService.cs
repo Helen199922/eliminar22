@@ -63,7 +63,7 @@ namespace CarniceriaFinal.Marketing.Services
             CommunicationHomeEntity comm = new();
             try
             {
-                var promotion = await IPromotionRepository.getLastPromotion();
+                var promotion = await IPromotionRepository.getLastPromotion(DateTime.Now);
 
 
                 comm.promotion = IMapper.Map<PromotionSimpleEntity>(promotion);

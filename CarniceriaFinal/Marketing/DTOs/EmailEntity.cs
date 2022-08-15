@@ -27,6 +27,7 @@ namespace CarniceriaFinal.Marketing.DTOs
         public string urlPromocion { get; set; }
         public string titulo { get; set; }
         public string descripcion { get; set; }
+        public string imageProducts { get; set; }
     }
     public class UserPromotionalEmailEntity
     {

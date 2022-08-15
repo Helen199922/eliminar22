@@ -10,7 +10,7 @@ namespace CarniceriaFinal.Marketing.Interfaces.IRepository
     public interface IPromotionRepository
     {
         Task<List<Promocion>> GetAll();
-        Task<Promocion> getLastPromotion();
+        Task<Promocion> getLastPromotion(DateTime? lastLimit);
         Task<Promocion> CreatePromotion(Promocion promotion);
         Task<Promocion> UpdatePromotion(Promocion promotion);
         Task<Promocion> StatusPromotion(int status, int idPromotion);

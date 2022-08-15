@@ -36,6 +36,9 @@ namespace CarniceriaFinal.ModelsEF
         public int IdPromocion { get; set; }
         [Column("isSendingEmails")]
         public int IsSendingEmails { get; set; }
+        [Column("imageProducts")]
+        [StringLength(255)]
+        public string? ImageProducts { get; set; }
 
         [ForeignKey("IdPromocion")]
         [InverseProperty("CorreoPromocions")]

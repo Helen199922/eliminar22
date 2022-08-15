@@ -43,6 +43,13 @@ namespace CarniceriaFinal.Marketing.Services
                 promotionDetail.FechaUpdate = DateTime.Now;
                 Promocion promo = IMapper.Map<Promocion>(promotionDetail);
 
+                var lastPromotion = await IPromotionRepository.getLastPromotion(promotionDetail.fechaInicio);
+                if (lastPromotion != null)
+                    throw RSException.BadRequest(String
+                        .Format("Ya existe una promoción activa. Por favor, espere a que termine o desactívela: {0}",
+                        lastPromotion.Titulo));
+
+
                 Promocion promoCreated = await IPromotionRepository.CreatePromotion(promo);
                 await UpdateListPruductsInPromo(promotionDetail.pruductsInPromo, promoCreated.IdPromocion);
                 return "Promoción creada correctamente";
@@ -63,6 +70,12 @@ namespace CarniceriaFinal.Marketing.Services
             {
                 promotionDetail.FechaUpdate = DateTime.Now;
                 Promocion promo = IMapper.Map<Promocion>(promotionDetail);
+
+                var lastPromotion = await IPromotionRepository.getLastPromotion(promotionDetail.fechaInicio);
+                if (lastPromotion != null)
+                    throw RSException.BadRequest(String
+                        .Format("Ya existe una promoción activa. Por favor, espere a que termine o desactívela: {0}",
+                        lastPromotion.Titulo));
 
                 await IPromotionRepository.UpdatePromotion(promo);
 

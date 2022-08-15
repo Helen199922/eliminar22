@@ -105,24 +105,27 @@ namespace CarniceriaFinal.Marketing.Repository
                 throw RSException.ErrorQueryDB("Productos por promoción");
             }
         }
-        public async Task<Promocion> getLastPromotion()
+        public async Task<Promocion> getLastPromotion(DateTime? lastLimit)
         {
             try
             {
+                if(lastLimit == null)
+                   lastLimit = DateTime.Now;
+
                 using (var _Context = new DBContext())
                 {
-                    var option = await _Context.Promocions.Where(x => (
+                    var options = await _Context.Promocions.Where(x => (
                         x.Status == 1
                     ))
-                    .FirstOrDefaultAsync();
+                    .ToListAsync();
 
+                    if (options == null || options.Count == 0)
+                        return null;
 
-                    if (option == null) return null;
+                    var activates = options.Where(x => (DateTime.Compare(x.FechaFin, lastLimit.Value) >= 0
+                    )).FirstOrDefault();
 
-                    if (DateTime.Compare(option.FechaInicio, DateTime.Now) <= 0 && DateTime.Compare(option.FechaFin, DateTime.Now) >= 0)
-                        return option;
-
-                    return null;
+                    return activates;
                 }
             }
             catch (Exception err)
@@ -160,9 +163,6 @@ namespace CarniceriaFinal.Marketing.Repository
             try
             {
                 promotion.Status = 1;
-                var lastPromotion = await this.getLastPromotion();
-                if (lastPromotion != null) 
-                    throw RSException.BadRequest("Ya existe una promoción vigente. Puede cancelar o esperar a que termine");
 
                 await Context.Promocions.AddAsync(promotion);
                 await Context.SaveChangesAsync();
