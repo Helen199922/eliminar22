@@ -90,5 +90,18 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [HttpPost("isAvailability-promotion")]
+        public async Task<IActionResult> isAvailabilityToCreatePromotion([FromBody] IsAvailabilityCreatePromoEntity data)
+        {
+            RSEntity<Boolean> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IPromotionService.isAvailabilityToCreatePromotion(data)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
     }
 }

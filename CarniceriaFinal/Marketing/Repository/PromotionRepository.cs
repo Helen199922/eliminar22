@@ -105,12 +105,12 @@ namespace CarniceriaFinal.Marketing.Repository
                 throw RSException.ErrorQueryDB("Productos por promoción");
             }
         }
-        public async Task<Promocion> getLastPromotion(DateTime? lastLimit)
+        public async Task<Promocion> getLastPromotion(DateTime? upperLimit, DateTime? lowerLimit)
         {
             try
             {
-                if(lastLimit == null)
-                   lastLimit = DateTime.Now;
+                if(upperLimit == null)
+                    upperLimit = DateTime.Now;
 
                 using (var _Context = new DBContext())
                 {
@@ -122,8 +122,42 @@ namespace CarniceriaFinal.Marketing.Repository
                     if (options == null || options.Count == 0)
                         return null;
 
-                    var activates = options.Where(x => (DateTime.Compare(x.FechaFin, lastLimit.Value) >= 0
-                    )).FirstOrDefault();
+
+                    var activates = options.Where(x => 
+                        ((DateTime.Compare(x.FechaFin, lowerLimit.Value) > 0) && (DateTime.Compare(x.FechaInicio, lowerLimit.Value) < 0))
+                        || ((DateTime.Compare(x.FechaInicio, upperLimit.Value) < 0) && (DateTime.Compare(x.FechaFin, upperLimit.Value) > 0))
+                    ).FirstOrDefault();
+
+                    return activates;
+                }
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("obtener promociones disponibles");
+            }
+        }
+        public async Task<Promocion> getLastPromotionByIdPromotion(DateTime? upperLimit, DateTime? lowerLimit, int idPromotion)
+        {
+            try
+            {
+                if (upperLimit == null)
+                    upperLimit = DateTime.Now;
+
+                using (var _Context = new DBContext())
+                {
+                    var options = await _Context.Promocions.Where(x => (
+                        x.Status == 1 && x.IdPromocion != idPromotion
+                    ))
+                    .ToListAsync();
+
+                    if (options == null || options.Count == 0)
+                        return null;
+
+
+                    var activates = options.Where(x =>
+                        ((DateTime.Compare(x.FechaFin, lowerLimit.Value) > 0) && (DateTime.Compare(x.FechaInicio, lowerLimit.Value) < 0))
+                        || ((DateTime.Compare(x.FechaInicio, upperLimit.Value) < 0) && (DateTime.Compare(x.FechaFin, upperLimit.Value) > 0))
+                    ).FirstOrDefault();
 
                     return activates;
                 }

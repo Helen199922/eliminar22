@@ -27,6 +27,12 @@ namespace CarniceriaFinal.Marketing.DTOs
         public DateTime? FechaUpdate { get; set; }
         public List<int> pruductsInPromo { get; set; }
     }
+    public class IsAvailabilityCreatePromoEntity
+    {
+        public int? idPromocion { get; set; }
+        public DateTime fechaInicio { get; set; }
+        public DateTime fechaFin { get; set; }
+    }
     public class PromotionProductEntity
     {
         public int idProduct { get; set; }

@@ -43,7 +43,7 @@ namespace CarniceriaFinal.Marketing.Services
                 promotionDetail.FechaUpdate = DateTime.Now;
                 Promocion promo = IMapper.Map<Promocion>(promotionDetail);
 
-                var lastPromotion = await IPromotionRepository.getLastPromotion(promotionDetail.fechaInicio);
+                var lastPromotion = await IPromotionRepository.getLastPromotion(promotionDetail.fechaFin, promotionDetail.fechaInicio);
                 if (lastPromotion != null)
                     throw RSException.BadRequest(String
                         .Format("Ya existe una promoción activa. Por favor, espere a que termine o desactívela: {0}",
@@ -71,7 +71,7 @@ namespace CarniceriaFinal.Marketing.Services
                 promotionDetail.FechaUpdate = DateTime.Now;
                 Promocion promo = IMapper.Map<Promocion>(promotionDetail);
 
-                var lastPromotion = await IPromotionRepository.getLastPromotion(promotionDetail.fechaInicio);
+                var lastPromotion = await IPromotionRepository.getLastPromotionByIdPromotion(promotionDetail.fechaFin, promotionDetail.fechaInicio, promotionDetail.idPromocion.Value);
                 if (lastPromotion != null)
                     throw RSException.BadRequest(String
                         .Format("Ya existe una promoción activa. Por favor, espere a que termine o desactívela: {0}",
@@ -106,6 +106,28 @@ namespace CarniceriaFinal.Marketing.Services
             catch (Exception)
             {
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al actualizar el estado de la promoción.");
+            }
+
+        }
+        public async Task<Boolean> isAvailabilityToCreatePromotion(IsAvailabilityCreatePromoEntity data)
+        {
+            try
+            {
+                var isAvailability = false;
+
+                var response = data.idPromocion != null
+                    ? await IPromotionRepository.getLastPromotionByIdPromotion(data.fechaFin, data.fechaInicio, data.idPromocion.Value)
+                    : await IPromotionRepository.getLastPromotion(data.fechaFin, data.fechaInicio);
+
+                return response == null ? true : false;
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al consultar estado de promociones.");
             }
 
         }
