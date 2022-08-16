@@ -93,7 +93,7 @@ namespace CarniceriaFinal.Marketing.Controllers
         [HttpPost("isAvailability-promotion")]
         public async Task<IActionResult> isAvailabilityToCreatePromotion([FromBody] IsAvailabilityCreatePromoEntity data)
         {
-            RSEntity<Boolean> rsEntity = new();
+            RSEntity<String> rsEntity = new();
             try
             {
                 return Ok(rsEntity.Send(await IPromotionService.isAvailabilityToCreatePromotion(data)));

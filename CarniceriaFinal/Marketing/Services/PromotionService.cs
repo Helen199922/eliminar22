@@ -109,7 +109,7 @@ namespace CarniceriaFinal.Marketing.Services
             }
 
         }
-        public async Task<Boolean> isAvailabilityToCreatePromotion(IsAvailabilityCreatePromoEntity data)
+        public async Task<String> isAvailabilityToCreatePromotion(IsAvailabilityCreatePromoEntity data)
         {
             try
             {
@@ -119,7 +119,9 @@ namespace CarniceriaFinal.Marketing.Services
                     ? await IPromotionRepository.getLastPromotionByIdPromotion(data.fechaFin, data.fechaInicio, data.idPromocion.Value)
                     : await IPromotionRepository.getLastPromotion(data.fechaFin, data.fechaInicio);
 
-                return response == null ? true : false;
+                return response == null ? "" : String
+                        .Format("Ya existe una promoción activa. Por favor, espere a que termine o desactívela: {0}",
+                        response.Titulo);
             }
             catch (RSException err)
             {

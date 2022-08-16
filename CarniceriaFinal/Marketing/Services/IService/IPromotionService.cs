@@ -14,6 +14,6 @@ namespace CarniceriaFinal.Marketing.Interfaces.IService
         Task<string> UpdatePromotion(PromotionEntity promotionDetail);
         Task<string> StatusPromotion(int status, int idPromotion);
         Task<List<PromotionProductEntity>> GetAllProductsByIdPromotion(int? idPromotion);
-        Task<Boolean> isAvailabilityToCreatePromotion(IsAvailabilityCreatePromoEntity data);
+        Task<String> isAvailabilityToCreatePromotion(IsAvailabilityCreatePromoEntity data);
     }
 }
