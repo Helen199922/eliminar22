@@ -73,6 +73,7 @@ namespace CarniceriaFinal.Marketing.Repository
                     newEmail.Imagen = email.Imagen;
                     newEmail.UrlPromocion = email.UrlPromocion;
                     newEmail.Titulo = email.Titulo;
+                    newEmail.ImageProducts = email.ImageProducts;
                     newEmail.Descripcion = email.Descripcion;
 
                     await _Context.SaveChangesAsync();
