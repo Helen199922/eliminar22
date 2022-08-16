@@ -19,6 +19,6 @@ namespace CarniceriaFinal.Marketing.Repository.IRepository
         Task<string> setCancelSendingEmail(int idPromotion);
         Task<string> setRetrySendPendingEmail(int idCorreoPromotion);
         Task<string> setStatusEmailSender(PromoSendgridResponseEntity emailSenderStatus);
-
+        Task<Boolean> isAvailabilityResend(int idCorreoPromocion);
     }
 }

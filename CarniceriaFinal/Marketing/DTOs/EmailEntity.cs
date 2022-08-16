@@ -30,6 +30,18 @@ namespace CarniceriaFinal.Marketing.DTOs
         public string descripcion { get; set; }
         public string imageProducts { get; set; }
     }
+    public class UserStatusEmailEntity
+    {
+        public UserStatusEmailEntity()
+        {
+            users = new();
+            isAvailabilityResend = true;
+        }
+        public Boolean isAvailabilityResend { get; set; }
+        public List<UserPromotionalEmailEntity> users { get; set; }
+
+        
+    }
     public class UserPromotionalEmailEntity
     {
         public int idCorreoPromocionInUser { get; set; }

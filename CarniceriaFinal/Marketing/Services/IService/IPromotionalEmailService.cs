@@ -10,5 +10,6 @@ namespace CarniceriaFinal.Marketing.Services.IService
         Task<string> SendPromotionalEmail(int idPromotion, int idCorreoPromotion);
         Task<string> RetrySenderEmailByIdPromotion(int idPromotion, int idCorreoPromotion);
         Task<string> CancelSenderEmailByIdPromotion(int idPromotion);
+        Task<UserStatusEmailEntity> GetUserStatusByIdEmail(int idCorreoPromotion);
     }
 }

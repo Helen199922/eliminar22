@@ -334,6 +334,26 @@ namespace CarniceriaFinal.Marketing.Repository
             }
             return false;
         }
+        public async Task<Boolean> isAvailabilityResend(int idCorreoPromocion)
+        {
+            try
+            {
+                var emailPromotion = await Context.CorreoPromocions
+                .Where(x => x.IdCorreo == idCorreoPromocion)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+                if (emailPromotion == null || emailPromotion?.IsSendingEmails == 0)
+                    return true;
+
+                if (emailPromotion?.IsSendingEmails == 1)
+                    return false;
+
+            }
+            catch (Exception err)
+            {
+            }
+            return false;
+        }
         public async Task<string> setSendingEmail(int idPromotion)
         {
             try

@@ -94,5 +94,18 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [HttpGet("user-status-email/{idCorreoPromotion}")]
+        public async Task<IActionResult> GetUserStatusByIdEmail(int idCorreoPromotion)
+        {
+            RSEntity<UserStatusEmailEntity> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IPromotionalEmailServi.GetUserStatusByIdEmail(idCorreoPromotion)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
     }
 }

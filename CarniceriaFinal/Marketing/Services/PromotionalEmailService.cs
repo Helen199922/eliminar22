@@ -245,14 +245,15 @@ namespace CarniceriaFinal.Marketing.Services
             }
 
         }
-        public async Task<List<UserPromotionalEmailEntity>> GetUserStatusByIdEmail(int idCorreoPromotion)
+        public async Task<UserStatusEmailEntity> GetUserStatusByIdEmail(int idCorreoPromotion)
         {
+            UserStatusEmailEntity response = new();
             List<UserPromotionalEmailEntity> promotionalUsers = new();
             try
             {
                 var users = await IPromotionalEmailRepo.GetUserStatusByIdEmail(idCorreoPromotion);
                 if (users == null || users.Count == 0)
-                    return promotionalUsers;
+                    return response;
 
                 foreach (var user in users)
                 {
@@ -274,11 +275,14 @@ namespace CarniceriaFinal.Marketing.Services
                     {
                     }
                 }
+                response.users = promotionalUsers;
+                response.isAvailabilityResend  = await IPromotionalEmailRepo
+                    .isAvailabilityResend(idCorreoPromotion);
             }
             catch (Exception)
             {
             }
-            return promotionalUsers;
+            return response;
         }
 
     }
