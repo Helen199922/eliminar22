@@ -43,8 +43,8 @@ namespace CarniceriaFinal.Productos.Services
                         var cityCost = new CityCostEntity
                         {
                             label = item.Ciudad1,
-                            value = item.CostoEnvio == null ? 0 : item.CostoEnvio.Value,
-                            title = item.IdCiudad
+                            value = item.IdCiudad,
+                            title = item.CostoEnvio == null ? 0 : item.CostoEnvio.Value
                         };
                         provinces.Last().items.Add(cityCost);
                     }

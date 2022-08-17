@@ -8,8 +8,8 @@ namespace CarniceriaFinal.Productos.DTOs
     public class CityCostEntity
     {
         public string? label { get; set; }
-        public double value { get; set; }
-        public int title { get; set; }
+        public int value { get; set; }
+        public double title { get; set; }
     }
     public class ProvincesCityCost
     {
