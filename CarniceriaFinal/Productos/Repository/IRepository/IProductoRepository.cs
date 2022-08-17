@@ -9,6 +9,7 @@ namespace CarniceriaFinal.Productos.Repository
     public interface IProductoRepository
     {
         Task<List<Producto>> GetProductos();
+        Task<List<Producto>> GetProductosInCar(List<int> products);
         Task<Producto> GetDetailAdminProductoById(int idProduct);
         Task<List<Producto>> GetSimpleProducts();
         Task<Producto> ProductById(int id);

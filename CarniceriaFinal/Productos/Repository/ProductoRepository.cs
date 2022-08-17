@@ -92,6 +92,20 @@ namespace CarniceriaFinal.Productos
                 throw RSException.ErrorQueryDB("Producto");
             }
         }
+        public async Task<List<Producto>> GetProductosInCar(List<int> products)
+        {
+            try
+            {
+                return await Context.Productos
+                    .Where(x => products.Contains(x.IdProducto))
+                    .ToListAsync();
+
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Producto");
+            }
+        }
         public async Task<Producto> SaveProduct(Producto producto)
         {
             try

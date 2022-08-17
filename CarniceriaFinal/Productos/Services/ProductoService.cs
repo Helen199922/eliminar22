@@ -121,6 +121,24 @@ namespace CarniceriaFinal.Productos.Servicios
                 throw new RSException("error", 500).SetMessage(err.Message);
             }
         }
+        public async Task<List<ProductEntity>> GetProductosInCar(List<int> idProducts)
+        {
+            try
+            {
+                var productsRepo = await this.IProductoRepo.GetProductosInCar(idProducts);
+                List<ProductEntity> products = IMapper.Map<List<ProductEntity>>(productsRepo);
+
+                return await promotionConvert(products);
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception err)
+            {
+                throw new RSException("error", 500).SetMessage(err.Message);
+            }
+        }
         public async Task<List<SimpleProductInSubCategory>> GetSimpleProductsByIdSubCategories(int? idSubCategory)
         {
             try

@@ -40,7 +40,20 @@ namespace CarniceriaFinal.Productos.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
-
+        [HttpPost("products-in-car")]
+        public async Task<IActionResult> GetProductosInCar(List<int> products)
+        {
+            RSEntity<List<ProductEntity>> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await ProductoService.GetProductosInCar(products)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
+        
         [HttpGet("simple-products")]
         public async Task<IActionResult> GetSimpleProducts()
         {

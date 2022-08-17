@@ -23,5 +23,6 @@ namespace CarniceriaFinal.Productos.Servicios
         Task<string> EnableProduct(int idProduct);
         Task<string> UpdateStock(int idProduct, int stock);
         Task<PromotionsInProduct> getAllProductsPromotions();
+        Task<List<ProductEntity>> GetProductosInCar(List<int> idProducts);
     }
 }
