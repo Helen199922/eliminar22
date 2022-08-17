@@ -288,6 +288,7 @@ namespace CarniceriaFinal.Productos.Servicios
                             continue;
 
                         product.ProductPromotionEntity = new();
+                        product.ProductPromotionEntity.idPromotion = promotion.IdPromocion;
                         product.ProductPromotionEntity.oldValue = product.Precio;
                         var promotionValue = promotion.PorcentajePromo != null 
                             ? "%" + promotion.PorcentajePromo 

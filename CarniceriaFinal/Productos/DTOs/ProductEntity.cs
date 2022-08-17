@@ -17,6 +17,7 @@ namespace CarniceriaFinal.Productos.DTOs
         public string? promotionValue { get; set; }
         public float? newValue { get; set; }
         public float? oldValue { get; set; }
+        public int idPromotion { get; set; }
     }
     public class ProductEntity
     {
