@@ -9,7 +9,7 @@ namespace CarniceriaFinal.Sales.Repository.IRepository
 {
     public interface ICitiesRepository
     {
-        Task<List<Ciudad>> GetCitiesCost();
+        Task<List<Provincium>> GetCitiesCost();
         Task<string> UpdateCitiesCost(List<CityCost> cities);
         Task<Ciudad> GetCityById(int idCity);
     }

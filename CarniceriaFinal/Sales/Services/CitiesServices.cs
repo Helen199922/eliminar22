@@ -25,19 +25,20 @@ namespace CarniceriaFinal.Productos.Services
         {
             try
             {
-                var citiesCost = await ICitiesRepository.GetCitiesCost();
+                var provincies = await ICitiesRepository.GetCitiesCost();
                 List<ProvincesCityCost> provinces = new();
-                foreach (var city in citiesCost)
+                foreach (var province in provincies)
                 {
-                    var pronvince = city.IdProvinciaNavigation;
+                    if (province.Ciudads.Count == 0) continue;
+
                     provinces.Add(new ProvincesCityCost
                     {
-                        label = pronvince.Provincia,
-                        value = pronvince.Provincia,
+                        label = province.Provincia,
+                        value = province.Provincia,
                         items = new()
                     });
 
-                    foreach (var item in pronvince.Ciudads)
+                    foreach (var item in province.Ciudads)
                     {
                         var cityCost = new CityCostEntity
                         {

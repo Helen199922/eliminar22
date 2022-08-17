@@ -17,12 +17,12 @@ namespace CarniceriaFinal.Sales.Repository
         {
             Context = _Context;
         }
-        public async Task<List<Ciudad>> GetCitiesCost()
+        public async Task<List<Provincium>> GetCitiesCost()
         {
             try
             {
-                return await Context.Ciudads
-                    .Include(x => x.IdProvinciaNavigation)
+                return await Context.Provincia
+                    .Include(x => x.Ciudads)
                     .ToListAsync();
             }
             catch (Exception err)
