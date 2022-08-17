@@ -32,7 +32,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Core\Email\Templates\email-promotion.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Core\JWTOKEN\DTOs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Core\Email\Templates\email-promotion.html">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

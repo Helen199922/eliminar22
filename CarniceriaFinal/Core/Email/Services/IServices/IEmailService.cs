@@ -11,6 +11,6 @@ namespace CarniceriaFinal.Core.Email.Services.IServices
     {
         Task<string> SendEmailAsync(EmailRequest mailRequest);
         Task<string> SendEmailToProductRequest(EmailProductsRequest mailRequest);
-        Task SendPromoEmailRequest(List<UserToSendPromoEmailEntity> usersToEmail, PromoSendgridResponseEntity sendResponse);
+        Task SendPromoEmailRequest(List<UserToSendPromoEmailEntity> usersToEmail, PromoSendgridResponseEntity sendResponse, EmailEntity promo);
     }
 }

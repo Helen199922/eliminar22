@@ -117,13 +117,19 @@ namespace CarniceriaFinal.Core.Email.Services
             return value;
         }
 
-        public async Task SendPromoEmailRequest(List<UserToSendPromoEmailEntity> usersToEmail, PromoSendgridResponseEntity sendResponse)
+        public async Task SendPromoEmailRequest(List<UserToSendPromoEmailEntity> usersToEmail, PromoSendgridResponseEntity sendResponse, EmailEntity promo)
         {
             var value = "";
             try
             {
                 string accounts = "";
-                var Placeholders = new List<KeyValuePair<string, string>>();
+                var Placeholders = new List<KeyValuePair<string, string>>()
+                {
+                    new KeyValuePair<string, string>("{{headerImage}}", promo.imagen),
+                    new KeyValuePair<string, string>("{{titulo}}", promo.titulo),
+                    new KeyValuePair<string, string>("{{descripcion}}", promo.descripcion),
+                    new KeyValuePair<string, string>("{{productImage}}", promo.imageProducts)
+                };
 
                 var client = new SendGridClient(_mailOptions.Password);
                 var tasks = new List<Task<UserToSendPromoEmailEntity>>();
@@ -133,8 +139,8 @@ namespace CarniceriaFinal.Core.Email.Services
                         var message = new SendGridMessage
                         {
                             From = new EmailAddress(_mailOptions.Mail, _mailOptions.DisplayName),
-                            Subject = "Compra de Carne - El Zamorano",
-                            HtmlContent = this.UpdatePlaceHolders(this.GetEmailBody("products-request"), Placeholders),
+                            Subject = promo.titulo,
+                            HtmlContent = this.UpdatePlaceHolders(this.GetEmailBody("email-promotion"), Placeholders),
                         };
 
                         message.AddTo(new EmailAddress(user.email, user.nameUser));
@@ -145,9 +151,6 @@ namespace CarniceriaFinal.Core.Email.Services
 
                             return user;
                         }));
-                        //var response = await client.SendEmailAsync(message);
-                        //response.IsSuccessStatusCode
-
                     };
 
 

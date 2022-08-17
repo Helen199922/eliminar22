@@ -133,6 +133,10 @@ namespace CarniceriaFinal.Marketing.Services
 
                 try
                 {
+
+                    var emailPromo = await IPromotionalEmailRepo.GetEmailByidPromotion(idPromotion);
+                    EmailEntity promo = IMapper.Map<EmailEntity>(emailPromo);
+
                     List<Usuario> users = null;
                     do
                     {
@@ -159,7 +163,7 @@ namespace CarniceriaFinal.Marketing.Services
                         sendResponse.sent = new();
                         sendResponse.wrong = new();
 
-                        await emailServi.SendPromoEmailRequest(usersToEmail, sendResponse);
+                        await emailServi.SendPromoEmailRequest(usersToEmail, sendResponse, promo);
 
                         await IPromotionalEmailRepo.setStatusEmailSender(sendResponse);
                     } while (users != null);
@@ -190,6 +194,9 @@ namespace CarniceriaFinal.Marketing.Services
                 await IPromotionalEmailRepo.setSendingEmail(idPromotion);
                 await IPromotionalEmailRepo.setRetrySendPendingEmail(idCorreoPromotion);
 
+                var emailPromo = await IPromotionalEmailRepo.GetEmailByidPromotion(idPromotion);
+                EmailEntity promo = IMapper.Map<EmailEntity>(emailPromo);
+
                 List<Usuario> users = null;
                 do
                 {
@@ -217,7 +224,7 @@ namespace CarniceriaFinal.Marketing.Services
                     sendResponse.wrong = new();
 
 
-                    await emailServi.SendPromoEmailRequest(usersToEmail, sendResponse);
+                    await emailServi.SendPromoEmailRequest(usersToEmail, sendResponse, promo);
                     await IPromotionalEmailRepo.setStatusEmailSender(sendResponse);
                 } while (users != null);
 
