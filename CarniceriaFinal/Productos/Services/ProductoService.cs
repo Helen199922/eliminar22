@@ -103,23 +103,14 @@ namespace CarniceriaFinal.Productos.Servicios
                 throw new RSException("error", 500).SetMessage(err.Message);
             }
         }
-        public async Task<List<ProductCompleteEntity>> GetProductos()
+        public async Task<List<ProductEntity>> GetProductos()
         {
             try
             {
                 var productsRepo = await this.IProductoRepo.GetProductos();
-                List<ProductCompleteEntity> products = new();
-                foreach (var item in productsRepo)
-                {
-                    products.Add(new()
-                    {
-                        product = IMapper.Map<ProductEntity>(item),
-                        unidadMedida = IMapper.Map<MeasureUnitEntity>(item.IdUnidadNavigation),
-                        detail = IMapper.Map<List<ProductDetailEntity>>(item.DetalleProductos)
-                    });
-                }
-
-                return products;
+                List<ProductEntity> products = IMapper.Map<List<ProductEntity>>(productsRepo);
+                
+                return await promotionConvert(products);
             }
             catch (RSException err)
             {

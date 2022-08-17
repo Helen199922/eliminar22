@@ -30,7 +30,7 @@ namespace CarniceriaFinal.Productos.Controllers
 
         [HttpGet(Name = "")]
         public async Task<IActionResult> Get() {
-            RSEntity<List<ProductCompleteEntity>> rsEntity = new();
+            RSEntity<List<ProductEntity>> rsEntity = new();
             try
             {
                 return Ok(rsEntity.Send(await ProductoService.GetProductos()));

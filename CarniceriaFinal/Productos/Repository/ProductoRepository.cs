@@ -84,8 +84,6 @@ namespace CarniceriaFinal.Productos
             try
             {
                 return await Context.Productos
-                    .Include(x => x.IdUnidadNavigation)
-                    .Include(x => x.DetalleProductos)
                     .ToListAsync();
 
             }
