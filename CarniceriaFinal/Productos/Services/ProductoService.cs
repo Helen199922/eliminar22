@@ -82,7 +82,12 @@ namespace CarniceriaFinal.Productos.Servicios
                     throw new RSException("No content", 404, "No hemos encontrado el producto solicitado");
 
                 ProductAdminCompleteEntity productComplete = new();
-                productComplete.product = IMapper.Map<ProductEntity>(productsRepo);
+                var product = IMapper.Map<ProductEntity>(productsRepo);
+                List<ProductEntity> products = new();
+                products.Add(product); ;
+                var responsePromotion = await promotionConvert(products);
+
+                productComplete.product = responsePromotion[0];
                 productComplete.unidadMedida = IMapper.Map<MeasureUnitEntity>(productsRepo.IdUnidadNavigation);
                 productComplete.detail = IMapper.Map<List<ProductDetailEntity>>(productsRepo.DetalleProductos);
                 productComplete.categories = await this.ICategoriaService.GetAllCategoriesAndSubCategoriesByProductId(idProduct);
