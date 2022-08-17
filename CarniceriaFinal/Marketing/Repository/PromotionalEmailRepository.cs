@@ -340,14 +340,24 @@ namespace CarniceriaFinal.Marketing.Repository
             try
             {
                 var emailPromotion = await Context.CorreoPromocions
-                .Where(x => x.IdCorreo == idCorreoPromocion)
+                .Where(x => x.IdCorreo == idCorreoPromocion && x.IdPromocionNavigation.Status == 1)
+                .Include(x => x.IdPromocionNavigation)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
-                if (emailPromotion == null || emailPromotion?.IsSendingEmails == 0)
-                    return true;
 
-                if (emailPromotion?.IsSendingEmails == 1)
+                if (emailPromotion == null || emailPromotion.IdPromocionNavigation == null 
+                    || emailPromotion?.IsSendingEmails != 0)
                     return false;
+
+                var promotion = await this.IPromotionRepository.PromotionIsActivate(
+                    emailPromotion.IdPromocionNavigation.IdPromocion
+                );
+
+                if (promotion == null)
+                    return false;
+
+                if (emailPromotion?.IsSendingEmails == 0)
+                    return true;
 
             }
             catch (Exception err)
