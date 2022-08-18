@@ -81,11 +81,14 @@ namespace CarniceriaFinal.Core.Email.Services
                 string productsDetail = "";
                 foreach (var detail in mailRequest.productDetail)
                 {
-                    productsDetail = productsDetail + ("<p style='color: #000;'>" +
+                    productsDetail = productsDetail + ("<p style='color: #000; margin: 13px 0px 0px 0px;'>" +
                         "<strong>" + detail.product + " (" + detail.quantity + "): </strong>"+ detail.amount +
                         " = $"+ detail.finalAmount +
-                        
-                        "</p><p> " + detail.discount + "</p>");
+
+                        "</p>");
+
+                        if(detail.discount != null)
+                            productsDetail = productsDetail + "<p style='margin: 0px; font-size: 12px'> - $" + detail.discount + " <strong> c/u</strong></p>"
 
                 }
                 var Placeholders = new List<KeyValuePair<string, string>>()
