@@ -87,7 +87,7 @@ namespace CarniceriaFinal.Sales.Services
                         product = productValue.Titulo,
                         quantity = item.cantidad.ToString(),
                         finalAmount = Math.Round((productValue.Precio.Value * item.cantidad), 2).ToString(),
-                        discount = Math.Round((discountInDetail), 2).ToString()
+                        discount = discountInDetail > 0 ? Math.Round((discountInDetail), 2).ToString() : null
                     });
                 }
                 sale.total = finalAmount;
@@ -184,7 +184,7 @@ namespace CarniceriaFinal.Sales.Services
                         product = productValue.Titulo,
                         quantity = item.cantidad.ToString(),
                         finalAmount = Math.Round((productValue.Precio.Value * item.cantidad), 2).ToString(),
-                        discount = Math.Round((discountInDetail), 2).ToString()
+                        discount = discountInDetail > 0 ? Math.Round((discountInDetail), 2).ToString() : null
                     });
 
                 }
