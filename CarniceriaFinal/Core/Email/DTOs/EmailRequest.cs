@@ -40,6 +40,7 @@ namespace CarniceriaFinal.Core.Email.DTOs
         public string? quantity { get; set; }
         public string? amount { get; set; }
         public string? finalAmount { get; set; }
+        public string? discount { get; set; }
     }
     public class EmailProductsRequest
     {

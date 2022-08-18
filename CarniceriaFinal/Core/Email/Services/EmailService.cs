@@ -85,7 +85,7 @@ namespace CarniceriaFinal.Core.Email.Services
                         "<strong>" + detail.product + " (" + detail.quantity + "): </strong>"+ detail.amount +
                         " = $"+ detail.finalAmount +
                         
-                        "</p>");
+                        "</p><p> " + detail.discount + "</p>");
 
                 }
                 var Placeholders = new List<KeyValuePair<string, string>>()
