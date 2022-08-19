@@ -9,7 +9,7 @@ namespace CarniceriaFinal.Marketing.DTOs
     public class CommunicationHomeEntity
     {
         public PromotionSimpleEntity promotion { get; set; }
-        public Object membership { get; set; }
+        public MemberShipCommEntity membership { get; set; }
         public Object specialDay { get; set; }
     }
     public class CommunicationEntity
