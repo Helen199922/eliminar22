@@ -12,4 +12,15 @@
         public string? titleMembership { get; set; }
         public string? imageMembership { get; set; }
     }
+    public class MembershipUserEntity
+    {
+        public int IdMembresiaInUsuario { get; set; }
+        public int IdUsuario { get; set; }
+        public int IdMembresia { get; set; }
+        public DateTime FechaFin { get; set; }
+        public DateTime FechaInicio { get; set; }
+        public int CantProductosComprados { get; set; }
+        public int Status { get; set; }
+
+    }
 }

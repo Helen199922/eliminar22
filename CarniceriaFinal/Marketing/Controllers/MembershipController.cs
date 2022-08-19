@@ -29,13 +29,26 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
-       [HttpGet("admin-members")]
+        [HttpGet("admin-members")]
         public async Task<IActionResult> AdministrationMembershipTimes()
         {
             RSEntity<Boolean> rsEntity = new();
             try
             {
                 return Ok(rsEntity.Send(await IMembershipService.AdministrationMembershipTimes()));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
+        [HttpGet("membership-user/idUser")]
+        public async Task<IActionResult> GetMembershipByIdUser(int idUser)
+        {
+            RSEntity<MembershipUserEntity> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IMembershipService.GetMembershipByIdUser(idUser)));
             }
             catch (RSException err)
             {

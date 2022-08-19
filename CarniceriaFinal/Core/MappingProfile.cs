@@ -94,6 +94,10 @@ namespace CarniceriaFinal.Core
             CreateMap<EmailEntity, CorreoPromocion>();
             CreateMap<EmailCreateEntity, CorreoPromocion>();
             CreateMap<CorreoPromocion, EmailCreateEntity>();
+
+            //Membership
+            CreateMap<MembershipUserEntity, MembresiaInUsuario>();
+            CreateMap<MembresiaInUsuario, MembershipUserEntity>();
         }
     }
 }

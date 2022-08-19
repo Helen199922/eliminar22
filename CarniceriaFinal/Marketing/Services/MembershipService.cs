@@ -35,6 +35,24 @@ namespace CarniceriaFinal.Marketing.Services
             }
 
         }
+        public async Task<MembershipUserEntity> GetMembershipByIdUser(int idUser)
+        {
+            try
+            {
+                var userMember = await IMembershipRepository.GetMembershipByIdUser(idUser);
+                return IMapper.Map<MembershipUserEntity>(userMember);
+
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener la membresia del cliente.");
+            }
+
+        }
         public async Task<Boolean> AdministrationMembershipTimes()
         {
             try
