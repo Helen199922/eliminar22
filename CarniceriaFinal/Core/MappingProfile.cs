@@ -98,6 +98,8 @@ namespace CarniceriaFinal.Core
             //Membership
             CreateMap<MembershipUserEntity, MembresiaInUsuario>();
             CreateMap<MembresiaInUsuario, MembershipUserEntity>();
+            CreateMap<Membresium, MembershipEntity>();
+            CreateMap<MembershipEntity, Membresium>();
         }
     }
 }

@@ -97,6 +97,7 @@ namespace CarniceriaFinal.Marketing.Repository
 
                 var member = await Context.MembresiaInUsuarios
                     .Where(x => x.Status == 1 && x.IdUsuario == idUser)
+                    .Include(x => x.IdMembresiaNavigation)
                     .FirstOrDefaultAsync();
                 if (member == null) return null;
 

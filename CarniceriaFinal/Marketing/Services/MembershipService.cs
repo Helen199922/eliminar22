@@ -39,8 +39,13 @@ namespace CarniceriaFinal.Marketing.Services
         {
             try
             {
-                var userMember = await IMembershipRepository.GetMembershipByIdUser(idUser);
-                return IMapper.Map<MembershipUserEntity>(userMember);
+                var response = await IMembershipRepository.GetMembershipByIdUser(idUser);
+                if (response == null) return null;
+
+                var userMember = IMapper.Map<MembershipUserEntity>(response);
+
+                userMember.membresia = IMapper.Map<MembershipEntity>(response.IdMembresiaNavigation);
+                return userMember;
 
             }
             catch (RSException err)
