@@ -3,6 +3,8 @@ using CarniceriaFinal.Cliente.Models;
 using CarniceriaFinal.Core.CustomException;
 using CarniceriaFinal.Core.Email.DTOs;
 using CarniceriaFinal.Core.Email.Services.IServices;
+using CarniceriaFinal.Marketing.Repository.IRepository;
+using CarniceriaFinal.Marketing.Services.IService;
 using CarniceriaFinal.ModelsEF;
 using CarniceriaFinal.Productos.Repository;
 using CarniceriaFinal.Sales.DTOs;
@@ -30,12 +32,16 @@ namespace CarniceriaFinal.Sales.Services
         private readonly ICitiesServices ICitiesServices;
         private readonly IEmailService IEmailService;
         private readonly IBankInfoRepository IBankInfoRepository;
+        private readonly IMembershipService IMembershipService;
+        private readonly IMembershipRepository IMembershipRepository;
         private readonly IMapper IMapper;
         public SalesService(IUserRepository IUserRepository, IPersonRepository IPersonRepository, 
             IClientRepository IClientRepository, ISaleRepository ISaleRepository, 
             IMapper IMapper, IProductoRepository IProductoRepository,
             ICitiesServices ICitiesServices, IEmailService IEmailService,
-            IBankInfoRepository IBankInfoRepository)
+            IBankInfoRepository IBankInfoRepository,
+            IMembershipService IMembershipService,
+            IMembershipRepository IMembershipRepository)
         {
             this.IUserRepository = IUserRepository;
             this.IPersonRepository = IPersonRepository;
@@ -45,6 +51,8 @@ namespace CarniceriaFinal.Sales.Services
             this.ICitiesServices = ICitiesServices;
             this.IEmailService = IEmailService;
             this.IBankInfoRepository = IBankInfoRepository;
+            this.IMembershipService = IMembershipService;
+            this.IMembershipRepository = IMembershipRepository;
             this.IMapper = IMapper;
         }
         public async Task<string> CreateSaleNoUser(SaleNoUserRequestEntity sale)
@@ -67,7 +75,7 @@ namespace CarniceriaFinal.Sales.Services
                     
                     if (item.idPromocion != null)
                     {
-                        discountInDetail = await getDiscountTotalByProductAndPromotion(item);
+                        discountInDetail = await getDiscountTotalByProduct(item);
                         if(discountInDetail == 0)
                             item.idPromocion = null;
                     }
@@ -87,7 +95,8 @@ namespace CarniceriaFinal.Sales.Services
                         product = productValue.Titulo,
                         quantity = item.cantidad.ToString(),
                         finalAmount = Math.Round((productValue.Precio.Value * item.cantidad), 2).ToString(),
-                        discount = discountInDetail > 0 ? Math.Round((discountInDetail), 2).ToString() : null
+                        discount = discountInDetail > 0 ? Math.Round((discountInDetail), 2).ToString() : null,
+                        typeDiscount = item.idPromocion != null ? "Promoción vigente" : null
                     });
                 }
                 sale.total = finalAmount;
@@ -152,6 +161,8 @@ namespace CarniceriaFinal.Sales.Services
         {
             try
             {
+                await this.isValidCotizacion(sale);
+
                 sale.referencia = "Costo de Envío";
                 sale.costosAdicionales = await ICitiesServices.GetCityCostById(sale.idCiudad);
                 float finalAmount = (float)sale.costosAdicionales;
@@ -164,11 +175,14 @@ namespace CarniceriaFinal.Sales.Services
                     var productValue = await this.IProductoRepository.FindProductById(item.idProducto);
                     if (productValue == null) throw RSException.BadRequest("El producto no se encontró");
 
-                    if (item.idPromocion != null)
+                    if (item.idPromocion != null || item.idMembresia != null)
                     {
-                        discountInDetail = await getDiscountTotalByProductAndPromotion(item);
+                        discountInDetail = await getDiscountTotalByProduct(item);
                         if (discountInDetail == 0)
+                        {
                             item.idPromocion = null;
+                            item.idMembresia = null;
+                        }
                     }
 
                     item.precio = productValue.Precio.Value;
@@ -184,7 +198,8 @@ namespace CarniceriaFinal.Sales.Services
                         product = productValue.Titulo,
                         quantity = item.cantidad.ToString(),
                         finalAmount = Math.Round((productValue.Precio.Value * item.cantidad), 2).ToString(),
-                        discount = discountInDetail > 0 ? Math.Round((discountInDetail), 2).ToString() : null
+                        discount = discountInDetail > 0 ? Math.Round((discountInDetail), 2).ToString() : null,
+                        typeDiscount = item.idPromocion != null ? "Promoción vigente" : "Membresía"
                     });
 
                 }
@@ -489,25 +504,50 @@ namespace CarniceriaFinal.Sales.Services
                 return new();
             }
         }
-        private async Task<float> getDiscountTotalByProductAndPromotion(SaleDetailEntity sale)
+        private async Task<float> getDiscountTotalByProduct(SaleDetailEntity sale)
         {
             try
             {
-                var promInPrdct = await this.IProductoRepository
-                    .getPromotionByIdAndProduct(sale.idPromocion.Value, sale.idProducto);
+                float? discount = 0;
 
-                if (promInPrdct == null || promInPrdct.IdProductoNavigation == null
-                    || promInPrdct.IdPromocionNavigation == null)
-                    return 0;
+                if (sale.idPromocion != null)
+                {
+                    var promInPrdct = await this.IProductoRepository
+                        .getPromotionByIdAndProduct(sale.idPromocion.Value, sale.idProducto);
 
-                var product = promInPrdct.IdProductoNavigation;
-                var promotion = promInPrdct.IdPromocionNavigation;
+                    if (promInPrdct == null || promInPrdct.IdProductoNavigation == null
+                        || promInPrdct.IdPromocionNavigation == null)
+                        return 0;
 
-                var discount = promotion.PorcentajePromo != null
-                    ? ((promotion.PorcentajePromo / 100) * product.Precio)
-                    : promotion.DsctoMonetario != null
-                    ? promotion.DsctoMonetario
+                    var product = promInPrdct.IdProductoNavigation;
+                    var promotion = promInPrdct.IdPromocionNavigation;
+
+                        discount = promotion.PorcentajePromo != null
+                        ? ((promotion.PorcentajePromo / 100) * product.Precio)
+                        : promotion.DsctoMonetario != null
+                        ? promotion.DsctoMonetario
+                        : 0;
+                }
+
+                if (sale.idMembresia != null)
+                {
+                    var membershipDetail = await this.IMembershipRepository
+                        .GetMembershipDetail(sale.idMembresia.Value);
+                    var promInPrdct = await this.IProductoRepository
+                        .ProductById(sale.idProducto);
+
+                    var discountPercent = membershipDetail.PorcentajeDescuento;
+
+                    discount = discountPercent != null
+                    ? ((discountPercent / 100) * promInPrdct.Precio)
                     : 0;
+
+                    if(discount > membershipDetail.MontoMaxDescPorProducto)
+                    {
+                        discount = membershipDetail.MontoMaxDescPorProducto;
+                    }
+                }
+
 
                 return (float)Math.Round((decimal)(sale.cantidad * discount), 2);
 
@@ -515,6 +555,40 @@ namespace CarniceriaFinal.Sales.Services
             catch (Exception err)
             {
                 return 0;
+            }
+        }
+
+        private async Task<Boolean> isValidCotizacion(SaleNoUserRequestEntity sale)
+        {
+            try
+            {
+                var members = sale.detalleVenta.Where(x => x.idMembresia != null).ToList();
+                var details = sale.detalleVenta.Where(x => x.idPromocion != null && x.idMembresia != null).ToList();
+
+                if(details.Count > 0) 
+                   throw RSException.BadRequest("Existe una promocion y membresia registrada en un mismo producto.");
+
+                if (members.Count == 0) 
+                    return true;
+
+                var cedula = sale.cliente.cedula;
+
+                if (cedula == null) 
+                    RSException.BadRequest("Tuvimos un error para validar su membresia.");
+
+                var userInformation = await this.IUserRepository.GetUserByIdIndentificationPerson(cedula);
+
+                return await IMembershipService.isValidMembership(members, userInformation.IdUsuario);
+
+
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al validar la cotización");
             }
         }
     }

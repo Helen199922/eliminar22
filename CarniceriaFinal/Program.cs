@@ -168,6 +168,9 @@ builder.Services.AddScoped<IBankInfoRepository, BankInfoRepository>();
 builder.Services.AddScoped<IPromotionalEmailRepository, PromotionalEmailRepository>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<IPromotionalEmailService, PromotionalEmailService>();
+builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
+builder.Services.AddScoped<IMembershipService, MembershipService>();
+
 
 builder.Services.AddSingleton<IMultiEmailService, MultiEmailService>();
 

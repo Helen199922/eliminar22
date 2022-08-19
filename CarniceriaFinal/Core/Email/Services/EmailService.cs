@@ -88,7 +88,7 @@ namespace CarniceriaFinal.Core.Email.Services
                         "</p>");
 
                     if (detail.discount != null)
-                        productsDetail = productsDetail + "<p style='margin: 0px; font-size: 12px'> - $" + detail.discount + " <strong> c/u</strong></p>";
+                        productsDetail = productsDetail + "<p style='margin: 0px; font-size: 12px'> - $" + detail.discount + " (" + detail.typeDiscount + ") "+" <strong> TOTAL</strong></p>";
 
                 }
                 var Placeholders = new List<KeyValuePair<string, string>>()

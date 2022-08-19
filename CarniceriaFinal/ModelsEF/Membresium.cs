@@ -37,6 +37,8 @@ namespace CarniceriaFinal.ModelsEF
         public int DuracionMembresiaDias { get; set; }
         [Column("status")]
         public int? Status { get; set; }
+        [Column("cantProductosMembresia")]
+        public int? CantProductosMembresia { get; set; }
 
         [InverseProperty("IdMembresiaNavigation")]
         public virtual ICollection<MembresiaInUsuario> MembresiaInUsuarios { get; set; }
