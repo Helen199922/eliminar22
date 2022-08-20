@@ -83,7 +83,7 @@ namespace CarniceriaFinal.Core.Email.Services
                 {
                     productsDetail = productsDetail + ("<p style='color: #000; margin: 13px 0px 0px 0px;'>" +
                         "<strong>" + detail.product + " (" + detail.quantity + "): </strong>"+ detail.amount + " c/u" +
-                        " = $"+ detail.finalAmount + " Valor a pagar</p>");
+                        " = $"+ detail.finalAmount + " <strong>final</strong></p>");
 
                     if (detail.discount != null)
                         productsDetail = productsDetail + "<p style='margin: 0px; font-size: 12px'><strong>Desc. total:</strong> - $" + detail.discount + " (" + detail.typeDiscount + ") </p>";
