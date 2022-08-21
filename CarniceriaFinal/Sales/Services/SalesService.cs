@@ -240,7 +240,7 @@ namespace CarniceriaFinal.Sales.Services
                     email = sale.cliente.email,
                     userName = sale.cliente.nombre,
                     accounts = await GetAllBanks(),
-                    discount = discount.ToString(),
+                    discount = Math.Round(discount, 2).ToString(),
                     subTotal = Math.Round(subTotal, 2).ToString(),
                     productDetail = salesDetails,
                     transporte = sale.costosAdicionales.ToString()
@@ -549,7 +549,7 @@ namespace CarniceriaFinal.Sales.Services
                 }
 
 
-                return (float)Math.Round((decimal)(sale.cantidad * discount), 2);
+                return (float)Math.Round(discount.Value, 2)*(sale.cantidad);
 
             }
             catch (Exception err)
