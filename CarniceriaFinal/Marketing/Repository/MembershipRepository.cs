@@ -14,13 +14,15 @@ namespace CarniceriaFinal.Marketing.Repository
             Context = _Context;
         }
 
-        public async Task<Membresium> GetMembershipDetail(int idMembership)
+        public async Task<Membresium> GetMembershipDetail(int idMembershipInUser)
         {
             try
             {
 
                 var member = await Context.Membresia
-                    .Where(x => x.Status == 1 && x.IdMembresia == idMembership)
+                    .Where(x => x.Status == 1 && x.MembresiaInUsuarios
+                            .Where(y => y.IdMembresiaInUsuario == idMembershipInUser).FirstOrDefault() != null
+                    )
                     .FirstOrDefaultAsync();
 
                 return member;
@@ -114,6 +116,21 @@ namespace CarniceriaFinal.Marketing.Repository
             catch (Exception)
             {
                 throw RSException.ErrorQueryDB("Membresía por id de usuario.");
+            }
+        }
+        public async Task<MembresiaInUsuario> GetMembershipByIdClient(int IdClient)
+        {
+            try
+            {
+                var user = await Context.Usuarios.Where(x => x.IdPersonaNavigation.Clientes.Where(y => y.IdCliente == IdClient).FirstOrDefault() != null).FirstOrDefaultAsync();
+                if (user == null)
+                    return null;
+
+                return await this.GetMembershipByIdUser(user.IdUsuario);
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Membresía por id de cliente.");
             }
         }
         public async Task<MembresiaInUsuario> GetLastMembershipByIdUser(int idUser)

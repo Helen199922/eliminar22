@@ -168,6 +168,11 @@ namespace CarniceriaFinal.ModelsEF
                 entity.HasKey(e => e.IdDetalleVenta)
                     .HasName("PRIMARY");
 
+                entity.HasOne(d => d.IdMembresiaNavigation)
+                    .WithMany(p => p.DetalleVenta)
+                    .HasForeignKey(d => d.IdMembresia)
+                    .HasConstraintName("detalle_venta_ibfk_2");
+
                 entity.HasOne(d => d.IdProductoNavigation)
                     .WithMany(p => p.DetalleVenta)
                     .HasForeignKey(d => d.IdProducto)

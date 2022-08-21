@@ -175,14 +175,24 @@ namespace CarniceriaFinal.Sales.Services
                     var productValue = await this.IProductoRepository.FindProductById(item.idProducto);
                     if (productValue == null) throw RSException.BadRequest("El producto no se encontró");
 
-                    if (item.idPromocion != null || item.idMembresia != null)
+                    if (item.idPromocion != null || item.idMembresiaInUser != null)
                     {
                         discountInDetail = await getDiscountTotalByProduct(item);
                         if (discountInDetail == 0)
                         {
                             item.idPromocion = null;
-                            item.idMembresia = null;
+                            item.idMembresiaInUser = null;
                         }
+                        //if(item.idMembresiaInUser != null)
+                        //{
+                        //    if (sale.idCliente == null)
+                        //        throw RSException.BadRequest("El usuario no registra como cliente. No puede realizar esta transacción de membresía");
+                        //    var membershipValue = await this.IMembershipRepository.GetMembershipByIdClient(sale.idCliente.Value);
+                        //    if(membershipValue?.IdUsuario == null)
+                        //        throw RSException.BadRequest("El usuario no tiene la membresía indicada. No puede realizar esta transacción de membresía");
+
+                        //    item.idMembresiaInUser = membershipValue.IdMembresiaInUsuario;
+                        //}
                     }
 
                     item.precio = productValue.Precio.Value;
@@ -385,6 +395,7 @@ namespace CarniceriaFinal.Sales.Services
                 saleDetail.Cantidad = detail.cantidad;
                 saleDetail.Precio = detail.precio;
                 saleDetail.IdPromocion = detail.idPromocion;
+                saleDetail.IdMembresia = detail.idMembresiaInUser;
                 saleDetail.IdProducto = detail.idProducto;
                 saleDetail.Descuento = detail.descuentoTotal;
 
@@ -529,10 +540,10 @@ namespace CarniceriaFinal.Sales.Services
                         : 0;
                 }
 
-                if (sale.idMembresia != null)
+                if (sale.idMembresiaInUser != null)
                 {
                     var membershipDetail = await this.IMembershipRepository
-                        .GetMembershipDetail(sale.idMembresia.Value);
+                        .GetMembershipDetail(sale.idMembresiaInUser.Value);
                     var promInPrdct = await this.IProductoRepository
                         .ProductById(sale.idProducto);
 
@@ -562,8 +573,8 @@ namespace CarniceriaFinal.Sales.Services
         {
             try
             {
-                var members = sale.detalleVenta.Where(x => x.idMembresia != null).ToList();
-                var details = sale.detalleVenta.Where(x => x.idPromocion != null && x.idMembresia != null).ToList();
+                var members = sale.detalleVenta.Where(x => x.idMembresiaInUser != null).ToList();
+                var details = sale.detalleVenta.Where(x => x.idPromocion != null && x.idMembresiaInUser != null).ToList();
 
                 if(details.Count > 0) 
                    throw RSException.BadRequest("Existe una promocion y membresia registrada en un mismo producto.");

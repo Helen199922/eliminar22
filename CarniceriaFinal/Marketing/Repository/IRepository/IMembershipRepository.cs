@@ -8,6 +8,7 @@ namespace CarniceriaFinal.Marketing.Repository.IRepository
         Task<MemberShipCommEntity> GetMembershipHome();
         Task<Boolean> AdministrationMembershipTimes();
         Task<MembresiaInUsuario> GetMembershipByIdUser(int idUser);
-        Task<Membresium> GetMembershipDetail(int idMembership);
+        Task<Membresium> GetMembershipDetail(int idMembershipInUser);
+        Task<MembresiaInUsuario> GetMembershipByIdClient(int IdClient);
     }
 }

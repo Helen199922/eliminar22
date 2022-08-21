@@ -11,7 +11,7 @@ namespace CarniceriaFinal.Sales.Models
         public int cantidad {get; set;}
         public float precio {get; set;}
         public int? idPromocion {get; set;}
-        public int? idMembresia { get; set; }
+        public int? idMembresiaInUser { get; set; }
         public int idProducto {get; set;}
         public float descuentoTotal {get; set;}
     }

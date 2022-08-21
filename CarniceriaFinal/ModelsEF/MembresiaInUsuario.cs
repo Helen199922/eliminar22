@@ -11,6 +11,11 @@ namespace CarniceriaFinal.ModelsEF
     [Index("IdUsuario", Name = "idUsuario")]
     public partial class MembresiaInUsuario
     {
+        public MembresiaInUsuario()
+        {
+            DetalleVenta = new HashSet<DetalleVentum>();
+        }
+
         [Key]
         [Column("idMembresiaInUsuario")]
         public int IdMembresiaInUsuario { get; set; }
@@ -33,5 +38,7 @@ namespace CarniceriaFinal.ModelsEF
         [ForeignKey("IdUsuario")]
         [InverseProperty("MembresiaInUsuarios")]
         public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
+        [InverseProperty("IdMembresiaNavigation")]
+        public virtual ICollection<DetalleVentum> DetalleVenta { get; set; }
     }
 }

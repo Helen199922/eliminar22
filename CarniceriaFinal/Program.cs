@@ -170,6 +170,8 @@ builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<IPromotionalEmailService, PromotionalEmailService>();
 builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
 builder.Services.AddScoped<IMembershipService, MembershipService>();
+builder.Services.AddScoped<ISalesAdmServices, SalesAdmServices>();
+builder.Services.AddScoped<ISalesAdmRepository, SalesAdmRepository>();
 
 
 builder.Services.AddSingleton<IMultiEmailService, MultiEmailService>();

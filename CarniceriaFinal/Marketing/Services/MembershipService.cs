@@ -85,13 +85,13 @@ namespace CarniceriaFinal.Marketing.Services
                 }
 
                 
-                var memberSales = details.Where(x => x.idMembresia != null).FirstOrDefault();
+                var memberSales = details.Where(x => x.idMembresiaInUser != null).FirstOrDefault();
 
-                if (memberSales == null || memberSales.idMembresia == null)
+                if (memberSales == null || memberSales.idMembresiaInUser == null)
                     throw RSException.Unauthorized("No existe la promoción o no está activa");
 
 
-                var membershipConditions = await IMembershipRepository.GetMembershipDetail(memberSales.idMembresia.Value);
+                var membershipConditions = await IMembershipRepository.GetMembershipDetail(memberSales.idMembresiaInUser.Value);
                 var userMemberDetail = await IMembershipRepository.GetMembershipByIdUser(idUser);
 
                 if(userMemberDetail == null)
