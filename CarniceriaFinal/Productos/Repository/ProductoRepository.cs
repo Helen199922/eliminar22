@@ -166,7 +166,7 @@ namespace CarniceriaFinal.Productos
             {
                 
                 List<Producto> products = await Context.Productos
-                    .Where(y => y.SubInCategoria.Any(x => (x.IdSubCategoria == idSubCategory && x.IdCategoria == idCategory)) && y.Status == 1)
+                    .Where(y => y.SubInCategoria.Any(x => (x.IdSubCategoria == idSubCategory && x.IdCategoria == idCategory)) && y.Status == 1 && y.Stock > 0)
                     .ToListAsync();
                 
                 return products;
@@ -213,6 +213,7 @@ namespace CarniceriaFinal.Productos
                         DateTime.Compare(x.IdPromocionNavigation.FechaFin, DateTime.Now) >= 0
                         && DateTime.Compare(x.IdPromocionNavigation.FechaInicio, DateTime.Now) <= 0
                         && x.IdPromocionNavigation.Status == 1
+                        && x.IdProductoNavigation.Stock > 0
                     ))
                     .Include(x => x.IdProductoNavigation)
                     .AsNoTracking()
@@ -311,7 +312,7 @@ namespace CarniceriaFinal.Productos
             try
             {
                 List<Producto> products = await Context.Productos
-                    .Where(y => y.SubInCategoria.Any(x => x.IdCategoria == idCategory) && y.Status == 1)
+                    .Where(y => y.SubInCategoria.Any(x => x.IdCategoria == idCategory) && y.Status == 1 && y.Stock > 0)
                     .ToListAsync();
 
                 return products;
