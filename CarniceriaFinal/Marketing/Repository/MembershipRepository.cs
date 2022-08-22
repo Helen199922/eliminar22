@@ -337,6 +337,7 @@ namespace CarniceriaFinal.Marketing.Repository
             {
                 var lastMembership = await this.GetLastMembershipByIdUser(idUser);
 
+                if (lastMembership == null) return 0;
                 if (lastMembership.Status == 1) return 0;
 
                 //Si aún no se cumple el año, debemos mandar 0 de monto

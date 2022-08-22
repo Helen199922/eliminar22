@@ -278,6 +278,8 @@ namespace CarniceriaFinal.Sales.Services
                 var userId = await ISalesAdmRepository.GetUserIdByIdSale(idSale);
 
                 var amount = await IMembershipRepository.AmountToMembershipInUser(userId, sale.IdCliente.Value);
+                if (amount == 0) return "";
+
                 var membreship = (await IMembershipRepository.GetAllMembershipDetail()).OrderByDescending(x => x.MontoMinAcceso).ToList();
                 foreach (var item in membreship)
                 {
