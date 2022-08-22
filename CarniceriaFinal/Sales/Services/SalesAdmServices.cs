@@ -126,7 +126,7 @@ namespace CarniceriaFinal.Sales.Services
 
                         if(membershipDetail == null && membershipDetail.Status == 3)
                         {
-                            blockNextStep = "Detectamos una inconsistencia. Tal vez, se rechazó la venta que permitía ofrecerle este beneficio. Por lo cual dicha venta no se puede realizar.";
+                            blockNextStep = "Detectamos una inconsistencia. Tal vez, se rechazó la venta que permitía ofrecerle este beneficio. Por lo cual dicha venta no se puede realizar. Nota: La membresía considerada es la que registra en la cotización.";
                             inconsistencies.Add(new()
                             {
                                 descripcion = "Membresía de Usuario no Existe. Tal vez, se rechazó la venta que permitía ofrecerle este beneficio.",
