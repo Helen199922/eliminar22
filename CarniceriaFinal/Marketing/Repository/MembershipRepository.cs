@@ -2,16 +2,19 @@
 using CarniceriaFinal.Marketing.DTOs;
 using CarniceriaFinal.Marketing.Repository.IRepository;
 using CarniceriaFinal.ModelsEF;
+using CarniceriaFinal.Sales.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarniceriaFinal.Marketing.Repository
 {
     public class MembershipRepository : IMembershipRepository
     {
+        public readonly ISalesAdmRepository ISalesAdmRepository;
         public readonly DBContext Context;
-        public MembershipRepository(DBContext _Context)
+        public MembershipRepository(DBContext _Context, ISalesAdmRepository iSalesAdmRepository)
         {
             Context = _Context;
+            this.ISalesAdmRepository = iSalesAdmRepository;
         }
 
         public async Task<Membresium> GetMembershipDetail(int idMembershipInUser)
@@ -30,6 +33,77 @@ namespace CarniceriaFinal.Marketing.Repository
             catch (Exception)
             {
                 throw RSException.ErrorQueryDB("Membresía por id de usuario.");
+            }
+        }
+        public async Task<List<Membresium>> GetAllMembershipDetail()
+        {
+            try
+            {
+
+                var member = await Context.Membresia
+                    .Where(x => x.Status == 1)
+                    .ToListAsync();
+
+                return member;
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Membresías.");
+            }
+        }
+        public async Task<MembresiaInUsuario> GetMembershipDetailToAdmSales(int idMembershipInUser)
+        {
+            try
+            {
+
+                var member = await Context.MembresiaInUsuarios
+                    .Where(x => x.IdMembresiaInUsuario == idMembershipInUser)
+                    .Include(x => x.IdMembresiaNavigation)
+                    .FirstOrDefaultAsync();
+
+                return member;
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Membresía por id de usuario.");
+            }
+        }
+        public async Task<Boolean> RegisterMembershipToUser(int idUser, Membresium membership)
+        {
+            try
+            {
+                   await Context.MembresiaInUsuarios.AddAsync(new() {
+                        IdUsuario = idUser,
+                        IdMembresia = membership.IdMembresia,
+                        FechaFin = DateTime.Now.AddDays(membership.DuracionMembresiaDias),
+                        FechaInicio = DateTime.Now,
+                        CantProductosComprados = 0,
+                        Status = 1
+                    });
+
+                await Context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Membresía agregada de forma incorrecta.");
+            }
+        }
+        public async Task<Boolean> BlockMembershipToUser(int idMembershipInUser)
+        {
+            try
+            {
+                var member = await Context.MembresiaInUsuarios
+                    .Where(x => x.IdMembresiaInUsuario == idMembershipInUser)
+                    .FirstOrDefaultAsync();
+
+                member.Status = 3;
+                await Context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Membresía bloqueada de forma incorrecta.");
             }
         }
         public async Task<Boolean> AdministrationMembershipTimes()
@@ -51,6 +125,33 @@ namespace CarniceriaFinal.Marketing.Repository
                 throw RSException.ErrorQueryDB("Correo según id de la promoción.");
             }
         }
+        public async Task<Boolean> AdmMemberTimesByIdUserInMembership(int idMembresiaInUser)
+        {
+            try
+            {
+                var members = await Context
+                    .MembresiaInUsuarios
+                    .Where(x => x.Status == 1 && x.IdMembresiaInUsuario == idMembresiaInUser)
+                    .Include(x => x.IdMembresiaNavigation)
+                    .ToListAsync();
+
+                members.ForEach(member =>
+                {
+                    if(member.CantProductosComprados >= member.IdMembresiaNavigation.CantProductosMembresia)
+                        member.Status = 0;
+
+                    if (DateTime.Compare(member.FechaFin, DateTime.Now) < 0)
+                        member.Status = 0;
+                });
+                await Context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Correo según id de la promoción.");
+            }
+        }
+        
         public async Task<MemberShipCommEntity> GetMembershipHome()
         {
             try
@@ -139,19 +240,19 @@ namespace CarniceriaFinal.Marketing.Repository
             {
 
                 var member = await Context.MembresiaInUsuarios
-                    .Where(x => x.IdUsuario == idUser)
+                    .Where(x => x.IdUsuario == idUser && x.Status != 3)
                     .ToListAsync();
 
-                member.Select(d => d)
+             var newMember = member.Select(d => d)
             .Distinct()
             .OrderByDescending(d => d.FechaFin)
-            .Select(d => d);
+            .Select(d => d).ToList();
 
-                if(member.Count == 0)
+                if(newMember == null || newMember.Count == 0)
                 {
                     return null;
                 }
-                return member[0];
+                return newMember[0];
             }
             catch (Exception)
             {
@@ -159,36 +260,70 @@ namespace CarniceriaFinal.Marketing.Repository
             }
         }
         //Para servicio de administración de ventas (previamente, se debe actualizar la compra como activa)
-        public async Task<String> AddProductsToMembershipByIdUser(int idUser, int cantProduct)
+        public async Task<String> AddProductsToMembershipByIdUser(int idMembresiaInUser, int cantProduct)
         {
             try
             {
-                //Colocar productos comprados a membresía
-                //var member = await this.GetMembershipByIdUser(idUser); (validad que la membresía exista en el servicio, tambien la cantidad maxima)
-                //RSException.(); (retornar cuando la membresia no exista)
-
                 using (var _Context = new DBContext())
                 {
                     var member = await _Context.MembresiaInUsuarios
-                   .Where(x => x.Status == 1 && x.IdUsuario == idUser)
+                   .Where(x => x.IdMembresiaInUsuario == idMembresiaInUser && x.Status != 3)
+                   .Include(x => x.IdMembresiaNavigation)
                    .FirstOrDefaultAsync();
+                    var valueToAdd = member.CantProductosComprados + cantProduct;
 
-                    member.CantProductosComprados = member.CantProductosComprados + cantProduct;
+                    if(valueToAdd > member.IdMembresiaNavigation.CantProductosMembresia)
+                    {
+                        member.CantProductosComprados = member.IdMembresiaNavigation.CantProductosMembresia.Value;
+
+                    }
+                    else
+                    {
+                        member.CantProductosComprados = valueToAdd;
+                    }
+
+                    if(member.CantProductosComprados == member.IdMembresiaNavigation.CantProductosMembresia)
+                    {
+                        member.Status = 0;
+                    }
+
                     await _Context.SaveChangesAsync();
                 }
 
                 return "Proceso realizado correctamente";
-                    //Crear nueva membresía
 
-                    //Validar si la membresía se aplica correctamente
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Tuvimos un error al registrar la compra con membresía.");
+            }
+        }
+        public async Task<String> RemoveProductsToMembershipByIdUser(int idMembresiaInUser, int cantProduct)
+        {
+            try
+            {
+                using (var _Context = new DBContext())
+                {
+                    var member = await _Context.MembresiaInUsuarios
+                   .Where(x => x.IdMembresiaInUsuario == idMembresiaInUser && x.Status != 3)
+                   .Include(x => x.IdMembresiaNavigation)
+                   .FirstOrDefaultAsync();
+                    var valueToAdd = member.CantProductosComprados - cantProduct;
 
-                    //Eliminar membresía se hace arriba
+                    if (valueToAdd < 0)
+                    {
+                        member.CantProductosComprados = 0;
 
+                    }
+                    else
+                    {
+                        member.CantProductosComprados = valueToAdd;
+                    }
 
+                    await _Context.SaveChangesAsync();
+                }
 
-                
-
-                //Cuando llega el idUser (ya existe, la compra como activa)
+                return "Proceso realizado correctamente";
 
             }
             catch (Exception)
@@ -204,20 +339,24 @@ namespace CarniceriaFinal.Marketing.Repository
 
                 if (lastMembership.Status == 1) return 0;
 
+                //Si aún no se cumple el año, debemos mandar 0 de monto
+                if (DateTime.Compare(lastMembership.FechaFin.AddYears(1), DateTime.Now) > 0) return 0;
+
+
                 using (var _Context = new DBContext())
                 {
                     var minDate = DateTime.Now.AddYears(-2);
                     if (lastMembership != null)
                         minDate = lastMembership.FechaFin;
 
-                    var salesValue = await _Context.Venta.Where(x => x.IdCliente == idClient
-                            && DateTime.Compare(minDate.AddYears(1), DateTime.Now) > 0
-                            //Obtenemos todas las ventas mayores a la fecha de finalización de membresía
+                    var salesValue = await _Context.Venta.Where(x => x.IdCliente == idClient && x.IdStatus == 1
+                    //Obtenemos todas las ventas mayores a la fecha de finalización de membresía
                     )
                     .AsNoTracking()
                     .ToListAsync();
 
-                    var salesAmount = salesValue.Select(x => x.Total).Sum();
+                    var salesAmount = salesValue.Where(x => DateTime.Compare(minDate.AddYears(1), x.Fecha.Value) <= 0)
+                        .Select(x => x.Total).Sum();
 
                     if (salesAmount == null) return 0;
                     
@@ -231,33 +370,34 @@ namespace CarniceriaFinal.Marketing.Repository
                 throw RSException.ErrorQueryDB("Tuvimos un error al calcular el momnto de membresía.");
             }
         }
-        public async Task<String> CreateMembershipByIdUser(int idUser, MembresiaInUsuario membershipDetail)
+        public async Task<float> AmountToMemberUserDeclineSale(int idUser, int idClient)
         {
             try
             {
+                var lastMembership = await this.GetLastMembershipByIdUser(idUser);
+
                 using (var _Context = new DBContext())
                 {
 
-                    var member = await _Context.MembresiaInUsuarios
-                        .AddAsync(new MembresiaInUsuario()
-                        {
-                            IdUsuario = idUser,
-                            FechaFin = membershipDetail.FechaFin,
-                            FechaInicio = DateTime.Now,
-                            IdMembresia = membershipDetail.IdMembresia,
-                            CantProductosComprados = 0,
-                            Status = 1
-                        });
+                    var salesValue = await _Context.Venta.Where(x => x.IdCliente == idClient && x.IdStatus == 1
+                    //Obtenemos todas las ventas mayores a la fecha de finalización de membresía
+                    )
+                    .AsNoTracking()
+                    .ToListAsync();
 
-                    await _Context.SaveChangesAsync();
+                    var salesAmount = salesValue.Where(x => DateTime.Compare(lastMembership.FechaInicio.AddYears(-1), 
+                        lastMembership.FechaInicio) <= 0)
+                        .Select(x => x.Total).Sum();
+
+                    if (salesAmount == null) return 0;
+
+                    return salesAmount.Value;
                 }
-
-                return "Proceso realizado correctamente";
 
             }
             catch (Exception)
             {
-                throw RSException.ErrorQueryDB("Tuvimos un error al registrar una membresía.");
+                throw RSException.ErrorQueryDB("Tuvimos un error al re-validar el momnto para acceso a membresía.");
             }
         }
     }

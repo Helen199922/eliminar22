@@ -475,6 +475,44 @@ namespace CarniceriaFinal.Productos
                 throw RSException.ErrorQueryDB("el stock del producto");
             }
         }
-        
+        public async Task<string> DisminuirStock(int idProduct, int cant)
+        {
+            try
+            {
+                Producto product = await Context.Productos
+                    .Where(x => x.IdProducto == idProduct)
+                    .FirstOrDefaultAsync();
+
+                if(product.Stock < cant)
+                    product.Stock = 0;
+                else
+                    product.Stock = product.Stock - cant;
+
+                await Context.SaveChangesAsync();
+                return "Stock de producto actualizado correctamente";
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("el stock del producto");
+            }
+        }
+        public async Task<string> AumentarStock(int idProduct, int cant)
+        {
+            try
+            {
+                Producto product = await Context.Productos
+                    .Where(x => x.IdProducto == idProduct)
+                    .FirstOrDefaultAsync();
+
+                    product.Stock = product.Stock + cant;
+
+                await Context.SaveChangesAsync();
+                return "Stock de producto actualizado correctamente";
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("el stock del producto");
+            }
+        }
     }
 }

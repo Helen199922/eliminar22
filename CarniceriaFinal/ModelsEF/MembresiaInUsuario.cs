@@ -38,7 +38,7 @@ namespace CarniceriaFinal.ModelsEF
         [ForeignKey("IdUsuario")]
         [InverseProperty("MembresiaInUsuarios")]
         public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
-        [InverseProperty("IdMembresiaNavigation")]
+        [InverseProperty("IdMembresiaInUsuarioNavigation")]
         public virtual ICollection<DetalleVentum> DetalleVenta { get; set; }
     }
 }

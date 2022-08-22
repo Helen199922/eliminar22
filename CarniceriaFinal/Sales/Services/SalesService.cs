@@ -183,16 +183,6 @@ namespace CarniceriaFinal.Sales.Services
                             item.idPromocion = null;
                             item.idMembresiaInUser = null;
                         }
-                        //if(item.idMembresiaInUser != null)
-                        //{
-                        //    if (sale.idCliente == null)
-                        //        throw RSException.BadRequest("El usuario no registra como cliente. No puede realizar esta transacción de membresía");
-                        //    var membershipValue = await this.IMembershipRepository.GetMembershipByIdClient(sale.idCliente.Value);
-                        //    if(membershipValue?.IdUsuario == null)
-                        //        throw RSException.BadRequest("El usuario no tiene la membresía indicada. No puede realizar esta transacción de membresía");
-
-                        //    item.idMembresiaInUser = membershipValue.IdMembresiaInUsuario;
-                        //}
                     }
 
                     item.precio = productValue.Precio.Value;
@@ -395,7 +385,7 @@ namespace CarniceriaFinal.Sales.Services
                 saleDetail.Cantidad = detail.cantidad;
                 saleDetail.Precio = detail.precio;
                 saleDetail.IdPromocion = detail.idPromocion;
-                saleDetail.IdMembresia = detail.idMembresiaInUser;
+                saleDetail.IdMembresiaInUsuario = detail.idMembresiaInUser;
                 saleDetail.IdProducto = detail.idProducto;
                 saleDetail.Descuento = detail.descuentoTotal;
 
