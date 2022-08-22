@@ -126,7 +126,7 @@ namespace CarniceriaFinal.Sales.Services
 
                         if(membershipDetail == null && membershipDetail.Status == 3)
                         {
-                            blockNextStep = "Detectamos una inconsistencia. Tal vez, se rechazó la venta que permitía ofrecerle este beneficio. Por lo cual dicha venta no se puede realizar. Nota: La membresía considerada es la que registra en la cotización.";
+                            blockNextStep = "Detectamos una inconsistencia. Tal vez, se rechazó la venta que permitía ofrecerle este beneficio. Por lo cual dicha venta no se puede realizar. Nota: La membresía considerada es la que registra en la cotización. Si actualmente cuenta con una vigente, procedar a realizar la misma cotización con esa.";
                             inconsistencies.Add(new()
                             {
                                 descripcion = "Membresía de Usuario no Existe. Tal vez, se rechazó la venta que permitía ofrecerle este beneficio.",
@@ -141,7 +141,7 @@ namespace CarniceriaFinal.Sales.Services
                         {
                             var disponibilidiad = (membershipDetail.IdMembresiaNavigation.CantProductosMembresia) - (membershipDetail.CantProductosComprados);
                             blockNextStep = String
-                                .Format("Hay más productos de los que soporta esta membresía: registramos {0} productos dentro de la membresía del cliente y al agregar {1} superamos la cant. máxima de: {2}",
+                                .Format("Hay más productos de los que soporta esta membresía: registramos {0} productos dentro de la membresía del cliente y al agregar {1} superamos la cant. máxima de: {2}. Nota: La membresía considerada es la que registra en la cotización. Si actualmente cuenta con una vigente, procedar a realizar la misma cotización con esa.",
                                 membershipDetail.CantProductosComprados, detail.cantidad, membershipDetail.CantProductosComprados, membershipDetail.IdMembresiaNavigation.CantProductosMembresia);
 
                             inconsistencies.Add(new()
