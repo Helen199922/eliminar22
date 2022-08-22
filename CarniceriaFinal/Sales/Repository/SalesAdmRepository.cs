@@ -79,6 +79,7 @@ namespace CarniceriaFinal.Sales.Repository
             {
 
                 var result = await Context.VentaStatuses
+                    .Where(x => x.IdVentaStatus != 1)
                     .ToListAsync();
                 
                 if (result == null)
