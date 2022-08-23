@@ -16,6 +16,7 @@ namespace CarniceriaFinal.Sales.Controllers
         {
             this.ISalesAdmServices = ISalesAdmServices;
         }
+        [Authorize]
         [HttpGet("sales-by-status/{idStatus}")]
         public async Task<IActionResult> GetAllSales(int idStatus)
         {
@@ -30,6 +31,7 @@ namespace CarniceriaFinal.Sales.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpGet("detalle-venta/{idSale}")]
         public async Task<IActionResult> GetDetailByIdSale(int idSale)
         {
@@ -44,8 +46,9 @@ namespace CarniceriaFinal.Sales.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPost("atender-venta")]
-        public async Task<IActionResult> attendSale([FromBody] SaleAdmRequestIdSale sale)
+        public async Task<IActionResult> AttendSale([FromBody] SaleAdmRequestIdSale sale)
         {
             RSEntity<string> rsEntity = new();
             try
@@ -58,8 +61,9 @@ namespace CarniceriaFinal.Sales.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPost("rechazar-venta")]
-        public async Task<IActionResult> declineSale([FromBody] SaleAdmRequestIdSale sale)
+        public async Task<IActionResult> DeclineSale([FromBody] SaleAdmRequestIdSale sale)
         {
             RSEntity<string> rsEntity = new();
             try
