@@ -1,4 +1,7 @@
-﻿namespace CarniceriaFinal.Marketing.DTOs
+﻿using CarniceriaFinal.Core.TimesConverts;
+using System.Text.Json.Serialization;
+
+namespace CarniceriaFinal.Marketing.DTOs
 {
     public class AdmStatusRecommendation
     {
@@ -19,8 +22,10 @@
         public string Titulo { get; set; }
         public string Descripcion { get; set; }
         public string UrlImage { get; set; }
-        public DateTime? HoraInicio { get; set; }
-        public DateTime? HoraFin { get; set; }
+        [JsonConverter(typeof(TimeOnlyJsonConverter))]
+        public TimeOnly? HoraInicio { get; set; }
+        [JsonConverter(typeof(TimeOnlyJsonConverter))]
+        public TimeOnly? HoraFin { get; set; }
     }
     public class PreparationWay
     {
