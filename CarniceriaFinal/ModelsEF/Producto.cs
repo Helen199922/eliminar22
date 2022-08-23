@@ -14,10 +14,9 @@ namespace CarniceriaFinal.ModelsEF
         {
             DetalleProductos = new HashSet<DetalleProducto>();
             DetalleVenta = new HashSet<DetalleVentum>();
-            MomentoDegustacionInProductos = new HashSet<MomentoDegustacionInProducto>();
+            PreparacionProductoInProductos = new HashSet<PreparacionProductoInProducto>();
             PromocionInProductos = new HashSet<PromocionInProducto>();
             SubInCategoria = new HashSet<SubInCategorium>();
-            IdPreparacionProductos = new HashSet<PreparacionProducto>();
         }
 
         [Key]
@@ -52,14 +51,10 @@ namespace CarniceriaFinal.ModelsEF
         [InverseProperty("IdProductoNavigation")]
         public virtual ICollection<DetalleVentum> DetalleVenta { get; set; }
         [InverseProperty("IdProductoNavigation")]
-        public virtual ICollection<MomentoDegustacionInProducto> MomentoDegustacionInProductos { get; set; }
+        public virtual ICollection<PreparacionProductoInProducto> PreparacionProductoInProductos { get; set; }
         [InverseProperty("IdProductoNavigation")]
         public virtual ICollection<PromocionInProducto> PromocionInProductos { get; set; }
         [InverseProperty("IdProductoNavigation")]
         public virtual ICollection<SubInCategorium> SubInCategoria { get; set; }
-
-        [ForeignKey("IdProducto")]
-        [InverseProperty("IdProductos")]
-        public virtual ICollection<PreparacionProducto> IdPreparacionProductos { get; set; }
     }
 }

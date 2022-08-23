@@ -12,7 +12,7 @@ namespace CarniceriaFinal.ModelsEF
         public PreparacionProducto()
         {
             MomentoDegustacionInPreparacions = new HashSet<MomentoDegustacionInPreparacion>();
-            IdProductos = new HashSet<Producto>();
+            PreparacionProductoInProductos = new HashSet<PreparacionProductoInProducto>();
         }
 
         [Key]
@@ -32,9 +32,7 @@ namespace CarniceriaFinal.ModelsEF
 
         [InverseProperty("IdPreparacionProductoNavigation")]
         public virtual ICollection<MomentoDegustacionInPreparacion> MomentoDegustacionInPreparacions { get; set; }
-
-        [ForeignKey("IdPreparacionProducto")]
-        [InverseProperty("IdPreparacionProductos")]
-        public virtual ICollection<Producto> IdProductos { get; set; }
+        [InverseProperty("IdPreparacionProductoNavigation")]
+        public virtual ICollection<PreparacionProductoInProducto> PreparacionProductoInProductos { get; set; }
     }
 }

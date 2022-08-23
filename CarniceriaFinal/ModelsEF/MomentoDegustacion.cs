@@ -12,7 +12,6 @@ namespace CarniceriaFinal.ModelsEF
         public MomentoDegustacion()
         {
             MomentoDegustacionInPreparacions = new HashSet<MomentoDegustacionInPreparacion>();
-            MomentoDegustacionInProductos = new HashSet<MomentoDegustacionInProducto>();
         }
 
         [Key]
@@ -36,7 +35,5 @@ namespace CarniceriaFinal.ModelsEF
 
         [InverseProperty("IdMomentoDegustacionNavigation")]
         public virtual ICollection<MomentoDegustacionInPreparacion> MomentoDegustacionInPreparacions { get; set; }
-        [InverseProperty("IdMomentoDegustacionNavigation")]
-        public virtual ICollection<MomentoDegustacionInProducto> MomentoDegustacionInProductos { get; set; }
     }
 }

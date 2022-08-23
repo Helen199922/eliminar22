@@ -100,6 +100,17 @@ namespace CarniceriaFinal.Core
             CreateMap<MembresiaInUsuario, MembershipUserEntity>();
             CreateMap<Membresium, MembershipEntity>();
             CreateMap<MembershipEntity, Membresium>();
+
+            //Recommendation
+            CreateMap<TimesToEatEntity, MomentoDegustacion>();
+            CreateMap<MomentoDegustacion, TimesToEatEntity>();
+            CreateMap<MomentoDegustacion, CreateTimesToEatWay>();
+            CreateMap<CreateTimesToEatWay, MomentoDegustacion>();
+
+            CreateMap<PreparacionProducto, CreatePreparationWay>();
+            CreateMap<CreatePreparationWay, PreparacionProducto>();
+            CreateMap<PreparacionProducto, PreparationWay>();
+            CreateMap<PreparationWay, PreparacionProducto>();
         }
     }
 }

@@ -36,11 +36,11 @@ namespace CarniceriaFinal.ModelsEF
         public virtual DbSet<ModuloInOpcion> ModuloInOpcions { get; set; } = null!;
         public virtual DbSet<MomentoDegustacion> MomentoDegustacions { get; set; } = null!;
         public virtual DbSet<MomentoDegustacionInPreparacion> MomentoDegustacionInPreparacions { get; set; } = null!;
-        public virtual DbSet<MomentoDegustacionInProducto> MomentoDegustacionInProductos { get; set; } = null!;
         public virtual DbSet<Opcion> Opcions { get; set; } = null!;
         public virtual DbSet<OptionInEndpoint> OptionInEndpoints { get; set; } = null!;
         public virtual DbSet<Persona> Personas { get; set; } = null!;
         public virtual DbSet<PreparacionProducto> PreparacionProductos { get; set; } = null!;
+        public virtual DbSet<PreparacionProductoInProducto> PreparacionProductoInProductos { get; set; } = null!;
         public virtual DbSet<Producto> Productos { get; set; } = null!;
         public virtual DbSet<Promocion> Promocions { get; set; } = null!;
         public virtual DbSet<PromocionInProducto> PromocionInProductos { get; set; } = null!;
@@ -285,9 +285,8 @@ namespace CarniceriaFinal.ModelsEF
 
             modelBuilder.Entity<MomentoDegustacionInPreparacion>(entity =>
             {
-                entity.HasKey(e => new { e.IdMomentoDegustacion, e.IdPreparacionProducto })
-                    .HasName("PRIMARY")
-                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                entity.HasKey(e => e.IdMomentoDegustacionInPreparacion)
+                    .HasName("PRIMARY");
 
                 entity.HasOne(d => d.IdMomentoDegustacionNavigation)
                     .WithMany(p => p.MomentoDegustacionInPreparacions)
@@ -300,25 +299,6 @@ namespace CarniceriaFinal.ModelsEF
                     .HasForeignKey(d => d.IdPreparacionProducto)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("momento_degustacion_in_preparacion_ibfk_2");
-            });
-
-            modelBuilder.Entity<MomentoDegustacionInProducto>(entity =>
-            {
-                entity.HasKey(e => new { e.IdMomentoDegustacion, e.IdProducto })
-                    .HasName("PRIMARY")
-                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
-
-                entity.HasOne(d => d.IdMomentoDegustacionNavigation)
-                    .WithMany(p => p.MomentoDegustacionInProductos)
-                    .HasForeignKey(d => d.IdMomentoDegustacion)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("momento_degustacion_in_producto_ibfk_1");
-
-                entity.HasOne(d => d.IdProductoNavigation)
-                    .WithMany(p => p.MomentoDegustacionInProductos)
-                    .HasForeignKey(d => d.IdProducto)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("momento_degustacion_in_producto_ibfk_2");
             });
 
             modelBuilder.Entity<Opcion>(entity =>
@@ -367,25 +347,22 @@ namespace CarniceriaFinal.ModelsEF
             {
                 entity.HasKey(e => e.IdPreparacionProducto)
                     .HasName("PRIMARY");
+            });
 
-                entity.HasMany(d => d.IdProductos)
-                    .WithMany(p => p.IdPreparacionProductos)
-                    .UsingEntity<Dictionary<string, object>>(
-                        "PreparacionProductoInProducto",
-                        l => l.HasOne<Producto>().WithMany().HasForeignKey("IdProducto").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("preparacion_producto_in_producto_ibfk_2"),
-                        r => r.HasOne<PreparacionProducto>().WithMany().HasForeignKey("IdPreparacionProducto").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("preparacion_producto_in_producto_ibfk_1"),
-                        j =>
-                        {
-                            j.HasKey("IdPreparacionProducto", "IdProducto").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+            modelBuilder.Entity<PreparacionProductoInProducto>(entity =>
+            {
+                entity.HasKey(e => e.IdPreparacionInProducto)
+                    .HasName("PRIMARY");
 
-                            j.ToTable("preparacion_producto_in_producto");
+                entity.HasOne(d => d.IdPreparacionProductoNavigation)
+                    .WithMany(p => p.PreparacionProductoInProductos)
+                    .HasForeignKey(d => d.IdPreparacionProducto)
+                    .HasConstraintName("preparacion_producto_in_producto_ibfk_1");
 
-                            j.HasIndex(new[] { "IdProducto" }, "idProducto");
-
-                            j.IndexerProperty<int>("IdPreparacionProducto").ValueGeneratedOnAdd().HasColumnName("idPreparacionProducto");
-
-                            j.IndexerProperty<int>("IdProducto").HasColumnName("idProducto");
-                        });
+                entity.HasOne(d => d.IdProductoNavigation)
+                    .WithMany(p => p.PreparacionProductoInProductos)
+                    .HasForeignKey(d => d.IdProducto)
+                    .HasConstraintName("preparacion_producto_in_producto_ibfk_2");
             });
 
             modelBuilder.Entity<Producto>(entity =>
