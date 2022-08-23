@@ -39,12 +39,16 @@ namespace CarniceriaFinal.User.Services
                 //Si ya esta creado el usuario con estas credenciales, se debe enviar un mensaje de error para que inicie sesión
                 if ( await IUserRepository
                     .GetUserByIdIndentificationPerson(user.persona.cedula) != null
+                    || await IUserRepository.GetUserByEmail(user.persona.email) != null
                    )
                 {
                     throw RSException.Unauthorized("Ya existe un usuario registrado con estas credenciales. Por favor, inicie sesión.");
                 }
                 //Gestionar la creación o actualización de la persona
                 PersonEntity person = await this.ManagementPerson(user.persona);
+
+                if (user.usuario.recibirEmail == null)
+                    user.usuario.recibirEmail = 0;
 
                 //Creamos el usuario
                 user.usuario.idPersona = person.idPersona.Value;

@@ -45,6 +45,20 @@ namespace CarniceriaFinal.Security.Repository
                 throw RSException.ErrorQueryDB("Buscar usuario por userName e email");
             }
         }
+        public async Task<Usuario> GetUserByEmail(string email)
+        {
+            try
+            {
+                return await Context.Usuarios.Where(x =>
+                x.IdPersonaNavigation.Email.ToLower() == email.ToLower()
+                && x.IdRol == 3
+                ).FirstOrDefaultAsync();
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Buscar usuario por email");
+            }
+        }
         public async Task<Usuario> GetUserByUserNameAndIdUser(string username, int? idUser = 0)
         {
             try
