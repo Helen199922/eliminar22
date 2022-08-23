@@ -193,5 +193,26 @@ namespace CarniceriaFinal.Security.Repository
                 throw RSException.ErrorQueryDB("Actualizar el usuario");
             }
         }
+        public async Task<Usuario> UpdateStatusReceivedEmailByIdUser(int idUser, int status)
+        {
+            try
+            {
+                var profileValue = await Context.Usuarios
+                    .Include(x => x.IdPersonaNavigation)
+                    .Where(x => (x.IdUsuario == idUser && x.Status == 1 && x.IdRol == 3))
+                    .FirstOrDefaultAsync();
+                if (profileValue == null)
+                    throw RSException.NoData("No hay información del usuario");
+
+                profileValue.ReceiveEmail = status;
+
+                await Context.SaveChangesAsync();
+                return profileValue;
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Actualizar el estado de recibir correo del usuario");
+            }
+        }
     }
 }

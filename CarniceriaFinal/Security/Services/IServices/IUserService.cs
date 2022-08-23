@@ -18,5 +18,6 @@ namespace CarniceriaFinal.Security.Services.IServices
         Task<PersonEntity> ManagementPerson(PersonEntity person);
         Task<ProfileUserEntity> GetProfileInfo(int idUser);
         Task<ProfileUserEntity> UpdateProfileInfo(ProfileUserEntity profile, int idUser);
+        Task<Boolean> UpdateStatusReceivedEmailByIdUser(int idUser, Boolean status);
     }
 }

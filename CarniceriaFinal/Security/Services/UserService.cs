@@ -37,10 +37,10 @@ namespace CarniceriaFinal.User.Services
                 if (username != null) throw RSException.Unauthorized("Por favor, el usuario que intenta ingresar ya existe. Por favor, escoja un nuevo Username.");
 
                 //Si ya esta creado el usuario con estas credenciales, se debe enviar un mensaje de error para que inicie sesión
-                if ( await IUserRepository
-                    .GetUserByIdIndentificationPerson(user.persona.cedula) != null
-                    || await IUserRepository.GetUserByEmail(user.persona.email) != null
-                   )
+                var userByCedula = await IUserRepository.GetUserByIdIndentificationPerson(user.persona.cedula);
+                var userByEmail = await IUserRepository.GetUserByEmail(user.persona.email);
+
+                if ( userByCedula != null || userByEmail != null )
                 {
                     throw RSException.Unauthorized("Ya existe un usuario registrado con estas credenciales. Por favor, inicie sesión.");
                 }
@@ -203,6 +203,7 @@ namespace CarniceriaFinal.User.Services
                 profile.nombre = userDetail.IdPersonaNavigation?.Nombre ?? "";
                 profile.apellido = userDetail.IdPersonaNavigation?.Apellido ?? "";
                 profile.direccion = userDetail.IdPersonaNavigation?.Direccion1 ?? "";
+                profile.recibirEmail = userDetail.ReceiveEmail == 0 ? false : true;
 
                 return profile;
             }
@@ -226,6 +227,26 @@ namespace CarniceriaFinal.User.Services
 
                 await IUserRepository.UpdateProfileInfo(profile, idUser);
                 return profile;
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception err)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al actualizar el perfil.");
+            }
+        }
+        public async Task<Boolean> UpdateStatusReceivedEmailByIdUser(int idUser, Boolean status)
+        {
+            try
+            {
+                var userDetail = await IUserRepository.UpdateStatusReceivedEmailByIdUser(idUser, (status ? 1 : 0));
+
+                if (userDetail == null)
+                    throw RSException.Unauthorized("No se pudo realizar correctamente la actualización. Vuelva a intentar.");
+
+                return userDetail.ReceiveEmail == 0 ? false : true;
             }
             catch (RSException err)
             {

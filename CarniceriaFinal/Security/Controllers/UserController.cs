@@ -67,5 +67,19 @@ namespace CarniceriaFinal.Security.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
+        [HttpPut("profile/status-received-email/{idUser}")]
+        public async Task<IActionResult> UpdateStatusReceivedEmailByIdUser([FromBody] ChangeReceivedEmailUserEntity profile, int idUser)
+        {
+            RSEntity<Boolean> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IUserService.UpdateStatusReceivedEmailByIdUser(idUser, profile.status)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
     }
 }

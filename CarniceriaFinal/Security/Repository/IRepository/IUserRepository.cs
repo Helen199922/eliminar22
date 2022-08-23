@@ -20,5 +20,6 @@ namespace CarniceriaFinal.Security.IRepository
         Task<Usuario> GetProfileInfo(int idUser);
         Task<Usuario> UpdateProfileInfo(ProfileUserEntity profile, int idUser);
         Task<Usuario> GetUserByEmail(string email);
+        Task<Usuario> UpdateStatusReceivedEmailByIdUser(int idUser, int status);
     }
 }
