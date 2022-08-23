@@ -14,6 +14,6 @@ namespace CarniceriaFinal.Cliente.Models
         public int idPersona {get; set;}
         public int status { get; set; }
         public string? rolName { get; set; }
-        public int? recibirEmail { get; set; }
+        public int? ReceiveEmail { get; set; }
     }
 }

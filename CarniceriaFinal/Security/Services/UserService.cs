@@ -47,8 +47,8 @@ namespace CarniceriaFinal.User.Services
                 //Gestionar la creación o actualización de la persona
                 PersonEntity person = await this.ManagementPerson(user.persona);
 
-                if (user.usuario.recibirEmail == null)
-                    user.usuario.recibirEmail = 0;
+                if (user.usuario.ReceiveEmail == null)
+                    user.usuario.ReceiveEmail = 0;
 
                 //Creamos el usuario
                 user.usuario.idPersona = person.idPersona.Value;
