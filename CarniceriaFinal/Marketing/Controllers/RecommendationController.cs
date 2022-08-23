@@ -159,7 +159,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
-        [HttpPut("actualizar-momento-preparacion")]
+        [HttpPut("actualizar-momento-degustacion")]
         public async Task<IActionResult> UpdateTimeToEat([FromBody] CreateTimesToEatWay data)
         {
             RSEntity<TimesToEatEntity> rsEntity = new();

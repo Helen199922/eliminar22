@@ -21,7 +21,7 @@ namespace CarniceriaFinal.Marketing.Services
         {
             try
             {
-                return IMapper.Map<List<TimesToEatEntity>>(await IRecommendationRepository.GetAllPreparationWays());
+                return IMapper.Map<List<TimesToEatEntity>>(await IRecommendationRepository.GetAllTimesToEat());
             }
             catch (RSException err)
             {
