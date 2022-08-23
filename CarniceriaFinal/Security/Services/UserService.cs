@@ -187,7 +187,7 @@ namespace CarniceriaFinal.User.Services
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener los usuarios.");
             }
         }
-        public async Task<ProfileUserEntity> GetProfileInfo(int idUser)
+        public async Task<ProfileSimpleUSerEntity> GetProfileInfo(int idUser)
         {
             try
             {
@@ -195,14 +195,11 @@ namespace CarniceriaFinal.User.Services
                 if (userDetail == null)
                     throw RSException.Unauthorized("No hemos encontrado el usuario o no tiene los permisos para acceder a él.");
 
-                ProfileUserEntity profile = new();
-                profile.username = userDetail.Username ?? "";
-                profile.password = userDetail.Password ?? "";
-                profile.profileImage= userDetail.PerfilImage;
+                ProfileSimpleUSerEntity profile = new();
                 profile.email = userDetail.IdPersonaNavigation?.Email ?? "";
                 profile.nombre = userDetail.IdPersonaNavigation?.Nombre ?? "";
                 profile.apellido = userDetail.IdPersonaNavigation?.Apellido ?? "";
-                profile.direccion = userDetail.IdPersonaNavigation?.Direccion1 ?? "";
+                profile.cedula = userDetail.IdPersonaNavigation?.Cedula ?? "";
                 profile.recibirEmail = userDetail.ReceiveEmail == 0 ? false : true;
 
                 return profile;

@@ -42,7 +42,7 @@ namespace CarniceriaFinal.Security.Controllers
         [HttpGet("profile/{idUser}")]
         public async Task<IActionResult> GetProfileInfo(int idUser)
         {
-            RSEntity<ProfileUserEntity> rsEntity = new();
+            RSEntity<ProfileSimpleUSerEntity> rsEntity = new();
             try
             {
 
