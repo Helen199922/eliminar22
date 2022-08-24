@@ -173,5 +173,70 @@ namespace CarniceriaFinal.Marketing.Controllers
             }
         }
 
+        [HttpGet("obtener-eventos-especiales")]
+        public async Task<IActionResult> GetAllSpecialEvent()
+        {
+            RSEntity<List<SpecialEventEntity>> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IRecommendationService.GetAllSpecialEvent()));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
+        [HttpPost("crear-eventos-especiales")]
+        public async Task<IActionResult> CreateSpecialEvent([FromBody] SpecialEventEntity specialEvent)
+        {
+            RSEntity<string> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IRecommendationService.CreateSpecialEvent(specialEvent)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
+        [HttpPut("actualizar-eventos-especiales")]
+        public async Task<IActionResult> UpdateSpecialEvent([FromBody] SpecialEventEntity specialEvent)
+        {
+            RSEntity<string> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IRecommendationService.UpdateSpecialEvent(specialEvent)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
+        [HttpPut("desactivar-eventos-especiales/{idSpecialEvent}")]
+        public async Task<IActionResult> DisableSpecialEvent(int idSpecialEvent)
+        {
+            RSEntity<string> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IRecommendationService.DisableSpecialEvent(idSpecialEvent)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
+        [HttpPut("activar-eventos-especiales/{idSpecialEvent}")]
+        public async Task<IActionResult> EnableSpecialEvent(int idSpecialEvent)
+        {
+            RSEntity<string> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IRecommendationService.EnableSpecialEvent(idSpecialEvent)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
     }
 }

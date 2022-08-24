@@ -58,10 +58,10 @@ namespace CarniceriaFinal.Marketing.Repository
             {
                 //ver que este coincida 
                 return await Context.PreparacionProductos
-                    .Where(x => x.Status == 1 && 
+                    .Where(x => x.Status == 1 &&
                                 x.PreparacionProductoInProductos
                                 .Where(y => Context.MomentoDegustacionInProductos
-                                .Where( z => z.IdProducto == y.IdProducto && z.IdMomentoDegustacion == idTimeToEat).FirstOrDefault() != null)
+                                .Where(z => z.IdProducto == y.IdProducto && z.IdMomentoDegustacion == idTimeToEat).FirstOrDefault() != null)
                                 .FirstOrDefault() != null
                     ).ToListAsync();
             }
@@ -230,7 +230,7 @@ namespace CarniceriaFinal.Marketing.Repository
 
                 Context.PreparacionProductoInProductos.RemoveRange(productsToDelete);
                 Context.SaveChanges();
-                
+
                 List<PreparacionProductoInProducto> list = new();
 
                 foreach (var productId in productsToAdd)
@@ -309,8 +309,193 @@ namespace CarniceriaFinal.Marketing.Repository
         }
 
 
+        //Crear Recomendación
+        public async Task<List<EventoEspecial>> GetAllSpecialEvent()
+        {
+            try
+            {
+                return await Context.EventoEspecials.ToListAsync();
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Obtener Eventos especiales");
+            }
+        }
+        public async Task<EventoEspecial> CreateSpecialEvent(EventoEspecial specialEvent)
+        {
+            try
+            {
+                specialEvent.Status = 1;
+                await Context.EventoEspecials
+                    .AddAsync(specialEvent);
+
+                await Context.SaveChangesAsync();
+
+                return specialEvent;
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Crear Evento especial");
+            }
+        }
+        public async Task<EventoEspecial> UpdateSpecialEvent(EventoEspecial specialEvent)
+        {
+            try
+            {
+                var specialEventResponse = await Context.EventoEspecials
+                    .Where(x => x.IdEventoEspecial == specialEvent.IdEventoEspecial)
+                    .FirstOrDefaultAsync();
+
+                specialEventResponse.Titulo = specialEvent.Titulo;
+                specialEventResponse.FechaFin = specialEvent.FechaFin;
+                specialEventResponse.FechaInicio = specialEvent.FechaInicio;
+                specialEventResponse.Descripcion = specialEvent.Descripcion;
+                specialEventResponse.Imagen = specialEvent.Imagen;
+
+                await Context.SaveChangesAsync();
+
+                return specialEvent;
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Actualizar Evento especial");
+            }
+        }
+        public async Task<EventoEspecial> DisableSpecialEvent(int idSpecialEvent)
+        {
+            try
+            {
+                var specialEventResponse = await Context.EventoEspecials
+                    .Where(x => x.IdEventoEspecial == idSpecialEvent)
+                    .FirstOrDefaultAsync();
+
+                specialEventResponse.Status = 0;
+
+                await Context.SaveChangesAsync();
+                return specialEventResponse;
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Desactivar Evento especial");
+            }
+        }
+        public async Task<EventoEspecial> EnableSpecialEvent(int idSpecialEvent)
+        {
+            try
+            {
+                var specialEventResponse = await Context.EventoEspecials
+                    .Where(x => x.IdEventoEspecial == idSpecialEvent)
+                    .FirstOrDefaultAsync();
+
+                specialEventResponse.Status = 1;
+
+                await Context.SaveChangesAsync();
+                return specialEventResponse;
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Activar Evento especial");
+            }
+        }
 
         //isValidCreateSpecialEvent
+        public async Task<Boolean> isValidCreateSpecialEvent(EventoEspecial specialEvent)
+        {
+            try
+            {
+                var eventResponse = await Context.EventoEspecials
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                var activates = eventResponse.Where(x =>
+                        ((DateTime.Compare(x.FechaFin, specialEvent.FechaInicio) >= 0) && (DateTime.Compare(x.FechaInicio, specialEvent.FechaInicio) <= 0))
+                        || ((DateTime.Compare(x.FechaInicio, specialEvent.FechaFin) <= 0) && (DateTime.Compare(x.FechaFin, specialEvent.FechaInicio) >= 0))
+                        || ((DateTime.Compare(specialEvent.FechaInicio, x.FechaInicio) < 0) && (DateTime.Compare(specialEvent.FechaFin, x.FechaFin) > 0))
+                    )
+                    .FirstOrDefault();
+
+                if (activates == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Consultar validez de crear evento especial");
+            }
+        }
+
         //isValidActivateSpecialEvent
+        public async Task<Boolean> isValidActivateSpecialEvent(int idSpecialEvent)
+        {
+            try
+            {
+                var eventResponse = await Context.EventoEspecials
+                    .Where(x => x.IdEventoEspecial == idSpecialEvent)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+
+                var events = await Context.EventoEspecials
+                    .Where(x => x.IdEventoEspecial != idSpecialEvent)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                var activates = events.Where(x => ((DateTime.Compare(x.FechaFin, eventResponse.FechaInicio) > 0) && (DateTime.Compare(x.FechaInicio, eventResponse.FechaInicio) < 0))
+                        || ((DateTime.Compare(x.FechaInicio, eventResponse.FechaFin) < 0) && (DateTime.Compare(x.FechaFin, eventResponse.FechaFin) > 0))
+                        || ((DateTime.Compare(eventResponse.FechaInicio, x.FechaInicio) < 0) && (DateTime.Compare(eventResponse.FechaFin, x.FechaFin) > 0))
+                    )
+                    .FirstOrDefault();
+
+                if (activates == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Consultar validez de crear evento especial");
+            }
+
+        }
+        public async Task<Boolean> isValidUpdateSpecialEvent(EventoEspecial specialEvent)
+        {
+            try
+            {
+                var events = await Context.EventoEspecials
+                    .Where(x => x.IdEventoEspecial != specialEvent.IdEventoEspecial)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                var activates = events.Where(x => ((DateTime.Compare(x.FechaFin, specialEvent.FechaInicio) > 0) && (DateTime.Compare(x.FechaInicio, specialEvent.FechaInicio) < 0))
+                        || ((DateTime.Compare(x.FechaInicio, specialEvent.FechaFin) < 0) && (DateTime.Compare(x.FechaFin, specialEvent.FechaFin) > 0))
+                        || ((DateTime.Compare(specialEvent.FechaInicio, x.FechaInicio) < 0) && (DateTime.Compare(specialEvent.FechaFin, x.FechaFin) > 0))
+                    )
+                    .FirstOrDefault();
+
+                if (activates == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Consultar validez de crear evento especial");
+            }
+        }
     }
 }

@@ -16,6 +16,16 @@ namespace CarniceriaFinal.Marketing.Repository.IRepository
         Task<PreparacionProducto> GetPreparationWayDetail(int idPreparationWay);
         Task<PreparacionProducto> UpdatePreparationWay(PreparacionProducto preparation, List<int> productIds);
         Task<MomentoDegustacion> UpdateTimeToEat(MomentoDegustacion tomesToEat, List<int> preparationProducts);
-
+        //Crear Recomendació
+        Task<List<EventoEspecial>> GetAllSpecialEvent();
+        Task<EventoEspecial> CreateSpecialEvent(EventoEspecial specialEvent);
+        Task<EventoEspecial> UpdateSpecialEvent(EventoEspecial specialEvent);
+        Task<EventoEspecial> DisableSpecialEvent(int idSpecialEvent);
+        Task<EventoEspecial> EnableSpecialEvent(int idSpecialEvent);
+        //isValidCreateSpecialEven
+        Task<Boolean> isValidCreateSpecialEvent(EventoEspecial specialEvent);
+        //isValidActivateSpecialEven
+        Task<Boolean> isValidActivateSpecialEvent(int idSpecialEvent);
+        Task<Boolean> isValidUpdateSpecialEvent(EventoEspecial specialEvent);
     }
 }

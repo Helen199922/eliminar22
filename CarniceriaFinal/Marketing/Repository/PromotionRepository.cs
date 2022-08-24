@@ -126,6 +126,7 @@ namespace CarniceriaFinal.Marketing.Repository
                     var activates = options.Where(x => 
                         ((DateTime.Compare(x.FechaFin, lowerLimit.Value) > 0) && (DateTime.Compare(x.FechaInicio, lowerLimit.Value) < 0))
                         || ((DateTime.Compare(x.FechaInicio, upperLimit.Value) < 0) && (DateTime.Compare(x.FechaFin, upperLimit.Value) > 0))
+                        || ((DateTime.Compare(lowerLimit.Value, x.FechaInicio) < 0) && (DateTime.Compare(upperLimit.Value, x.FechaFin) > 0))
                     ).FirstOrDefault();
 
                     return activates;
@@ -157,6 +158,7 @@ namespace CarniceriaFinal.Marketing.Repository
                     var activates = options.Where(x =>
                         ((DateTime.Compare(x.FechaFin, lowerLimit.Value) > 0) && (DateTime.Compare(x.FechaInicio, lowerLimit.Value) < 0))
                         || ((DateTime.Compare(x.FechaInicio, upperLimit.Value) < 0) && (DateTime.Compare(x.FechaFin, upperLimit.Value) > 0))
+                        || ((DateTime.Compare(lowerLimit.Value, x.FechaInicio) < 0) && (DateTime.Compare(upperLimit.Value, x.FechaFin) > 0))
                     ).FirstOrDefault();
 
                     return activates;

@@ -36,4 +36,14 @@ namespace CarniceriaFinal.Marketing.DTOs
         public string Imagen { get; set; }
         public int? Status { get; set; }
     }
+    public class SpecialEventEntity
+    {
+        public int? IdEventoEspecial { get; set; }
+        public string Titulo { get; set; } = null!;
+        public string? Descripcion { get; set; }
+        public string Imagen { get; set; } = null!;
+        public int? Status { get; set; }
+        public DateTime FechaInicio { get; set; }
+        public DateTime FechaFin { get; set; }
+    }
 }

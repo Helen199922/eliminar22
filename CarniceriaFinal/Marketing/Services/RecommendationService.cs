@@ -239,5 +239,110 @@ namespace CarniceriaFinal.Marketing.Services
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al actualizar el momento de preparación del producto.");
             }
         }
+
+        public async Task<List<SpecialEventEntity>> GetAllSpecialEvent()
+        {
+            try { 
+
+                var response = await IRecommendationRepository.GetAllSpecialEvent();
+                return IMapper.Map<List<SpecialEventEntity>>(response);
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al la lista de eventos especiales.");
+            }
+        }
+        public async Task<string> CreateSpecialEvent(SpecialEventEntity specialEvent)
+        {
+            try
+            {
+                var specialEventMap = IMapper.Map<EventoEspecial>(specialEvent);
+                var isValidCreated = await IRecommendationRepository.isValidCreateSpecialEvent(specialEventMap);
+                if (!isValidCreated)
+                {
+                    return "No se ha podido crear el evento especial, asegúrese de que no esté activo otro evento en este mismo horario.";
+                }
+
+                var response = await IRecommendationRepository.CreateSpecialEvent(specialEventMap);
+
+                return "";
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al crear el evento especial.");
+            }
+        }
+        public async Task<string> UpdateSpecialEvent(SpecialEventEntity specialEvent)
+        {
+            try
+            {
+                var specialEventMap = IMapper.Map<EventoEspecial>(specialEvent);
+                var isValidCreated = await IRecommendationRepository.isValidUpdateSpecialEvent(specialEventMap);
+                if (!isValidCreated)
+                {
+                    return "No se ha podido actualizar el evento especial, asegúrese de que no esté activo otro evento en este mismo horario.";
+                }
+
+                var response = await IRecommendationRepository.UpdateSpecialEvent(specialEventMap);
+
+                return "";
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al crear el evento especial.");
+            }
+        }
+        public async Task<string> DisableSpecialEvent(int idSpecialEvent)
+        {
+            try
+            {
+                var response = await IRecommendationRepository.DisableSpecialEvent(idSpecialEvent);
+
+                return "";
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al crear el desactivar el evento especial.");
+            }
+        }
+        public async Task<string> EnableSpecialEvent(int idSpecialEvent)
+        {
+            try
+            {
+                var isValidCreated = await IRecommendationRepository.isValidActivateSpecialEvent(idSpecialEvent);
+                if (!isValidCreated)
+                {
+                    return "No se ha podido activar el evento especial, asegúrese de que no esté activo otro evento en este mismo horario.";
+                }
+
+                var response = await IRecommendationRepository.EnableSpecialEvent(idSpecialEvent);
+
+                return "";
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al activar el evento especial.");
+            }
+        }
     }
 }

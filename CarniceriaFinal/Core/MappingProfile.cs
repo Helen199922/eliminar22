@@ -111,6 +111,9 @@ namespace CarniceriaFinal.Core
             CreateMap<CreatePreparationWay, PreparacionProducto>();
             CreateMap<PreparacionProducto, PreparationWay>();
             CreateMap<PreparationWay, PreparacionProducto>();
+
+            CreateMap<SpecialEventEntity, EventoEspecial>();
+            CreateMap<EventoEspecial, SpecialEventEntity>();
         }
     }
 }
