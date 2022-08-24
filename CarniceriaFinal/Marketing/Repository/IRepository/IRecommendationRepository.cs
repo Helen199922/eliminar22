@@ -17,6 +17,7 @@ namespace CarniceriaFinal.Marketing.Repository.IRepository
         Task<PreparacionProducto> UpdatePreparationWay(PreparacionProducto preparation, List<int> productIds);
         Task<MomentoDegustacion> UpdateTimeToEat(MomentoDegustacion tomesToEat, List<int> preparationProducts);
         //Crear Recomendació
+        Task<EventoEspecial> GetAllSpecialEventByIdEvent(int idEvent);
         Task<List<EventoEspecial>> GetAllSpecialEvent();
         Task<EventoEspecial> CreateSpecialEvent(EventoEspecial specialEvent);
         Task<EventoEspecial> UpdateSpecialEvent(EventoEspecial specialEvent);

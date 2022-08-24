@@ -17,6 +17,7 @@ namespace CarniceriaFinal.Marketing.Services.IService
         Task<TimesToEatEntity> UpdateTimeToEat(CreateTimesToEatWay data);
         Task<CreatePreparationWay> GetPreparationWayDetail(int idPreparationWay);
 
+        Task<SpecialEventEntity> GetSpecialEventByIdEvent(int idSpecialEvent);
         Task<List<SpecialEventEntity>> GetAllSpecialEvent();
         Task<string> CreateSpecialEvent(SpecialEventEntity specialEvent);
         Task<string> UpdateSpecialEvent(SpecialEventEntity specialEvent);

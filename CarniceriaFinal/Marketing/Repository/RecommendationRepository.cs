@@ -321,6 +321,17 @@ namespace CarniceriaFinal.Marketing.Repository
                 throw RSException.ErrorQueryDB("Obtener Eventos especiales");
             }
         }
+        public async Task<EventoEspecial> GetAllSpecialEventByIdEvent(int idEvent)
+        {
+            try
+            {
+                return await Context.EventoEspecials.Where(x => x.IdEventoEspecial == idEvent).FirstOrDefaultAsync();
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Obtener Evento especiale por Id");
+            }
+        }
         public async Task<EventoEspecial> CreateSpecialEvent(EventoEspecial specialEvent)
         {
             try

@@ -238,5 +238,18 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [HttpGet("obtener-eventos-especiales-byid/{idSpecialEvent}")]
+        public async Task<IActionResult> GetSpecialEventByIdEvent(int idSpecialEvent)
+        {
+            RSEntity<SpecialEventEntity> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IRecommendationService.GetSpecialEventByIdEvent(idSpecialEvent)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
     }
 }

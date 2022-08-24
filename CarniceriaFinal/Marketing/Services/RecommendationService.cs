@@ -256,6 +256,23 @@ namespace CarniceriaFinal.Marketing.Services
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al la lista de eventos especiales.");
             }
         }
+        public async Task<SpecialEventEntity> GetSpecialEventByIdEvent(int idSpecialEvent)
+        {
+            try
+            {
+
+                var response = await IRecommendationRepository.GetAllSpecialEventByIdEvent(idSpecialEvent);
+                return IMapper.Map<SpecialEventEntity>(response);
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener el evento especiales.");
+            }
+        }
         public async Task<string> CreateSpecialEvent(SpecialEventEntity specialEvent)
         {
             try
