@@ -418,10 +418,10 @@ namespace CarniceriaFinal.Marketing.Repository
                     .AsNoTracking()
                     .ToListAsync();
 
-                var activates = eventResponse.Where(x =>
-                        ((DateTime.Compare(x.FechaFin, specialEvent.FechaInicio) >= 0) && (DateTime.Compare(x.FechaInicio, specialEvent.FechaInicio) <= 0))
+                var activates = eventResponse.Where(x => x.Status == 1 &&
+                        (((DateTime.Compare(x.FechaFin, specialEvent.FechaInicio) >= 0) && (DateTime.Compare(x.FechaInicio, specialEvent.FechaInicio) <= 0))
                         || ((DateTime.Compare(x.FechaInicio, specialEvent.FechaFin) <= 0) && (DateTime.Compare(x.FechaFin, specialEvent.FechaInicio) >= 0))
-                        || ((DateTime.Compare(specialEvent.FechaInicio, x.FechaInicio) < 0) && (DateTime.Compare(specialEvent.FechaFin, x.FechaFin) > 0))
+                        || ((DateTime.Compare(specialEvent.FechaInicio, x.FechaInicio) < 0) && (DateTime.Compare(specialEvent.FechaFin, x.FechaFin) > 0)))
                     )
                     .FirstOrDefault();
 
@@ -456,9 +456,10 @@ namespace CarniceriaFinal.Marketing.Repository
                     .AsNoTracking()
                     .ToListAsync();
 
-                var activates = events.Where(x => ((DateTime.Compare(x.FechaFin, eventResponse.FechaInicio) > 0) && (DateTime.Compare(x.FechaInicio, eventResponse.FechaInicio) < 0))
+                var activates = events.Where(x => x.Status == 1 &&
+                        (((DateTime.Compare(x.FechaFin, eventResponse.FechaInicio) > 0) && (DateTime.Compare(x.FechaInicio, eventResponse.FechaInicio) < 0))
                         || ((DateTime.Compare(x.FechaInicio, eventResponse.FechaFin) < 0) && (DateTime.Compare(x.FechaFin, eventResponse.FechaFin) > 0))
-                        || ((DateTime.Compare(eventResponse.FechaInicio, x.FechaInicio) < 0) && (DateTime.Compare(eventResponse.FechaFin, x.FechaFin) > 0))
+                        || ((DateTime.Compare(eventResponse.FechaInicio, x.FechaInicio) < 0) && (DateTime.Compare(eventResponse.FechaFin, x.FechaFin) > 0)))
                     )
                     .FirstOrDefault();
 
