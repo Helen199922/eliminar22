@@ -35,7 +35,7 @@ namespace CarniceriaFinal.ModelsEF
         public virtual DbSet<Modulo> Modulos { get; set; } = null!;
         public virtual DbSet<ModuloInOpcion> ModuloInOpcions { get; set; } = null!;
         public virtual DbSet<MomentoDegustacion> MomentoDegustacions { get; set; } = null!;
-        public virtual DbSet<MomentoDegustacionInPreparacion> MomentoDegustacionInPreparacions { get; set; } = null!;
+        public virtual DbSet<MomentoDegustacionInProducto> MomentoDegustacionInProductos { get; set; } = null!;
         public virtual DbSet<Opcion> Opcions { get; set; } = null!;
         public virtual DbSet<OptionInEndpoint> OptionInEndpoints { get; set; } = null!;
         public virtual DbSet<Persona> Personas { get; set; } = null!;
@@ -283,22 +283,22 @@ namespace CarniceriaFinal.ModelsEF
                     .HasName("PRIMARY");
             });
 
-            modelBuilder.Entity<MomentoDegustacionInPreparacion>(entity =>
+            modelBuilder.Entity<MomentoDegustacionInProducto>(entity =>
             {
-                entity.HasKey(e => e.IdMomentoDegustacionInPreparacion)
+                entity.HasKey(e => e.IdMomentoDegustacionInProducto)
                     .HasName("PRIMARY");
 
                 entity.HasOne(d => d.IdMomentoDegustacionNavigation)
-                    .WithMany(p => p.MomentoDegustacionInPreparacions)
+                    .WithMany(p => p.MomentoDegustacionInProductos)
                     .HasForeignKey(d => d.IdMomentoDegustacion)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("momento_degustacion_in_preparacion_ibfk_1");
+                    .HasConstraintName("momento_degustacion_in_producto_ibfk_1");
 
-                entity.HasOne(d => d.IdPreparacionProductoNavigation)
-                    .WithMany(p => p.MomentoDegustacionInPreparacions)
-                    .HasForeignKey(d => d.IdPreparacionProducto)
+                entity.HasOne(d => d.IdProductoNavigation)
+                    .WithMany(p => p.MomentoDegustacionInProductos)
+                    .HasForeignKey(d => d.IdProducto)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("momento_degustacion_in_preparacion_ibfk_2");
+                    .HasConstraintName("momento_degustacion_in_producto_ibfk_2");
             });
 
             modelBuilder.Entity<Opcion>(entity =>

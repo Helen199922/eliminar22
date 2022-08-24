@@ -119,7 +119,7 @@ namespace CarniceriaFinal.Marketing.Services
                 
                 var response = await IRecommendationRepository.GetTimeToEatDetail(idTimeToEat);
                 result = IMapper.Map<CreateTimesToEatWay>(response);
-                result.preparations = response.MomentoDegustacionInPreparacions.Select(x => x.IdPreparacionProducto).ToList();
+                result.productIds = response.MomentoDegustacionInProductos.Select(x => x.IdProducto).ToList();
 
 
                 return result;
@@ -140,6 +140,9 @@ namespace CarniceriaFinal.Marketing.Services
                 CreatePreparationWay result = new CreatePreparationWay();
 
                 var response = await IRecommendationRepository.GetPreparationWayDetail(idPreparationWay);
+                if (response == null) {
+                    throw RSException.NoData("No se ha encotrado información");
+                }
                 result = IMapper.Map<CreatePreparationWay>(response);
                 result.productIds = response.PreparacionProductoInProductos.Select(x => x.IdProducto.Value).ToList();
 
@@ -180,12 +183,12 @@ namespace CarniceriaFinal.Marketing.Services
         {
             try
             {
-                if (data.preparations == null)
-                    data.preparations = new();
+                if (data.productIds == null)
+                    data.productIds = new();
 
                 var timesToEat = IMapper.Map<MomentoDegustacion>(data);
 
-                return IMapper.Map<TimesToEatEntity>(await IRecommendationRepository.CreateTimeToEat(timesToEat, data.preparations));
+                return IMapper.Map<TimesToEatEntity>(await IRecommendationRepository.CreateTimeToEat(timesToEat, data.productIds));
             }
             catch (RSException err)
             {
@@ -220,12 +223,12 @@ namespace CarniceriaFinal.Marketing.Services
         {
             try
             {
-                if (data.preparations == null)
-                    data.preparations = new();
+                if (data.productIds == null)
+                    data.productIds = new();
 
                 var preparation = IMapper.Map<MomentoDegustacion>(data);
 
-                return IMapper.Map<TimesToEatEntity>(await IRecommendationRepository.UpdateTimeToEat(preparation, data.preparations));
+                return IMapper.Map<TimesToEatEntity>(await IRecommendationRepository.UpdateTimeToEat(preparation, data.productIds));
             }
             catch (RSException err)
             {

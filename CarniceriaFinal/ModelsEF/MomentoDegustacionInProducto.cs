@@ -7,18 +7,17 @@ using Microsoft.EntityFrameworkCore;
 namespace CarniceriaFinal.ModelsEF
 {
     [Table("momento_degustacion_in_producto")]
+    [Index("IdMomentoDegustacion", Name = "idMomentoDegustacion")]
     [Index("IdProducto", Name = "idProducto")]
     public partial class MomentoDegustacionInProducto
     {
         [Key]
+        [Column("idMomentoDegustacionInProducto")]
+        public int IdMomentoDegustacionInProducto { get; set; }
         [Column("idMomentoDegustacion")]
         public int IdMomentoDegustacion { get; set; }
-        [Key]
         [Column("idProducto")]
         public int IdProducto { get; set; }
-        [Column("descripcion")]
-        [StringLength(5)]
-        public string? Descripcion { get; set; }
 
         [ForeignKey("IdMomentoDegustacion")]
         [InverseProperty("MomentoDegustacionInProductos")]

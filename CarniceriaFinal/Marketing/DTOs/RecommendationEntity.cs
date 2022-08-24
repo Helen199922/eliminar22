@@ -14,7 +14,7 @@ namespace CarniceriaFinal.Marketing.DTOs
     }
     public class CreateTimesToEatWay : TimesToEatEntity
     {
-        public List<int> preparations { get; set; }
+        public List<int> productIds { get; set; }
     }
     public class TimesToEatEntity
     {

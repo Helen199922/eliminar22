@@ -16,9 +16,15 @@ namespace CarniceriaFinal.Marketing.Repository
         {
             try
             {
+                //ver que este coincida con el anterior valor seleccionado
+
                 return await Context.MomentoDegustacions
-                    .Where(x => x.Status == 1 && x.MomentoDegustacionInPreparacions.Where(x => x.Status == 1).ToList().Count > 0)
+                    .Where(x => x.Status == 1 && x.MomentoDegustacionInProductos
+                    .Where(x => Context.PreparacionProductoInProductos
+                    .Where(z => z.IdProducto == x.IdProducto).FirstOrDefault() != null).FirstOrDefault() != null)
                     .ToListAsync();
+
+                //.MomentoDegustacionInProductos.Where(x => x.Status == 1).ToList().Count > 0
             }
             catch (Exception)
             {
@@ -50,10 +56,12 @@ namespace CarniceriaFinal.Marketing.Repository
         {
             try
             {
+                //ver que este coincida 
                 return await Context.PreparacionProductos
                     .Where(x => x.Status == 1 && 
-                                x.MomentoDegustacionInPreparacions
-                                .Where(y => y.IdMomentoDegustacion == idTimeToEat)
+                                x.PreparacionProductoInProductos
+                                .Where(y => Context.MomentoDegustacionInProductos
+                                .Where( z => z.IdProducto == y.IdProducto && z.IdMomentoDegustacion == idTimeToEat).FirstOrDefault() != null)
                                 .FirstOrDefault() != null
                     ).ToListAsync();
             }
@@ -114,7 +122,7 @@ namespace CarniceriaFinal.Marketing.Repository
             {
                 return await Context.MomentoDegustacions
                     .Where(x => x.IdMomentoDegustacion == idTimeToEat)
-                    .Include(x => x.MomentoDegustacionInPreparacions)
+                    .Include(x => x.MomentoDegustacionInProductos)
                     .FirstOrDefaultAsync();
             }
             catch (Exception)
@@ -169,18 +177,17 @@ namespace CarniceriaFinal.Marketing.Repository
                 tomesToEat.Status = 1;
                 await Context.MomentoDegustacions.AddAsync(tomesToEat);
                 await Context.SaveChangesAsync();
-                List<MomentoDegustacionInPreparacion> list = new();
+                List<MomentoDegustacionInProducto> list = new();
 
                 foreach (var preparation in preparationProducts)
                 {
-                    list.Add(new MomentoDegustacionInPreparacion
+                    list.Add(new MomentoDegustacionInProducto
                     {
                         IdMomentoDegustacion = tomesToEat.IdMomentoDegustacion,
-                        IdPreparacionProducto = preparation,
-                        Status = 1
+                        IdProducto = preparation
                     });
                 };
-                await Context.MomentoDegustacionInPreparacions.AddRangeAsync(list);
+                await Context.MomentoDegustacionInProductos.AddRangeAsync(list);
                 await Context.SaveChangesAsync();
                 return tomesToEat;
             }
@@ -244,13 +251,13 @@ namespace CarniceriaFinal.Marketing.Repository
                 throw RSException.ErrorQueryDB("Modo de preparación del producto");
             }
         }
-        public async Task<MomentoDegustacion> UpdateTimeToEat(MomentoDegustacion tomesToEat, List<int> preparationProducts)
+        public async Task<MomentoDegustacion> UpdateTimeToEat(MomentoDegustacion tomesToEat, List<int> idProducts)
         {
             try
             {
                 var timeToEatDetail = await Context.MomentoDegustacions
                     .Where(x => x.IdMomentoDegustacion == tomesToEat.IdMomentoDegustacion)
-                    .Include(x => x.MomentoDegustacionInPreparacions)
+                    .Include(x => x.MomentoDegustacionInProductos)
                     .FirstOrDefaultAsync();
 
                 if (timeToEatDetail == null)
@@ -263,35 +270,34 @@ namespace CarniceriaFinal.Marketing.Repository
                 timeToEatDetail.Titulo = tomesToEat.Titulo;
 
 
-                var listPreparation = timeToEatDetail.MomentoDegustacionInPreparacions.Select(x => x.IdPreparacionProducto).ToList();
+                var listPreparation = timeToEatDetail.MomentoDegustacionInProductos.Select(x => x.IdProducto).ToList();
 
                 //Obtener los productos a agregar
-                var timeToAdd = preparationProducts
+                var productsToAdd = idProducts
                     .Where(x => !listPreparation.Contains(x))
                     .ToList();
 
 
                 //Obtener los productos a eliminar
-                var timeToDelete = timeToEatDetail
-                    .MomentoDegustacionInPreparacions
-                    .Where(x => !preparationProducts.Contains(x.IdPreparacionProducto))
+                var productsToDelete = timeToEatDetail
+                    .MomentoDegustacionInProductos
+                    .Where(x => !idProducts.Contains(x.IdProducto))
                     .ToList();
 
-                Context.MomentoDegustacionInPreparacions.RemoveRange(timeToDelete);
+                Context.MomentoDegustacionInProductos.RemoveRange(productsToDelete);
                 Context.SaveChanges();
 
-                List<MomentoDegustacionInPreparacion> list = new();
+                List<MomentoDegustacionInProducto> list = new();
 
-                foreach (var time in timeToAdd)
+                foreach (var productId in productsToAdd)
                 {
-                    list.Add(new MomentoDegustacionInPreparacion
+                    list.Add(new MomentoDegustacionInProducto
                     {
                         IdMomentoDegustacion = tomesToEat.IdMomentoDegustacion,
-                        IdPreparacionProducto = time,
-                        Status = 1
+                        IdProducto = productId
                     });
                 };
-                await Context.MomentoDegustacionInPreparacions.AddRangeAsync(list);
+                await Context.MomentoDegustacionInProductos.AddRangeAsync(list);
                 await Context.SaveChangesAsync();
 
                 return tomesToEat;
