@@ -2,6 +2,7 @@
 using CarniceriaFinal.Core.CustomException;
 using CarniceriaFinal.Marketing.DTOs;
 using CarniceriaFinal.Marketing.Services.IService;
+using CarniceriaFinal.Productos.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,7 +43,19 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
-
+        [HttpGet("filter-recom/{idTimeToEat}/{idPreparationWay}")]
+        public async Task<IActionResult> GetProductsRecommendationByPreparationAndTimeToEat(int idTimeToEat, int idPreparationWay)
+        {
+            RSEntity<List<ProductEntity>> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IRecommendationService.GetProductsRecommendationByPreparationAndTimeToEat(idPreparationWay, idTimeToEat)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
 
 
 

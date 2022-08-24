@@ -28,5 +28,8 @@ namespace CarniceriaFinal.Marketing.Repository.IRepository
         //isValidActivateSpecialEven
         Task<Boolean> isValidActivateSpecialEvent(int idSpecialEvent);
         Task<Boolean> isValidUpdateSpecialEvent(EventoEspecial specialEvent);
+        
+        Task<EventoEspecial> GetCommunicationSpecialEvent();
+        Task<List<Producto>> GetProductsRecommendationByPreparationAndTimeToEat(int idPreparationWay, int idTimeToEat);
     }
 }

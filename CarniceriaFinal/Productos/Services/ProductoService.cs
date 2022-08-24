@@ -274,7 +274,7 @@ namespace CarniceriaFinal.Productos.Servicios
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al consultar el producto");
             }
         }
-        private async Task<List<ProductEntity>> promotionConvert(List<ProductEntity> products)
+        public async Task<List<ProductEntity>> promotionConvert(List<ProductEntity> products)
         {
             try
             {

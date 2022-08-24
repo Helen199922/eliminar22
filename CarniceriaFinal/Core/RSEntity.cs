@@ -54,5 +54,6 @@ namespace CarniceriaFinal.Core
         {
             return new RSEntity<T>();
         }
+
     }
 }

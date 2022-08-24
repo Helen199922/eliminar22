@@ -509,5 +509,79 @@ namespace CarniceriaFinal.Marketing.Repository
                 throw RSException.ErrorQueryDB("Consultar validez de crear evento especial");
             }
         }
+        public async Task<EventoEspecial> GetCommunicationSpecialEvent()
+        {
+            try
+            {
+                //ver que este coincida con el anterior valor seleccionado
+
+                using (var _Context = new DBContext())
+                {
+                    var events = await _Context.EventoEspecials.Where(x => (
+                        x.Status == 1
+                    ))
+                    .ToListAsync();
+
+                    if (events == null || events.Count == 0)
+                        return null;
+
+
+                    var evento = events.Where(x =>
+                        ((DateTime.Compare(x.FechaFin, DateTime.Now) > 0) && (DateTime.Compare(x.FechaInicio, DateTime.Now) < 0))
+                        || ((DateTime.Compare(x.FechaInicio, DateTime.Now) < 0) && (DateTime.Compare(x.FechaFin, DateTime.Now) > 0))
+                    ).FirstOrDefault();
+
+                    return evento;
+
+                }
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        public async Task<List<Producto>> GetProductsRecommendationByPreparationAndTimeToEat(int idPreparationWay, int idTimeToEat)
+        {
+            try
+            {
+                using (var _Context = new DBContext())
+                {
+                    var products = await _Context.Productos
+                     .Where(x => x.Status == 1 && x.Stock > 0)
+                    .Include(x => x.PreparacionProductoInProductos)
+                    .Include(x => x.MomentoDegustacionInProductos)
+                    .ToListAsync();
+
+                    List<Producto> productsRespo = new();
+
+                    foreach (var product in products)
+                    {
+                        if(product.PreparacionProductoInProductos
+                            .Where(x => x.IdPreparacionProducto == idPreparationWay)
+                            .Select(x => x.IdProducto)
+                            .Contains(product.IdProducto)
+                            &&
+                            product.MomentoDegustacionInProductos
+                            .Where(x => x.IdMomentoDegustacion == idTimeToEat)
+                            .Select(x => x.IdProducto)
+                            .Contains(product.IdProducto)
+                            )
+                        {
+                            productsRespo.Add(product);
+                        }
+                    }
+
+
+                    return productsRespo;
+
+                }
+
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Consultar productos que apliquen a los filtros indicados");
+            }
+        }
     }
 }

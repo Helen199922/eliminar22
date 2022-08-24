@@ -1,4 +1,5 @@
 ﻿using CarniceriaFinal.Marketing.DTOs;
+using CarniceriaFinal.Productos.DTOs;
 
 namespace CarniceriaFinal.Marketing.Services.IService
 {
@@ -24,5 +25,6 @@ namespace CarniceriaFinal.Marketing.Services.IService
         Task<string> DisableSpecialEvent(int idSpecialEvent);
         Task<string> EnableSpecialEvent(int idSpecialEvent);
         Task<String> isAvailabilityToEnableSpecialday(IsAvailabilityCreateSpecialDay data);
+        Task<List<ProductEntity>> GetProductsRecommendationByPreparationAndTimeToEat(int idPreparationWay, int idTimeToEat);
     }
 }

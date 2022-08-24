@@ -5,17 +5,21 @@ using CarniceriaFinal.Marketing.Repository;
 using CarniceriaFinal.Marketing.Repository.IRepository;
 using CarniceriaFinal.Marketing.Services.IService;
 using CarniceriaFinal.ModelsEF;
+using CarniceriaFinal.Productos.DTOs;
+using CarniceriaFinal.Productos.Servicios;
 
 namespace CarniceriaFinal.Marketing.Services
 {
     public class RecommendationService : IRecommendationService
     {
         private readonly IRecommendationRepository IRecommendationRepository;
+        private readonly IProductoService IProductoService;
         private readonly IMapper IMapper;
-        public RecommendationService(IRecommendationRepository IRecommendationRepository, IMapper IMapper)
+        public RecommendationService(IRecommendationRepository IRecommendationRepository, IMapper IMapper, IProductoService iProductoService)
         {
             this.IRecommendationRepository = IRecommendationRepository;
             this.IMapper = IMapper;
+            this.IProductoService = iProductoService;
         }
         public async Task<List<TimesToEatEntity>> GetAllTimesToEat()
         {
@@ -392,6 +396,24 @@ namespace CarniceriaFinal.Marketing.Services
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al consultar estado de recomendación.");
             }
 
+        }
+        public async Task<List<ProductEntity>> GetProductsRecommendationByPreparationAndTimeToEat(int idPreparationWay, int idTimeToEat)
+        {
+            CommunicationHomeEntity comm = new();
+            try
+            {
+                var response = await IRecommendationRepository
+                    .GetProductsRecommendationByPreparationAndTimeToEat(idPreparationWay, idTimeToEat);
+
+                var products = IMapper.Map<List<ProductEntity>>(response);
+
+                return await this.IProductoService.promotionConvert(products);
+
+            }
+            catch (Exception err)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener productos que coincidan con el filtro.");
+            }
         }
     }
 }

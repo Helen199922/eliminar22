@@ -17,15 +17,18 @@ namespace CarniceriaFinal.Marketing.Services
     {
         private readonly ICommunicationRepository ICommunicationRepository;
         private readonly IPromotionRepository IPromotionRepository;
+        private readonly IRecommendationRepository IRecommendationRepository;
         private readonly IMembershipService IMembershipService;
         private readonly IMapper IMapper;
         public CommunicationService(ICommunicationRepository commRepo, IMapper IMapper, 
-            IPromotionRepository iPromotionRepository, IMembershipService IMembershipService)
+            IPromotionRepository iPromotionRepository, IMembershipService IMembershipService, 
+            IRecommendationRepository iRecommendationRepository)
         {
             this.ICommunicationRepository = commRepo;
             this.IMapper = IMapper;
             IPromotionRepository = iPromotionRepository;
             this.IMembershipService = IMembershipService;
+            this.IRecommendationRepository = iRecommendationRepository;
         }
         public async Task<List<CommunicationEntity>> GetAll()
         {
@@ -68,9 +71,11 @@ namespace CarniceriaFinal.Marketing.Services
             {
                 var promotion = await IPromotionRepository.getLastPromotion(DateTime.Now, DateTime.Now);
                 var membership = await IMembershipService.GetMembershipHome();
+                var specialDay = await IRecommendationRepository.GetCommunicationSpecialEvent();
+                
 
-
-                comm.promotion = IMapper.Map<PromotionSimpleEntity>(promotion);
+                comm.specialDay = specialDay == null ? null : IMapper.Map<SpecialEventEntity>(specialDay);
+                comm.promotion = promotion == null ? null : IMapper.Map<PromotionSimpleEntity>(promotion);
                 comm.membership = membership;
 
 
