@@ -140,6 +140,7 @@ namespace CarniceriaFinal.Marketing.Repository
         {
             try
             {
+                preparation.Status = 1;
                 await Context.PreparacionProductos.AddAsync(preparation);
                 await Context.SaveChangesAsync();
                 List<PreparacionProductoInProducto> list = new();
@@ -165,6 +166,7 @@ namespace CarniceriaFinal.Marketing.Repository
         {
             try
             {
+                tomesToEat.Status = 1;
                 await Context.MomentoDegustacions.AddAsync(tomesToEat);
                 await Context.SaveChangesAsync();
                 List<MomentoDegustacionInPreparacion> list = new();
