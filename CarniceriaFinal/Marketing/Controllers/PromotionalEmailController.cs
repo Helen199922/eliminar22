@@ -16,6 +16,7 @@ namespace CarniceriaFinal.Marketing.Controllers
         {
             IPromotionalEmailServi = IPromotionalEmailService;
         }
+        [Authorize]
         [HttpGet("{idPromotion}")]
         public async Task<IActionResult> GetEmailByidPromotion(int idPromotion)
         {
@@ -29,6 +30,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateEmailByIdPromotion([FromBody] EmailCreateEntity emailPromotion)
         {
@@ -42,6 +44,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateEmailByidEmail([FromBody] EmailCreateEntity emailPromotion)
         {
@@ -55,6 +58,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPost("send-email/{idPromotion}/{idCorreoPromotion}")]
         public async Task<IActionResult> SendPromotionalEmail(int idPromotion, int idCorreoPromotion)
         {
@@ -68,6 +72,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPost("retry-send-email/{idPromotion}/{idCorreoPromotion}")]
         public async Task<IActionResult> RetrySenderEmailByIdPromotion(int idPromotion, int idCorreoPromotion)
         {
@@ -81,6 +86,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPost("cancel-send-email/{idPromotion}")]
         public async Task<IActionResult> CancelSenderEmailByIdPromotion(int idPromotion)
         {
@@ -94,6 +100,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpGet("user-status-email/{idCorreoPromotion}")]
         public async Task<IActionResult> GetUserStatusByIdEmail(int idCorreoPromotion)
         {

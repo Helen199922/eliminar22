@@ -48,6 +48,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreatePromotion([FromBody] PromotionEntity promo)
         {
@@ -62,6 +63,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdatePromotion([FromBody] PromotionEntity promo)
         {
@@ -76,6 +78,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPatch("{status}/{idPromotion}")]
         public async Task<IActionResult> StatusPromotion(int status, int idPromotion)
         {
@@ -90,6 +93,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPost("isAvailability-promotion")]
         public async Task<IActionResult> isAvailabilityToCreatePromotion([FromBody] IsAvailabilityCreatePromoEntity data)
         {
