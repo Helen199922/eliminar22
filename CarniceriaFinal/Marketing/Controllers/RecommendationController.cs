@@ -16,19 +16,6 @@ namespace CarniceriaFinal.Marketing.Controllers
         {
             this.IRecommendationService = IRecommendationService;
         }
-        [HttpGet("momento-degustacion")]
-        public async Task<IActionResult> GetAllTimesToEat()
-        {
-            RSEntity<List<TimesToEatEntity>> rsEntity = new();
-            try
-            {
-                return Ok(rsEntity.Send(await IRecommendationService.GetAllTimesToEat()));
-            }
-            catch (RSException err)
-            {
-                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
-            }
-        }
         [HttpGet("user-momento-degustacion")]
         public async Task<IActionResult> GetAllTimesToEatGeneralUser()
         {
@@ -36,32 +23,6 @@ namespace CarniceriaFinal.Marketing.Controllers
             try
             {
                 return Ok(rsEntity.Send(await IRecommendationService.GetAllTimesToEatGeneralUser()));
-            }
-            catch (RSException err)
-            {
-                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
-            }
-        }
-        [HttpPut("cambiar-estado-momento-degustacion")]
-        public async Task<IActionResult> ChangeStatusTimesToEat([FromBody] AdmStatusRecommendation data)
-        {
-            RSEntity<TimesToEatEntity> rsEntity = new();
-            try
-            {
-                return Ok(rsEntity.Send(await IRecommendationService.ChangeStatusTimesToEat(data.id, data.status)));
-            }
-            catch (RSException err)
-            {
-                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
-            }
-        }
-        [HttpGet("modo-preparacion")]
-        public async Task<IActionResult> GetAllPreparationWays()
-        {
-            RSEntity<List<PreparationWay>> rsEntity = new();
-            try
-            {
-                return Ok(rsEntity.Send(await IRecommendationService.GetAllPreparationWays()));
             }
             catch (RSException err)
             {
@@ -81,6 +42,55 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+
+
+
+
+
+
+        [Authorize]
+        [HttpGet("momento-degustacion")]
+        public async Task<IActionResult> GetAllTimesToEat()
+        {
+            RSEntity<List<TimesToEatEntity>> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IRecommendationService.GetAllTimesToEat()));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
+        [Authorize]
+        [HttpPut("cambiar-estado-momento-degustacion")]
+        public async Task<IActionResult> ChangeStatusTimesToEat([FromBody] AdmStatusRecommendation data)
+        {
+            RSEntity<TimesToEatEntity> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IRecommendationService.ChangeStatusTimesToEat(data.id, data.status)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
+        [Authorize]
+        [HttpGet("modo-preparacion")]
+        public async Task<IActionResult> GetAllPreparationWays()
+        {
+            RSEntity<List<PreparationWay>> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IRecommendationService.GetAllPreparationWays()));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
+        [Authorize]
         [HttpPut("cambiar-estado-modo-preparacion")]
         public async Task<IActionResult> ChangeStatusPreparationWays([FromBody] AdmStatusRecommendation data)
         {
@@ -94,6 +104,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpGet("detalle-momento-degustacion/{idTimeToEat}")]
         public async Task<IActionResult> GetTimeToEatDetail(int idTimeToEat)
         {
@@ -107,6 +118,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpGet("detalle-modo-preparacion/{idPreparationWay}")]
         public async Task<IActionResult> GetPreparationWayDetail(int idPreparationWay)
         {
@@ -120,6 +132,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPost("crear-modo-preparacion")]
         public async Task<IActionResult> CreatePreparationWay([FromBody] CreatePreparationWay data)
         {
@@ -133,6 +146,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPost("crear-momento-degustacion")]
         public async Task<IActionResult> CreateTimeToEat([FromBody] CreateTimesToEatWay data)
         {
@@ -146,6 +160,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPut("actualizar-modo-preparacion")]
         public async Task<IActionResult> UpdatePreparationWay([FromBody] CreatePreparationWay data)
         {
@@ -159,6 +174,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPut("actualizar-momento-degustacion")]
         public async Task<IActionResult> UpdateTimeToEat([FromBody] CreateTimesToEatWay data)
         {
@@ -173,6 +189,7 @@ namespace CarniceriaFinal.Marketing.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("obtener-eventos-especiales")]
         public async Task<IActionResult> GetAllSpecialEvent()
         {
@@ -186,6 +203,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPost("crear-eventos-especiales")]
         public async Task<IActionResult> CreateSpecialEvent([FromBody] SpecialEventEntity specialEvent)
         {
@@ -199,6 +217,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPut("actualizar-eventos-especiales")]
         public async Task<IActionResult> UpdateSpecialEvent([FromBody] SpecialEventEntity specialEvent)
         {
@@ -212,6 +231,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPut("desactivar-eventos-especiales/{idSpecialEvent}")]
         public async Task<IActionResult> DisableSpecialEvent(int idSpecialEvent)
         {
@@ -225,6 +245,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPut("activar-eventos-especiales/{idSpecialEvent}")]
         public async Task<IActionResult> EnableSpecialEvent(int idSpecialEvent)
         {
@@ -238,6 +259,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpGet("obtener-eventos-especiales-byid/{idSpecialEvent}")]
         public async Task<IActionResult> GetSpecialEventByIdEvent(int idSpecialEvent)
         {
@@ -251,6 +273,7 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPost("isAvailablity-especial")]
         public async Task<IActionResult> isAvailabilityToEnableSpecialday([FromBody] IsAvailabilityCreateSpecialDay data)
         {
