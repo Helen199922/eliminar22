@@ -201,6 +201,10 @@ namespace CarniceriaFinal.Marketing.Repository
                 if (preparationDetail == null)
                     throw RSException.NoData("No se ha encontrado información de la preparación");
 
+                preparationDetail.Titulo = preparation.Titulo;
+                preparationDetail.Descripcion = preparation.Descripcion;
+                preparationDetail.Imagen = preparation.Imagen;
+
                 var listPreparation = preparationDetail.PreparacionProductoInProductos.Select(x => x.IdProducto.Value).ToList();
 
                 //Obtener los productos a agregar
@@ -249,6 +253,13 @@ namespace CarniceriaFinal.Marketing.Repository
 
                 if (timeToEatDetail == null)
                     throw RSException.NoData("No se ha encontrado información del momento de degustación");
+
+                timeToEatDetail.Descripcion = tomesToEat.Descripcion;
+                timeToEatDetail.HoraInicio = tomesToEat.HoraInicio;
+                timeToEatDetail.UrlImage = tomesToEat.UrlImage;
+                timeToEatDetail.HoraFin = tomesToEat.HoraFin;
+                timeToEatDetail.Titulo = tomesToEat.Titulo;
+
 
                 var listPreparation = timeToEatDetail.MomentoDegustacionInPreparacions.Select(x => x.IdPreparacionProducto).ToList();
 
