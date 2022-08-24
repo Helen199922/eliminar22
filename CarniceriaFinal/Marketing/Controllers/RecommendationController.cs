@@ -251,5 +251,18 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [HttpPost("isAvailablity-especial")]
+        public async Task<IActionResult> isAvailabilityToEnableSpecialday([FromBody] IsAvailabilityCreateSpecialDay data)
+        {
+            RSEntity<string> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IRecommendationService.isAvailabilityToEnableSpecialday(data)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
     }
 }

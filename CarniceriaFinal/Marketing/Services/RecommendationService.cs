@@ -361,5 +361,37 @@ namespace CarniceriaFinal.Marketing.Services
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al activar el evento especial.");
             }
         }
+        public async Task<String> isAvailabilityToEnableSpecialday(IsAvailabilityCreateSpecialDay data)
+        {
+            try
+            {
+                var isAvailability = false;
+
+                var response = data.idSpecialDay != null
+                    ? await IRecommendationRepository.isValidUpdateSpecialEvent(new EventoEspecial()
+                    {
+                        FechaFin = data.fechaFin,
+                        FechaInicio = data.fechaInicio,
+                        IdEventoEspecial = data.idSpecialDay.Value
+                    })
+                    : await IRecommendationRepository.isValidCreateSpecialEvent(new EventoEspecial()
+                    {
+                        FechaFin = data.fechaFin,
+                        FechaInicio = data.fechaInicio
+                    });
+
+                return response ? "" : String
+                        .Format("Ya existe una recomendación activa. Por favor, espere a que termine o desactívela");
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al consultar estado de recomendación.");
+            }
+
+        }
     }
 }

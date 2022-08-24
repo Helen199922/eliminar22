@@ -23,5 +23,6 @@ namespace CarniceriaFinal.Marketing.Services.IService
         Task<string> UpdateSpecialEvent(SpecialEventEntity specialEvent);
         Task<string> DisableSpecialEvent(int idSpecialEvent);
         Task<string> EnableSpecialEvent(int idSpecialEvent);
+        Task<String> isAvailabilityToEnableSpecialday(IsAvailabilityCreateSpecialDay data);
     }
 }
