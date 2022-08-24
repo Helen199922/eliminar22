@@ -21,7 +21,8 @@ namespace CarniceriaFinal.Marketing.Repository
                 return await Context.MomentoDegustacions
                     .Where(x => x.Status == 1 && x.MomentoDegustacionInProductos
                     .Where(x => Context.PreparacionProductoInProductos
-                    .Where(z => z.IdProducto == x.IdProducto).FirstOrDefault() != null).FirstOrDefault() != null)
+                    .Where(z => z.IdProducto == x.IdProducto && z.IdProductoNavigation.Status == 1 && z.IdProductoNavigation.Stock > 0)
+                    .FirstOrDefault() != null).FirstOrDefault() != null)
                     .ToListAsync();
 
                 //.MomentoDegustacionInProductos.Where(x => x.Status == 1).ToList().Count > 0
@@ -61,7 +62,9 @@ namespace CarniceriaFinal.Marketing.Repository
                     .Where(x => x.Status == 1 &&
                                 x.PreparacionProductoInProductos
                                 .Where(y => Context.MomentoDegustacionInProductos
-                                .Where(z => z.IdProducto == y.IdProducto && z.IdMomentoDegustacion == idTimeToEat).FirstOrDefault() != null)
+                                .Where(z => z.IdProducto == y.IdProducto && z.IdMomentoDegustacion == idTimeToEat 
+                                        && z.IdProductoNavigation.Status == 1 && z.IdProductoNavigation.Stock > 0)
+                                .FirstOrDefault() != null)
                                 .FirstOrDefault() != null
                     ).ToListAsync();
             }
