@@ -55,4 +55,14 @@ namespace CarniceriaFinal.Reportes.DTOs
         public string? referencia { get; set; }
         public string ciudad { get; set; }
     }
+    public class ProductReportDetail
+    {
+        public int? idProducto { get; set; }
+        public string titulo { get; set; }
+        public int ventasAtendidas { get; set; }
+        public int ventasRechazadas { get; set; }
+        public int ventasPendientes { get; set; }
+        public int stock { get; set; }
+        public float precio { get; set; }
+    }
 }

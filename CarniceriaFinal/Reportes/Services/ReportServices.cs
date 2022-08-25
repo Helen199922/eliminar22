@@ -83,6 +83,18 @@ namespace CarniceriaFinal.Reportes.Services
                 throw RSException.ErrorQueryDB("Reporte de productos");
             }
         }
+        public async Task<List<ProductReportDetail>> GetAllProductsMostSalesByCategoryAndDatesDetail(DateTime timeStart, DateTime timeEnd, int idCategory)
+        {
+            try
+            {
+                return await IReportRepository.GetAllProductsMostSalesByCategoryAndDatesDetail(timeStart, timeEnd, idCategory);
+
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Reporte de productos");
+            }
+        }
         public async Task<List<CategoriesReports>> GetListCategories()
         {
             try

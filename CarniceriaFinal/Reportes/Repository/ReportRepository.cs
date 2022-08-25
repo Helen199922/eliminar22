@@ -172,6 +172,73 @@ namespace CarniceriaFinal.Reportes.Repository
                 throw RSException.ErrorQueryDB("Reporte de productos");
             }
         }
+        public async Task<List<ProductReportDetail>> GetAllProductsMostSalesByCategoryAndDatesDetail(DateTime timeStart, DateTime timeEnd, int idCategory)
+        {
+            try
+            {
+                var productsInCategory = await Context.Productos
+                    .Where(x => x.SubInCategoria.Where(y => y.IdCategoria == idCategory).FirstOrDefault() != null)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+
+                var details = await Context.DetalleVenta
+                    .Include(x => x.IdVentaNavigation)
+                    .ToListAsync();
+
+
+                //ventas con los productos seleccionados por categoria
+                var salesDetails = details
+                    .Where(x =>
+                                DateTime.Compare(x.IdVentaNavigation.Fecha.Value, timeStart) >= 0
+                                && DateTime.Compare(x.IdVentaNavigation.Fecha.Value, timeEnd) <= 0
+                                && productsInCategory
+                                    .Select(id => id.IdProducto)
+                                    .Contains(x.IdProducto.Value)
+                    );
+
+
+                //Seperar las ventas por las categorias
+                //ReportResponse<List<MiltiFieldReportEntity>> report = new();
+                List<ProductReportDetail> lista = new List<ProductReportDetail>();
+
+                var totalProducts = 0;
+                foreach (var product in productsInCategory)
+                {
+                    MiltiFieldReportEntity element = new();
+                    element.series = new();
+                    element.name = product.Titulo;
+
+
+                    lista.Add(new ProductReportDetail()
+                    {
+                        idProducto = product.IdProducto,
+                        titulo = product.Titulo,
+                        ventasAtendidas = salesDetails.Where(x =>
+                                    x.IdProducto == product.IdProducto
+                                    && x.IdVentaNavigation.IdStatus == 2
+                                ).ToList().Count(),
+                        ventasRechazadas = salesDetails.Where(x =>
+                                    x.IdProducto == product.IdProducto
+                                    && x.IdVentaNavigation.IdStatus == 3
+                                ).ToList().Count(),
+                        ventasPendientes = salesDetails.Where(x =>
+                                    x.IdProducto == product.IdProducto
+                                    && x.IdVentaNavigation.IdStatus == 1
+                                ).ToList().Count(),
+                        stock = product.Stock,
+                        precio = product.Precio.Value
+
+                    });
+
+                }
+                return lista;
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Reporte de productos");
+            }
+        }
 
         //Reporte de ventas por fecha
         public async Task<List<CategoriesReports>> GetListCategories()
