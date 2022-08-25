@@ -1,8 +1,10 @@
-﻿using CarniceriaFinal.Core.CustomException;
+﻿using AutoMapper;
+using CarniceriaFinal.Core.CustomException;
 using CarniceriaFinal.ModelsEF;
 using CarniceriaFinal.Reportes.DTOs;
 using CarniceriaFinal.Reportes.Repository.IRepository;
 using CarniceriaFinal.Reportes.Services.IServices;
+using CarniceriaFinal.Sales.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarniceriaFinal.Reportes.Services
@@ -10,9 +12,11 @@ namespace CarniceriaFinal.Reportes.Services
     public class ReportServices : IReportServices
     {
         public readonly IReportRepository IReportRepository;
-        public ReportServices(IReportRepository IReportRepository)
+        private readonly IMapper IMapper;
+        public ReportServices(IReportRepository IReportRepository, IMapper IMapper)
         {
             this.IReportRepository = IReportRepository;
+            this.IMapper = IMapper;
         }
 
         //Reporte de ventas por fecha
@@ -21,6 +25,45 @@ namespace CarniceriaFinal.Reportes.Services
             try
             {
                 return await IReportRepository.GetAllSalesToReportByDates(timeStart, timeEnd);
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Reporte de ventas por fecha");
+            }
+        }
+        public async Task<DataSalesReportDetail> GetDetailSalesToReportByDates(DateTime timeStart, DateTime timeEnd)
+        {
+            try
+            {
+                DataSalesReportDetail dataSalesReportDetail = new DataSalesReportDetail();
+                var response = (await IReportRepository.GetDetailSalesToReportByDates(timeStart, timeEnd))
+                    .Select(x => new SalesReportDetail()
+                {
+                    cedula = x.IdClienteNavigation.IdPersonaNavigation.Cedula,
+                    ciudad = x.IdCiudadNavigation.Ciudad1,
+                    direccion = x.Direccion,
+                    costosAdicionales = x.CostosAdicionales.Value,
+                    fecha = x.Fecha,
+                    formaPago = x.IdFormaPagoNavigation.TipoFormaPago,
+                    idVenta = x.IdVenta,
+                    referencia = x.Referencia,
+                    status = x.IdStatus.Value,
+                    motivoCostosAdicional = x.MotivoCostosAdicional,
+                    total = x.Total.Value
+                });
+
+                dataSalesReportDetail.pendiente = response
+                                                .Where(x => x.status == 1)
+                                                .ToList();
+
+                dataSalesReportDetail.atendido = response
+                                                .Where(x => x.status == 2)
+                                                .ToList();
+                dataSalesReportDetail.rechazado = response
+                                                .Where(x => x.status == 3)
+                                                .ToList();
+
+                return dataSalesReportDetail;
             }
             catch (Exception)
             {

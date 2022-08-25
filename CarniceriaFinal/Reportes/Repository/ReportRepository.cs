@@ -64,6 +64,30 @@ namespace CarniceriaFinal.Reportes.Repository
                 throw RSException.ErrorQueryDB("Reporte de ventas por fecha");
             }
         }
+        public async Task<List<Ventum>> GetDetailSalesToReportByDates(DateTime timeStart, DateTime timeEnd)
+        {
+            try
+            {
+                var sales = await Context.Venta
+                    .Include(x => x.IdClienteNavigation.IdPersonaNavigation)
+                    .Include(x => x.IdFormaPagoNavigation)
+                    .Include(x => x.IdCiudadNavigation)
+                    .Include(x => x.IdStatusNavigation)
+                    .ToListAsync();
+                var salesSelected = sales
+                    .Where(x =>
+                                DateTime.Compare(x.Fecha.Value, timeStart) >= 0
+                                && DateTime.Compare(x.Fecha.Value, timeEnd) <= 0
+                    )
+                    .ToList();
+                
+                return salesSelected;
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Reporte de ventas por fecha");
+            }
+        }
         //Obtener los productois por categoria mas vendidos
         public async Task<ReportResponse<List<MiltiFieldReportEntity>>> GetAllProductsMostSalesByCategoryAndDates(DateTime timeStart, DateTime timeEnd, int idCategory)
         {

@@ -52,7 +52,24 @@ namespace CarniceriaFinal.Core.Security
                 await attachUserToContext(context, token, JwtUtils, endPoint, method, JwtService);
 
             }
+
             await _next(context);
+
+            //using (var ms = new MemoryStream())
+            //{
+              //  context.Response.Body = ms;
+
+                //context.Response.Body.Position = 0;
+
+                //var responseReader = new StreamReader(context.Response.Body);
+
+                //var responseContent = responseReader.ReadToEnd();
+                //Console.WriteLine($"Response Body: {responseContent}");
+
+                //context.Response.Body.Position = 0;
+            //}
+
+
         }
 
         private async Task attachUserToContext(HttpContext context, string token, 

@@ -30,6 +30,19 @@ namespace CarniceriaFinal.Reportes.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [HttpPost("report-sale-by-dates-document")]
+        public async Task<IActionResult> GetDetailSalesToReportByDates([FromBody] ReportByDates data)
+        {
+            RSEntity<DataSalesReportDetail> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IReportServices.GetDetailSalesToReportByDates(data.timeStart, data.timeEnd)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
         [HttpPost("report-sale-by-dates-and-category")]
         public async Task<IActionResult> GetAllProductsMostSalesByCategoryAndDates([FromBody] ReportByDatesAndCategory data)
         {
