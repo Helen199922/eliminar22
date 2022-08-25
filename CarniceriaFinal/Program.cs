@@ -54,6 +54,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using Azure.Identity;
+using CarniceriaFinal.Reportes.Services;
+using CarniceriaFinal.Reportes.Services.IServices;
+using CarniceriaFinal.Reportes.Repository;
+using CarniceriaFinal.Reportes.Repository.IRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -174,6 +178,8 @@ builder.Services.AddScoped<ISalesAdmServices, SalesAdmServices>();
 builder.Services.AddScoped<ISalesAdmRepository, SalesAdmRepository>();
 builder.Services.AddScoped<IRecommendationRepository, RecommendationRepository>();
 builder.Services.AddScoped<IRecommendationService, RecommendationService>();
+builder.Services.AddScoped<IReportServices, ReportServices>();
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
 
 builder.Services.AddSingleton<IMultiEmailService, MultiEmailService>();
 
