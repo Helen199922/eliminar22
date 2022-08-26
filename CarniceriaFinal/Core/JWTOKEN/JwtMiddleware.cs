@@ -170,7 +170,7 @@ namespace CarniceriaFinal.Core.Security
 
                 if (!auth) return;
 
-                this.idUserDetail = user.idRol.Value + "";
+                this.idUserDetail = userId.Value + "";
 
                 UserTokenEntity userEntity = new()
                 {
