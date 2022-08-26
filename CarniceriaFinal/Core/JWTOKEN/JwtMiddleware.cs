@@ -157,6 +157,7 @@ namespace CarniceriaFinal.Core.Security
             try
             {
                 var userId = _JwtUtils.ValidateToken(token);
+                this.idUserDetail = userId.Value + "";
                 Boolean isOnlyForUser = await JwtService.IsOnlyForUSer(endPoint, method);
                 if (isOnlyForUser)
                 {
@@ -170,7 +171,7 @@ namespace CarniceriaFinal.Core.Security
 
                 if (!auth) return;
 
-                this.idUserDetail = userId.Value + "";
+                
 
                 UserTokenEntity userEntity = new()
                 {
