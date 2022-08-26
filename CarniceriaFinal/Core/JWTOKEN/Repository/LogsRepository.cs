@@ -33,7 +33,8 @@ namespace CarniceriaFinal.Core.JWTOKEN.Repository
                         Metodo = logs.metodo,
                         Modulo = logs.modulo,
                         PathEndpoint = logs.pathEndPoint,
-                        Timestamp = logs.timestamp
+                        Timestamp = logs.timestamp,
+                        IdUser = logs.idUser != null ? logs.idUser : "NO_USER",
                     });
                     await _Context.SaveChangesAsync();
                 }
