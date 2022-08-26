@@ -360,6 +360,7 @@ namespace CarniceriaFinal.Reportes.Repository
                         pathEndPoint = x.PathEndpoint,
                         timestamp = x.Timestamp,
                         idUser = x.IdUser,
+                        idLog = x.IdLog
                     }).ToList();
 
                     error = logs.Where(x => x.IdModulo == module && x.EstadoHttp >= 400).ToList().Select(x => new LogsEntity()
