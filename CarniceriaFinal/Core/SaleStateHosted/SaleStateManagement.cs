@@ -1,4 +1,5 @@
-﻿using CarniceriaFinal.Core.SaleStateHosted.Interface;
+﻿using CarniceriaFinal.Core.JWTOKEN.Repository.IRepository;
+using CarniceriaFinal.Core.SaleStateHosted.Interface;
 using CarniceriaFinal.ModelsEF;
 using CarniceriaFinal.Sales.IServices;
 using CarniceriaFinal.Sales.Services.IServices;
@@ -28,32 +29,62 @@ namespace CarniceriaFinal.Core
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _timer = new Timer(
-            UnattendedSaleState,
+            ProcessToHandle,
             null,
             TimeSpan.FromSeconds(20),
-            TimeSpan.FromDays(15)
+            TimeSpan.FromDays(5)
         );
 
             return Task.CompletedTask;
         }
 
-        private async void UnattendedSaleState(object state)
+        private async void ProcessToHandle(object state)
+        {
+            await this.HandleStatusSales(state);
+            await this.HandleLogs(state);
+        }
+
+        public async Task<Boolean> HandleLogs(object state)
+        {
+            using (var scope = IServiceProvider.CreateScope())
+            {
+                var ILogs = scope.ServiceProvider.GetRequiredService<ILogsRepository>();
+
+                try
+                {
+                    await ILogs.DeleteLogs(DateTime.Now.AddDays(-5));
+                }
+                catch (Exception err)
+                {
+                    return true;
+                }
+                _logger.LogInformation("Estado cambiado de forma automática");
+                return true;
+            }
+        }
+        public async Task<Boolean> HandleStatusSales(object state)
         {
             using (var scope = IServiceProvider.CreateScope())
             {
                 var Context = scope.ServiceProvider.GetRequiredService<DBContext>();
                 var ISaleManagementHelper = scope.ServiceProvider.GetRequiredService<ISaleManagementHelper>();
-                
+
                 List<Ventum> sale = null;
                 try
                 {
                     sale = await Context.Venta.Where(x => x.IdStatus == 1).AsNoTracking().ToListAsync();
                     if (sale == null)
-                        return;
+                        return true;
 
-                    var sales = ISaleManagementHelper.getPendingSalesIDs(sale);
+                    var response = ISaleManagementHelper.getPendingSalesIDs(sale);
+                    var sales = response
+                        .Where(x => DateTime
+                                    .Compare(x.fecha.Value, DateTime.Now.AddDays(-15)) <= 0
+                              )
+                        .ToList();
+
                     if (sales.Count == 0)
-                        return;
+                        return true;
                     var tasks = new List<Task>();
 
                     foreach (var item in sales)
@@ -71,13 +102,13 @@ namespace CarniceriaFinal.Core
                     }
                     await Task.WhenAll(tasks);
                 }
-                catch(Exception err)
+                catch (Exception err)
                 {
-                    return;
+                    return false;
                 }
-
+                _logger.LogInformation("Estado cambiado de forma automática");
             }
-            _logger.LogInformation("Estado cambiado de forma automática");
+                return true;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
