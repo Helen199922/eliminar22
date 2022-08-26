@@ -94,17 +94,17 @@ namespace CarniceriaFinal.Core.Security
 
                     await swapStream.CopyToAsync(originalResponseBody);
 
-                    //try
-                    //{
-                    //    logResponse.mensaje = iLogsServices.getMessage(responseBody);
-                    //    logResponse.estadoHTTP = statusCode ;
-                    //    logResponse.idUser = null;
+                    try
+                    {
+                        logResponse.mensaje = iLogsServices.getMessage(responseBody);
+                        logResponse.estadoHTTP = statusCode;
+                        logResponse.idUser = null;
 
-                    //    await ILogsRepository.SaveLogs(logResponse);
-                    //}
-                    //catch (Exception)
-                    //{
-                    //}
+                        await ILogsRepository.SaveLogs(logResponse);
+                    }
+                    catch (Exception)
+                    {
+                    }
                     context.Response.Body = originalResponseBody;
                 }
                 
@@ -132,18 +132,18 @@ namespace CarniceriaFinal.Core.Security
 
                 await swapStream.CopyToAsync(originalResponseBody);
 
-                //try
-                //{
-                //    logResponse.mensaje = iLogsServices.getMessage(responseBody);
-                //    logResponse.estadoHTTP = statusCode;
-                //    logResponse.idUser = this.idUserDetail;
+                try
+                {
+                    logResponse.mensaje = iLogsServices.getMessage(responseBody);
+                    logResponse.estadoHTTP = statusCode;
+                    logResponse.idUser = this.idUserDetail;
 
-                //    await ILogsRepository.SaveLogs(logResponse);
-                //}
-                //catch (Exception)
-                //{
-                //}
-                
+                    await ILogsRepository.SaveLogs(logResponse);
+                }
+                catch (Exception)
+                {
+                }
+
                 context.Response.Body = originalResponseBody;
             }
         }
