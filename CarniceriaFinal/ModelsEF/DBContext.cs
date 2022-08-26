@@ -16,6 +16,7 @@ namespace CarniceriaFinal.ModelsEF
         {
         }
 
+        public virtual DbSet<CategoriaInProducto> CategoriaInProductos { get; set; } = null!;
         public virtual DbSet<CategoriaProducto> CategoriaProductos { get; set; } = null!;
         public virtual DbSet<Ciudad> Ciudads { get; set; } = null!;
         public virtual DbSet<Cliente> Clientes { get; set; } = null!;
@@ -50,8 +51,6 @@ namespace CarniceriaFinal.ModelsEF
         public virtual DbSet<RolInOpcion> RolInOpcions { get; set; } = null!;
         public virtual DbSet<Sexo> Sexos { get; set; } = null!;
         public virtual DbSet<StatusEmail> StatusEmails { get; set; } = null!;
-        public virtual DbSet<SubCategorium> SubCategoria { get; set; } = null!;
-        public virtual DbSet<SubInCategorium> SubInCategoria { get; set; } = null!;
         public virtual DbSet<TipoComunicacion> TipoComunicacions { get; set; } = null!;
         public virtual DbSet<TipoUsuario> TipoUsuarios { get; set; } = null!;
         public virtual DbSet<UnidadMedidum> UnidadMedida { get; set; } = null!;
@@ -72,6 +71,22 @@ namespace CarniceriaFinal.ModelsEF
         {
             modelBuilder.UseCollation("utf8_spanish2_ci")
                 .HasCharSet("utf8");
+
+            modelBuilder.Entity<CategoriaInProducto>(entity =>
+            {
+                entity.HasKey(e => e.IdCategoriaInProduct)
+                    .HasName("PRIMARY");
+
+                entity.HasOne(d => d.IdCategoriaNavigation)
+                    .WithMany(p => p.CategoriaInProductos)
+                    .HasForeignKey(d => d.IdCategoria)
+                    .HasConstraintName("categoria_in_producto_ibfk_1");
+
+                entity.HasOne(d => d.IdProductoNavigation)
+                    .WithMany(p => p.CategoriaInProductos)
+                    .HasForeignKey(d => d.IdProducto)
+                    .HasConstraintName("categoria_in_producto_ibfk_2");
+            });
 
             modelBuilder.Entity<CategoriaProducto>(entity =>
             {
@@ -449,35 +464,6 @@ namespace CarniceriaFinal.ModelsEF
                     .HasName("PRIMARY");
 
                 entity.Property(e => e.IdEstatusEmail).ValueGeneratedNever();
-            });
-
-            modelBuilder.Entity<SubCategorium>(entity =>
-            {
-                entity.HasKey(e => e.IdSubCategoria)
-                    .HasName("PRIMARY");
-            });
-
-            modelBuilder.Entity<SubInCategorium>(entity =>
-            {
-                entity.HasKey(e => e.IdSubInCategory)
-                    .HasName("PRIMARY");
-
-                entity.HasOne(d => d.IdCategoriaNavigation)
-                    .WithMany(p => p.SubInCategoria)
-                    .HasForeignKey(d => d.IdCategoria)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("sub_in_categoria_ibfk_3");
-
-                entity.HasOne(d => d.IdProductoNavigation)
-                    .WithMany(p => p.SubInCategoria)
-                    .HasForeignKey(d => d.IdProducto)
-                    .HasConstraintName("sub_in_categoria_ibfk_1");
-
-                entity.HasOne(d => d.IdSubCategoriaNavigation)
-                    .WithMany(p => p.SubInCategoria)
-                    .HasForeignKey(d => d.IdSubCategoria)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("sub_in_categoria_ibfk_2");
             });
 
             modelBuilder.Entity<TipoComunicacion>(entity =>

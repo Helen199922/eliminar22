@@ -98,7 +98,7 @@ namespace CarniceriaFinal.Reportes.Repository
             try
             {
                 var productsInCategory = await Context.Productos
-                    .Where(x => x.SubInCategoria.Where(y => y.IdCategoria == idCategory).FirstOrDefault() != null)
+                    .Where(x => x.CategoriaInProductos.Where(y => y.IdCategoria == idCategory).FirstOrDefault() != null)
                     .AsNoTracking()
                     .ToListAsync();
 
@@ -181,7 +181,7 @@ namespace CarniceriaFinal.Reportes.Repository
             try
             {
                 var productsInCategory = await Context.Productos
-                    .Where(x => x.SubInCategoria.Where(y => y.IdCategoria == idCategory).FirstOrDefault() != null)
+                    .Where(x => x.CategoriaInProductos.Where(y => y.IdCategoria == idCategory).FirstOrDefault() != null)
                     .AsNoTracking()
                     .ToListAsync();
 

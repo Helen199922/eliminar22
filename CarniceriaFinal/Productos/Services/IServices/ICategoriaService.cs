@@ -12,21 +12,13 @@ namespace CarniceriaFinal.Productos.IServicios
     {
         Task<List<CategoriaProductoEntity>> CreateCategoryProcess(List<CategoriaProductoEntity> categories);
         Task<CategoriaProducto> CreateCategory(string titulo, string descripcion, string urlImage);
-        Task<SubCategorium> CreateSubCategory(string titulo, string descripcion, string urlImage);
-        Task<SubInCategorium> CreteSubInCategoria(int idCategoria, int idSubCategoria);
-        Task<List<CategoriaProductoEntity>> GetAllCategoriaAndSubCategory();
-        Task<CreateSubCategory> UpdateSubCategoryAndCategory(CreateSubCategory subCategory);
 
-        Task<CategoriaProductoEntity> UpdateCategoryAndSubCategory(CategoriaProductoEntity category);
-        Task<Boolean> DeleteCategoryAndSubCatAndRelationship(int idCategory);
-        Task<List<CreateSubCategory>> CreateSubCategoriesProcess(List<CreateSubCategory> subCategories);
-        Task<Boolean> DeleteSubCatAndCategoryRelationship(int idSubCategory);
-        Task<List<CategoriaProductoEntity>> GetAllCategoriesAndSubCategoriesByProductId(int idProduct);
-        string DeleteSubInCategorByProductIdAndSubCategoryIdAndCategoryId
-            (int idProduct, int idSubCategory, int idCategory);
+
+
         Task<CategoriaProductoEntity> GetCategoryById(int idCategory);
-        Task<CreateSubCategory> GetSubCategoryAndCategoryByIdSubCategory(int idSubCategory);
-        Task<List<SubCategoriaAdminEntity>> GetAllSubCategories();
-        Task<List<CategoryAdminEntity>> GetAllCategories();
+        Task<List<CategoryEntity>> GetAllCategories();
+        Task<CategoriaProductoEntity> UpdateCategory(CategoriaProductoEntity category);
+        Task<Boolean> ChangeStatusCategory(int idCategory, int idStatus);
+        Task<List<CategoryEntity>> GetAllCategoriesByProductId(int idProduct);
     }
 }

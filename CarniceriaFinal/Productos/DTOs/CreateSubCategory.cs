@@ -21,6 +21,6 @@ namespace CarniceriaFinal.Productos.DTOs
             return this.MemberwiseClone();
         }
         public List<CategoryEntity> Categories { get; set; }
-        public List<SimpleProductInSubCategory> Products { get; set; }
+        
     }
 }

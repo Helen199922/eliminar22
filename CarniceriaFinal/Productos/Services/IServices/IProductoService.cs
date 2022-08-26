@@ -10,10 +10,10 @@ namespace CarniceriaFinal.Productos.Servicios
     public interface IProductoService
     {
         Task<List<ProductEntity>> GetProductos();
-        Task<List<SimpleProductInSubCategory>> GetSimpleProductsByIdSubCategories(int? idSubCategory);
         Task<string> SaveProduct(ProductSaveRequestEntity product);
         Task<string> SaveDetails(List<ProductDetailEntity> detalleProducto);
-        Task<List<ProductEntity>> FindProductsBySubCategory(int idCategory, int idSubCategory);
+
+
         Task<List<ProductEntity>> FindProductsByCategoryId(int idCategory);
         Task<List<ProductTableAdminEntity>> GetSimpleProductos();
         Task<ProductAdminCompleteEntity> GetDetailAdminProductoById(int idProduct);

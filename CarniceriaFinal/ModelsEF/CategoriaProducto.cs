@@ -11,7 +11,7 @@ namespace CarniceriaFinal.ModelsEF
     {
         public CategoriaProducto()
         {
-            SubInCategoria = new HashSet<SubInCategorium>();
+            CategoriaInProductos = new HashSet<CategoriaInProducto>();
         }
 
         [Key]
@@ -30,6 +30,6 @@ namespace CarniceriaFinal.ModelsEF
         public string? UrlImage { get; set; }
 
         [InverseProperty("IdCategoriaNavigation")]
-        public virtual ICollection<SubInCategorium> SubInCategoria { get; set; }
+        public virtual ICollection<CategoriaInProducto> CategoriaInProductos { get; set; }
     }
 }

@@ -14,7 +14,8 @@ namespace CarniceriaFinal.Productos.Models
         }
         public CategoriaProductoEntity()
         {
+            Products = new();
         }
-        public List<SubCategoriaProductoEntity> subCategoria { get; set; }
-}
+        public List<SimpleProductInSubCategory> Products { get; set; }
+    }
 }

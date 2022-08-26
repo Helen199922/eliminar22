@@ -67,32 +67,10 @@ namespace CarniceriaFinal.Productos.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
-        [HttpGet("product-to-subcategory/{idSubCategory}")]
-        public async Task<IActionResult> GetSimpleProductsSubCategories(int idSubCategory)
-        {
-            RSEntity<List<SimpleProductInSubCategory>> rsEntity = new();
-            try
-            {
-                return Ok(rsEntity.Send(await ProductoService.GetSimpleProductsByIdSubCategories(idSubCategory)));
-            }
-            catch (RSException err)
-            {
-                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
-            }
-        }
-        [HttpGet("product-to-subcategory")]
-        public async Task<IActionResult> GetAllSimpleProductsSubCategories()
-        {
-            RSEntity<List<SimpleProductInSubCategory>> rsEntity = new();
-            try
-            {
-                return Ok(rsEntity.Send(await ProductoService.GetSimpleProductsByIdSubCategories(null)));
-            }
-            catch (RSException err)
-            {
-                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
-            }
-        }
+
+
+
+
         [HttpGet("product-detail/{idProduct}")]
         public async Task<IActionResult> GetDetailAdminProductoById(int idProduct)
         {
@@ -106,19 +84,7 @@ namespace CarniceriaFinal.Productos.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
-        [HttpGet("by-category/{idCategory}/{idSubCategory}")]
-        public async Task<IActionResult> FindProductsBySubCategory(int idCategory, int idSubCategory)
-        {
-            RSEntity<List<ProductEntity>> rsEntity = new();
-            try
-            {
-                return Ok(rsEntity.Send(await ProductoService.FindProductsBySubCategory(idCategory, idSubCategory)));
-            }
-            catch (RSException err)
-            {
-                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
-            }
-        }
+        
         [HttpGet("products-promotion")]
         public async Task<IActionResult> getAllProductsPromotions()
         {

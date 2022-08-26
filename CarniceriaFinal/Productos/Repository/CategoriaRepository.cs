@@ -13,11 +13,9 @@ namespace CarniceriaFinal.Productos.Repository
     public class CategoriaRepository : ICategoriaRepository
     {
         public readonly DBContext Context;
-        public readonly ISubInCategoriaRepository ISubInCategoriaRepository;
-        public CategoriaRepository(DBContext _Context, ISubInCategoriaRepository ISubInCategoriaRepository)
+        public CategoriaRepository(DBContext _Context)
         {
             Context = _Context;
-            this.ISubInCategoriaRepository = ISubInCategoriaRepository;
         }
 
         public Task<CategoriaProducto> GetCategoriaById(int id)
@@ -47,39 +45,11 @@ namespace CarniceriaFinal.Productos.Repository
             }
         }
 
-        public async Task<CategoriaProducto> GetCategoryById(int idCategory)
-        {
-            try
-            {
-                return await Context.CategoriaProductos
-                .Where(x => x.IdCategoria == idCategory)
-                .FirstOrDefaultAsync();
-            }
-            catch (Exception err)
-            {
-                throw RSException.ErrorQueryDB("Obtener las categorias específica");
-            }
-        }
-
-        public async Task<List<CategoriaProducto>> GetAllCategoriaAndSubCategory()
-        {
-            try
-            {
-                return await Context.CategoriaProductos
-                .Where(x => x.SubInCategoria.Any(x => x.IdProducto != null && x.IdProductoNavigation.Status == 1))
-                .ToListAsync();
-            }
-            catch (Exception err)
-            {
-                throw RSException.ErrorQueryDB("Obtener las categorias con productos");
-            }
-        }
         public async Task<List<CategoriaProducto>> GetAllCategories()
         {
             try
             {
                 return await Context.CategoriaProductos
-                    .Include(x => x.SubInCategoria)
                 .ToListAsync();
             }
             catch (Exception err)
@@ -87,19 +57,23 @@ namespace CarniceriaFinal.Productos.Repository
                 throw RSException.ErrorQueryDB("Obtener las categorias");
             }
         }
-        public async Task<List<SubInCategorium>> GetAllCategoriesAndSubCategoriesByProductId(int idProduct)
+        public async Task<Boolean> ChangeStatusCategory(int idCategory, int idStatus)
         {
             try
             {
-                return await Context.SubInCategoria
-                    .Include(x => x.IdCategoriaNavigation)
-                    .Include(x => x.IdSubCategoriaNavigation)
-                .Where(x => x.IdProducto == idProduct)
-                .ToListAsync();
+                var response = await Context.CategoriaProductos
+                .Where(x => x.IdCategoria == idCategory)
+                .FirstOrDefaultAsync();
+
+                if (response == null) return false;
+                response.Status = idStatus;
+
+                return true;
+
             }
             catch (Exception err)
             {
-                throw RSException.ErrorQueryDB("Obtener las categorias y subcategorías del producto");
+                throw RSException.ErrorQueryDB("Actualizar estado de categoria");
             }
         }
         public async Task<Boolean> DelateCategoryById(int idCategory)
@@ -118,34 +92,7 @@ namespace CarniceriaFinal.Productos.Repository
                 throw RSException.ErrorQueryDB("Eliminar las categorias del producto");
             }
         }
-        public async Task<List<SubCategorium>> GetSubCategoryByCategoryId(int idCategory)
-        {
-            try
-            {
-                return await Context.SubCategoria
-                    .Where(x => x.SubInCategoria.Any(x => x.IdCategoria == idCategory && x.IdProductoNavigation.Status == 1))
-                    .Distinct()
-                    .ToListAsync();
-            }
-            catch (Exception err)
-            {
-                throw RSException.ErrorQueryDB("Obtener las subcategorias de la categoria");
-            }
-        }
-        public async Task<List<CategoriaProducto>> GetAllCategoriesByIdSubCategory(int idSubCategory)
-        {
-            try
-            {
-                return await Context.CategoriaProductos
-                    .Where(x => x.SubInCategoria.Any(x => x.IdSubCategoria == idSubCategory))
-                    .Distinct()
-                    .ToListAsync();
-            }
-            catch (Exception err)
-            {
-                throw RSException.ErrorQueryDB("Obtener las subcategorias de la categoria");
-            }
-        }
+
         public CategoriaProducto UpdateCategory(CategoriaProducto category)
         {
             try
@@ -162,59 +109,101 @@ namespace CarniceriaFinal.Productos.Repository
                 throw RSException.ErrorQueryDB("Actualizar las subcategorias de la categoria");
             }
         }
-        public async Task<Boolean> UpdateCategoryInSubcategory(int idCategory, List<int> idSubCategories)
+
+        public async Task<List<CategoriaInProducto>> GetAllProductsInCategory(List<Producto> products, int idCategory)
         {
             try
             {
-                var CategoryInSub = await Context.SubInCategoria
-                    .AsNoTracking()
-                    .Where(x =>
-                    (x.IdCategoria == idCategory
-                        && !idSubCategories.Contains(x.IdSubCategoriaNavigation.IdSubCategoria)
-                    )).ToListAsync();
+                List<int> productsId = products.Select(x => x.IdProducto).ToList();
 
-                foreach (var item in CategoryInSub)
+                var productsInSubCategory = await Context.CategoriaInProductos
+                    .Where(x => productsId.Contains(x.IdProducto.Value) && x.IdCategoria == idCategory)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                return productsInSubCategory;
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Obtener los productos relacionados con categorias");
+            }
+        }
+        public async Task<List<CategoriaInProducto>> GetAllProductsExistInCategory(int idCategory)
+        {
+            try
+            {
+                var productsInSubCategory = await Context.CategoriaInProductos
+                    .Include(x => x.IdProductoNavigation)
+                    .Where(x => x.IdCategoria == idCategory)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                return productsInSubCategory;
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Obtener las relaciones de productos con categorias");
+            }
+        }
+        public async Task<List<CategoriaProducto>> GetAllCategoriesByProductId(int idProduct)
+        {
+            try
+            {
+                var productsInSubCategory = await Context.CategoriaInProductos
+                    .Include(x => x.IdCategoriaNavigation)
+                    .Include(x => x.IdProductoNavigation)
+                    .Where(x => x.IdProducto == idProduct)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                return productsInSubCategory.Select(x => x.IdCategoriaNavigation).DistinctBy(x => x.IdCategoria).ToList();
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Obtener las categorias por idProducto");
+            }
+        }
+        public async Task<CategoriaInProducto> CrearCategoriaInProduct(int idCategory, int idProduct)
+        {
+            try
+            {
+                using (var _Context = new DBContext())
                 {
-                    Context.SubInCategoria.Remove(item);
-                    Context.SaveChanges();
+                    CategoriaInProducto productInCat = new()
+                    {
+                        IdCategoria = idCategory,
+                        IdProducto = idProduct
+                    };
+                    await Context.CategoriaInProductos.AddAsync(productInCat);
+                    await Context.SaveChangesAsync();
+
+                    return productInCat;
+
                 }
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Crear Categoria en producto");
+            }
 
-                CategoryInSub = await Context.SubInCategoria
-                    .AsNoTracking()
-                    .Where(x => (x.IdCategoria == idCategory)).ToListAsync();
-
-                var CategoryInSubNoContain = idSubCategories.Where(x =>
-                            !CategoryInSub.Select(y => y.IdSubCategoria).Contains(x));
-                    
-
-                foreach (var item in CategoryInSubNoContain)
+        }
+        public async Task<Boolean> DeleteCategoriaInProduct(List<CategoriaInProducto> range)
+        {
+            try
+            {
+                using (var _Context = new DBContext())
                 {
-                    await ISubInCategoriaRepository.CrearSubInCategoria(idCategory, item);
+                    _Context.CategoriaInProductos.RemoveRange(range);
+                    await _Context.SaveChangesAsync();
                 }
 
                 return true;
-
             }
             catch (Exception err)
             {
-                throw RSException.ErrorQueryDB("Actualizar la relacion entre categoria y subcategoria");
+                throw RSException.ErrorQueryDB("Borrar Categoria en producto");
             }
-        }
-        public async Task<SubCategorium> UpdateSubCategory(SubCategorium subCategory)
-        {
-            try
-            {
-                Context.SubCategoria.Update(subCategory);
 
-                Context.SaveChanges();
-
-                return subCategory;
-
-            }
-            catch (Exception err)
-            {
-                throw RSException.ErrorQueryDB("Obtener las subcategorias de la categoria");
-            }
         }
     }
 }

@@ -18,43 +18,11 @@ namespace CarniceriaFinal.Productos
         {
             this.Context = _Context;
         }
-        public async Task<List<Producto>> GetSimpleProductsByIdSubCategories(int idSubCategory)
-        {
-            try
-            {
-                return await Context.Productos
-                    .Include(x => x.SubInCategoria)
-                    .ThenInclude(x => x.IdCategoriaNavigation)
-                    .Where(x => x.SubInCategoria.Any(y => y.IdSubCategoria == idSubCategory))
-                    .ToListAsync();
-
-            }
-            catch (Exception err)
-            {
-                throw RSException.ErrorQueryDB("Productos para subcategoria administración");
-            }
-        }
-        public async Task<List<Producto>> GetAllProductsSubCategory()
-        {
-            try
-            {
-                return await Context.Productos
-                    .Include(x => x.SubInCategoria)
-                    .ToListAsync();
-
-            }
-            catch (Exception)
-            {
-                throw RSException.ErrorQueryDB("Productos con subcategorias");
-            }
-        }
         public async Task<List<Producto>> GetSimpleProducts()
         {
             try
             {
                 return await Context.Productos
-                    .Include(x => x.SubInCategoria)
-                    .ThenInclude(x => x.IdCategoriaNavigation)
                     .ToListAsync();
 
             }
@@ -160,22 +128,8 @@ namespace CarniceriaFinal.Productos
                 throw RSException.ErrorQueryDB("gurdar el detalle del producto");
             }
         }
-        public async Task<List<Producto>> FindProductsBySubCategory(int idCategory, int idSubCategory)
-        {
-            try
-            {
-                
-                List<Producto> products = await Context.Productos
-                    .Where(y => y.SubInCategoria.Any(x => (x.IdSubCategoria == idSubCategory && x.IdCategoria == idCategory)) && y.Status == 1 && y.Stock > 0)
-                    .ToListAsync();
-                
-                return products;
-            }
-            catch (Exception err)
-            {
-                throw RSException.ErrorQueryDB("obtener productos por categorya");
-            }
-        }
+
+
         public async Task<Promocion> promotionConvert(int idProduct)
         {
             try
@@ -284,35 +238,15 @@ namespace CarniceriaFinal.Productos
                 throw RSException.ErrorQueryDB("obtener promocio activa");
             }
         }
-        public async Task<List<SubCategorium>> FindsubCategoryByCategoryId(int idSubCategory)
-        {
-            try
-            {
 
-                List<SubInCategorium> subCategories = await Context.SubInCategoria
-                    .Include(x => x.IdSubCategoriaNavigation)
-                    .Where(x => x.IdSubCategoria == idSubCategory)
-                    .ToListAsync();
 
-                List<SubCategorium> categories = new();
-                foreach (var item in subCategories)
-                {
-                    categories.Add(item.IdSubCategoriaNavigation);
-                }
-                return categories;
-            }
-            catch (Exception)
-            {
-                throw RSException.ErrorQueryDB("obtener subcategorias por categoria id");
-            }
-        }
 
         public async Task<List<Producto>> FindProductByCategoryId(int idCategory)
         {
             try
             {
                 List<Producto> products = await Context.Productos
-                    .Where(y => y.SubInCategoria.Any(x => x.IdCategoria == idCategory) && y.Status == 1 && y.Stock > 0)
+                    .Where(y => y.CategoriaInProductos.Any(x => x.IdCategoria == idCategory) && y.Status == 1 && y.Stock > 0)
                     .ToListAsync();
 
                 return products;

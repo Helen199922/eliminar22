@@ -147,8 +147,6 @@ builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<IPromocionRepository, PromocionRepository>();
 builder.Services.AddScoped<IUnidadMedidaRepository, UnidadMedidaRepository>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
-builder.Services.AddScoped<ISubCategoriaRepository, SubCategoriaRepository>();
-builder.Services.AddScoped<ISubInCategoriaRepository, SubInCategoriaRepository>();
 builder.Services.AddScoped<IPromotionRepository, PromotionRepository>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();

@@ -14,7 +14,8 @@ namespace CarniceriaFinal.Productos.Repository
         Task<List<Producto>> GetSimpleProducts();
         Task<Producto> ProductById(int id);
         Task<string> SaveDetalles(List<DetalleProducto> detalleProducto);
-        Task<List<Producto>> FindProductsBySubCategory(int idCategory, int idSubCategory);
+
+
         Task<Producto> SaveProduct(Producto producto);
         Task<List<Producto>> FindProductByCategoryId(int idCategory);
         Task<Producto> UpdateProduct(Producto product);
@@ -27,8 +28,6 @@ namespace CarniceriaFinal.Productos.Repository
         Task<string> EnableProduct(int idProduct);
         Task<string> UpdateStock(int idProduct, int stock);
         Task<Producto> FindProductById(int idProduct);
-        Task<List<Producto>> GetSimpleProductsByIdSubCategories(int idSubCategory);
-        Task<List<Producto>> GetAllProductsSubCategory();
         Task<Promocion> promotionConvert(int idProduct);
         Task<List<Producto>> getAllProductsPromotions();
         Task<Promocion> getPromotionActivate();

@@ -39,8 +39,9 @@ namespace CarniceriaFinal.Core
             CreateMap<CategoriaProducto, CategoryEntity>();
             CreateMap<CategoryEntity, CategoriaProducto>();
             CreateMap<CategoriaProductoEntity, CategoriaProducto>();
-            CreateMap<CategoryAdminEntity, CategoriaProducto>();
-            CreateMap<CategoriaProducto, CategoryAdminEntity>();
+            CreateMap<CategoryEntity, CategoriaProductoEntity>();
+            CreateMap<CategoriaProductoEntity, CategoryEntity>();
+
 
             //Manejar las sub-categorias
             CreateMap<SubCategorium, SubCategoriaProductoEntity>();

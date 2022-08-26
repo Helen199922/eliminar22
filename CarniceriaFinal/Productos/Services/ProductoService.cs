@@ -48,15 +48,7 @@ namespace CarniceriaFinal.Productos.Servicios
                     lastProduct.NamePromotion = "";
                     
                     lastProduct.NameCategories = new();
-                    if (item.SubInCategoria == null) continue;
 
-                    foreach (var category in item.SubInCategoria.Distinct())
-                    {
-
-                        if (lastProduct.NameCategories.Contains(category.IdCategoriaNavigation.Titulo))
-                            continue;
-                        lastProduct.NameCategories.Add(category.IdCategoriaNavigation.Titulo);
-                    }
                 }
 
 
@@ -90,7 +82,8 @@ namespace CarniceriaFinal.Productos.Servicios
                 productComplete.product = responsePromotion[0];
                 productComplete.unidadMedida = IMapper.Map<MeasureUnitEntity>(productsRepo.IdUnidadNavigation);
                 productComplete.detail = IMapper.Map<List<ProductDetailEntity>>(productsRepo.DetalleProductos);
-                productComplete.categories = await this.ICategoriaService.GetAllCategoriesAndSubCategoriesByProductId(idProduct);
+                var categoriesResponse = await this.ICategoriaService.GetAllCategoriesByProductId(idProduct);
+                productComplete.categories = IMapper.Map<List<CategoriaProductoEntity>>(categoriesResponse);
 
                 return productComplete;
             }
@@ -129,47 +122,6 @@ namespace CarniceriaFinal.Productos.Servicios
                 List<ProductEntity> products = IMapper.Map<List<ProductEntity>>(productsRepo);
 
                 return await promotionConvert(products);
-            }
-            catch (RSException err)
-            {
-                throw new RSException(err.TypeError, err.Code, err.MessagesError);
-            }
-            catch (Exception err)
-            {
-                throw new RSException("error", 500).SetMessage(err.Message);
-            }
-        }
-        public async Task<List<SimpleProductInSubCategory>> GetSimpleProductsByIdSubCategories(int? idSubCategory)
-        {
-            try
-            {
-                var productsRepo = await this.IProductoRepo.GetAllProductsSubCategory();
-                List<SimpleProductInSubCategory> products = new();
-
-                foreach (var item in productsRepo)
-                {
-                    if (products.Any(x => x.idProducto == item.IdProducto))
-                        continue;
-
-                    var existSubCategoryInProduct = (idSubCategory == null)
-                        ? false 
-                        : item.SubInCategoria.Where(x => x.IdSubCategoria == idSubCategory)
-                            .FirstOrDefault() != null ? true : false;
-
-                    products.Add(new SimpleProductInSubCategory()
-                    {
-
-
-                        idProducto = item.IdProducto,
-                        titulo = item.Titulo,
-                        isActivated = existSubCategoryInProduct
-                    });
-
-                    var valores = item.SubInCategoria;
-                    
-                }
-
-                return products;
             }
             catch (RSException err)
             {
@@ -255,25 +207,7 @@ namespace CarniceriaFinal.Productos.Servicios
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al guardar el detalle de 1 producto");
             }
         }
-        public async Task<List<ProductEntity>> FindProductsBySubCategory(int idCategory, int idSubCategory)
-        {
-            try
-            {
-                var products = IMapper.Map<List<ProductEntity>>(
-                    await IProductoRepo.FindProductsBySubCategory(idCategory, idSubCategory)
-                );
 
-                return await promotionConvert(products);
-            }
-            catch (RSException err)
-            {
-                throw new RSException(err.TypeError, err.Code, err.MessagesError);
-            }
-            catch (Exception)
-            {
-                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al consultar el producto");
-            }
-        }
         public async Task<List<ProductEntity>> promotionConvert(List<ProductEntity> products)
         {
             try

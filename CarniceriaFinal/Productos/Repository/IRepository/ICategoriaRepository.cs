@@ -10,15 +10,15 @@ namespace CarniceriaFinal.Productos.Repository
     {
         Task<CategoriaProducto> GetCategoriaById(int id);
         Task<CategoriaProducto> CreateCategory(CategoriaProducto categoria);
-        Task<List<CategoriaProducto>> GetAllCategoriaAndSubCategory();
-        Task<List<SubCategorium>> GetSubCategoryByCategoryId(int idCategory);
         CategoriaProducto UpdateCategory(CategoriaProducto category);
-        Task<Boolean> UpdateCategoryInSubcategory(int idCategory, List<int> idSubCategories);
         Task<Boolean> DelateCategoryById(int idCategory);
-        Task<SubCategorium> UpdateSubCategory(SubCategorium subCategory);
-        Task<List<CategoriaProducto>> GetAllCategoriesByIdSubCategory(int idSubCategory);
-        Task<List<SubInCategorium>> GetAllCategoriesAndSubCategoriesByProductId(int idProduct);
-        Task<CategoriaProducto> GetCategoryById(int idCategory);
         Task<List<CategoriaProducto>> GetAllCategories();
+        Task<List<CategoriaInProducto>> GetAllProductsInCategory(List<Producto> products, int idCategory);
+        Task<List<CategoriaInProducto>> GetAllProductsExistInCategory(int idCategory);
+        Task<CategoriaInProducto> CrearCategoriaInProduct(int idCategory, int idProduct);
+        Task<List<CategoriaProducto>> GetAllCategoriesByProductId(int idProduct);
+
+        Task<Boolean> ChangeStatusCategory(int idCategory, int idStatus);
+        Task<Boolean> DeleteCategoriaInProduct(List<CategoriaInProducto> range);
     }
 }
