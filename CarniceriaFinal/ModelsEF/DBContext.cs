@@ -29,6 +29,7 @@ namespace CarniceriaFinal.ModelsEF
         public virtual DbSet<FormaPago> FormaPagos { get; set; } = null!;
         public virtual DbSet<Impuesto> Impuestos { get; set; } = null!;
         public virtual DbSet<InfoBancarium> InfoBancaria { get; set; } = null!;
+        public virtual DbSet<Log> Logs { get; set; } = null!;
         public virtual DbSet<MembresiaInUsuario> MembresiaInUsuarios { get; set; } = null!;
         public virtual DbSet<Membresium> Membresia { get; set; } = null!;
         public virtual DbSet<MetodosHttp> MetodosHttps { get; set; } = null!;
@@ -221,6 +222,12 @@ namespace CarniceriaFinal.ModelsEF
             modelBuilder.Entity<InfoBancarium>(entity =>
             {
                 entity.HasKey(e => e.IdBanco)
+                    .HasName("PRIMARY");
+            });
+
+            modelBuilder.Entity<Log>(entity =>
+            {
+                entity.HasKey(e => e.IdLog)
                     .HasName("PRIMARY");
             });
 

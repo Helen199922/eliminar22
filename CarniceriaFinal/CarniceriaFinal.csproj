@@ -36,10 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Core\JWTOKEN\DTOs\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Update="Core\Email\Templates\email-promotion.html">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

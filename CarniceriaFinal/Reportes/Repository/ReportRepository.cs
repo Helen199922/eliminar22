@@ -258,5 +258,9 @@ namespace CarniceriaFinal.Reportes.Repository
                 throw RSException.ErrorQueryDB("Lista de categorias");
             }
         }
+
+        //Guardar Logs
+        
+
     }
 }

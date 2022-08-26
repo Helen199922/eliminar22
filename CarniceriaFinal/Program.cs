@@ -58,6 +58,7 @@ using CarniceriaFinal.Reportes.Services;
 using CarniceriaFinal.Reportes.Services.IServices;
 using CarniceriaFinal.Reportes.Repository;
 using CarniceriaFinal.Reportes.Repository.IRepository;
+using CarniceriaFinal.Core.JWTOKEN.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -90,6 +91,8 @@ builder.Services.AddDbContext<DBContext>(
 var vale = builder.Configuration["ConnectionString:AzureBlobStorage"];
 
 builder.Services.AddSingleton(x => new BlobServiceClient(builder.Configuration["ConnectionString:AzureBlobStorage"]));
+
+builder.Services.AddOptions<ModulesConfiguration>().Bind(builder.Configuration.GetSection("Modules"));
 
 
 builder.Services.Configure<MailSettings>(x =>
@@ -180,6 +183,8 @@ builder.Services.AddScoped<IRecommendationRepository, RecommendationRepository>(
 builder.Services.AddScoped<IRecommendationService, RecommendationService>();
 builder.Services.AddScoped<IReportServices, ReportServices>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
+builder.Services.AddScoped<ILogsServices, LogsServices>();
+builder.Services.AddScoped<ILogsRepository, LogsRepository>();
 
 builder.Services.AddSingleton<IMultiEmailService, MultiEmailService>();
 
@@ -205,6 +210,7 @@ app.UseEndpoints(endpoints =>
 app.UseDeveloperExceptionPage();
 
 app.UseHttpsRedirection();
+
 
 
 app.UseAuthorization();

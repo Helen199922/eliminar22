@@ -1,5 +1,7 @@
 ﻿using CarniceriaFinal.Autenticacion.DTOs;
 using CarniceriaFinal.Autenticacion.Services.IServices;
+using CarniceriaFinal.Core.JWTOKEN.DTOs;
+using CarniceriaFinal.Core.JWTOKEN.Repository.IRepository;
 using CarniceriaFinal.Core.JWTOKEN.Services.IServices;
 using CarniceriaFinal.ModelsEF;
 using Microsoft.AspNetCore.Http;
@@ -21,6 +23,7 @@ namespace CarniceriaFinal.Core.Security
     public class JwtMiddleware
     {
         private readonly RequestDelegate _next;
+        private string idUserDetail;
         public IConfiguration Configuration { get; }
         public JwtMiddleware(RequestDelegate next, IConfiguration configuration)
         {
@@ -28,22 +31,83 @@ namespace CarniceriaFinal.Core.Security
             Configuration = configuration;
         }
 
-        public async Task Invoke(HttpContext context, IJwtUtils JwtUtils, IJwtService JwtService, DBContext _Context)
+        public async Task Invoke(HttpContext context, 
+            IJwtUtils JwtUtils, IJwtService JwtService, 
+            ILogsServices iLogsServices, ILogsRepository ILogsRepository, 
+            DBContext _Context)
         {
+            this.idUserDetail = "";
+            LogsEntity log = new LogsEntity();
+
+            var remoteIp = context.Connection.RemoteIpAddress;
+            if (remoteIp.IsIPv4MappedToIPv6)
+            {
+                remoteIp = remoteIp.MapToIPv4();
+            }
+
+            log.hostname = remoteIp.ToString();
+            log.timestamp = DateTime.Now;
+
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             var httpRequestFeature = context.Features[typeof(IHttpRequestFeature)] as IHttpRequestFeature;
+            context.Request.EnableBuffering();
+            var bodyAsText = await new System.IO.StreamReader(context.Request.Body).ReadToEndAsync();
+            context.Request.Body.Position = 0;
 
             Microsoft.AspNetCore.Http.Endpoint endpointBeingHit = context.Features.Get<IEndpointFeature>()?.Endpoint;
             ControllerActionDescriptor actionDescriptor = endpointBeingHit?.Metadata?.GetMetadata<ControllerActionDescriptor>();
 
+            //log.
+
             var endPoint = actionDescriptor?.ActionName;
             string method = httpRequestFeature.Method;
+
+            log.metodo = method;
+            log.endpoint = endPoint;
+
+
+            var logResponse = iLogsServices.mapperValues(log, actionDescriptor.ControllerName);
+
+
+            //mensaje
+            //estadoHTTP
+
 
             Boolean isPublic = await JwtService.IsPublicEndPoint(endPoint, method);
             if (isPublic)
             {
-                context.Items["isPublic"] = true;
-                await _next(context);
+                using (var swapStream = new MemoryStream())
+                {
+                    var originalResponseBody = context.Response.Body;
+
+                    context.Response.Body = swapStream;
+
+                    context.Items["isPublic"] = true;
+                    await _next(context);
+                    
+
+                    var statusCode = context.Response.StatusCode;
+
+                    swapStream.Seek(0, SeekOrigin.Begin);
+                    string responseBody = new StreamReader(swapStream).ReadToEnd();
+                    swapStream.Seek(0, SeekOrigin.Begin);
+
+                    await swapStream.CopyToAsync(originalResponseBody);
+
+                    try
+                    {
+                        logResponse.mensaje = iLogsServices.getMessage(responseBody);
+                        logResponse.estadoHTTP = statusCode + "";
+                        logResponse.idUser = "";
+
+                        await ILogsRepository.SaveLogs(logResponse);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    context.Response.Body = originalResponseBody;
+                }
+                
                 return;
             }
             
@@ -53,24 +117,39 @@ namespace CarniceriaFinal.Core.Security
 
             }
 
-            await _next(context);
+            using (var swapStream = new MemoryStream())
+            {
+                var originalResponseBody = context.Response.Body;
 
-            //using (var ms = new MemoryStream())
-            //{
-              //  context.Response.Body = ms;
+                context.Response.Body = swapStream;
 
-                //context.Response.Body.Position = 0;
+                await _next(context);
 
-                //var responseReader = new StreamReader(context.Response.Body);
+                var statusCode = context.Response.StatusCode;
+                swapStream.Seek(0, SeekOrigin.Begin);
+                string responseBody = new StreamReader(swapStream).ReadToEnd();
+                swapStream.Seek(0, SeekOrigin.Begin);
 
-                //var responseContent = responseReader.ReadToEnd();
-                //Console.WriteLine($"Response Body: {responseContent}");
+                await swapStream.CopyToAsync(originalResponseBody);
 
-                //context.Response.Body.Position = 0;
-            //}
+                try
+                {
+                    logResponse.mensaje = iLogsServices.getMessage(responseBody);
+                    logResponse.estadoHTTP = statusCode + "";
+                    logResponse.idUser = this.idUserDetail;
 
-
+                    await ILogsRepository.SaveLogs(logResponse);
+                }
+                catch (Exception)
+                {
+                }
+                
+                context.Response.Body = originalResponseBody;
+            }
         }
+
+
+
 
         private async Task attachUserToContext(HttpContext context, string token, 
             IJwtUtils _JwtUtils, string endPoint, string method, IJwtService JwtService)
@@ -90,6 +169,8 @@ namespace CarniceriaFinal.Core.Security
                 var auth = await JwtService.FindOptionByIdRolAndMethodAndEndPoint(user.idRol.Value, endPoint, method);
 
                 if (!auth) return;
+
+                this.idUserDetail = user.idRol.Value + "";
 
                 UserTokenEntity userEntity = new()
                 {
