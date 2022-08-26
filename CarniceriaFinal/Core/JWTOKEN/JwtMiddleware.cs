@@ -23,7 +23,7 @@ namespace CarniceriaFinal.Core.Security
     public class JwtMiddleware
     {
         private readonly RequestDelegate _next;
-        private string idUserDetail;
+        private int? idUserDetail;
         public IConfiguration Configuration { get; }
         public JwtMiddleware(RequestDelegate next, IConfiguration configuration)
         {
@@ -36,7 +36,7 @@ namespace CarniceriaFinal.Core.Security
             ILogsServices iLogsServices, ILogsRepository ILogsRepository, 
             DBContext _Context)
         {
-            this.idUserDetail = "";
+            this.idUserDetail = null;
             LogsEntity log = new LogsEntity();
 
             var remoteIp = context.Connection.RemoteIpAddress;
@@ -97,8 +97,8 @@ namespace CarniceriaFinal.Core.Security
                     try
                     {
                         logResponse.mensaje = iLogsServices.getMessage(responseBody);
-                        logResponse.estadoHTTP = statusCode + "";
-                        logResponse.idUser = "";
+                        logResponse.estadoHTTP = statusCode ;
+                        logResponse.idUser = null;
 
                         await ILogsRepository.SaveLogs(logResponse);
                     }
@@ -135,7 +135,7 @@ namespace CarniceriaFinal.Core.Security
                 try
                 {
                     logResponse.mensaje = iLogsServices.getMessage(responseBody);
-                    logResponse.estadoHTTP = statusCode + "";
+                    logResponse.estadoHTTP = statusCode;
                     logResponse.idUser = this.idUserDetail;
 
                     await ILogsRepository.SaveLogs(logResponse);
@@ -157,7 +157,7 @@ namespace CarniceriaFinal.Core.Security
             try
             {
                 var userId = _JwtUtils.ValidateToken(token);
-                this.idUserDetail = userId.Value + "";
+                this.idUserDetail = userId.Value;
                 Boolean isOnlyForUser = await JwtService.IsOnlyForUSer(endPoint, method);
                 if (isOnlyForUser)
                 {

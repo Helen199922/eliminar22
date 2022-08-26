@@ -82,5 +82,46 @@ namespace CarniceriaFinal.Reportes.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [HttpPost("report-modules-by-dates")]
+        public async Task<IActionResult> GetAllLogsModulesGraficsByDates([FromBody] ReportGraficsByDatesAndModules data)
+        {
+            RSEntity<List<MiltiFieldReportEntity>> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IReportServices.GetAllLogsModulesGraficsByDates(data.idModules, data.timeStart, data.timeEnd)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
+        [HttpGet("modules-for-report")]
+        public async Task<IActionResult> GetAllListModules()
+        {
+            RSEntity<List<ModulesReports>> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IReportServices.GetAllListModules()));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
+        [HttpPost("report-modules-by-dates-document")]
+        public async Task<IActionResult> GetAllLogsModulesByDatesDetail([FromBody] ReportGraficsByDatesAndModules data)
+        {
+            RSEntity<ModulesReportDetail> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IReportServices.GetAllLogsModulesByDatesDetail(data.idModules, data.timeStart, data.timeEnd)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
+        
+
     }
 }

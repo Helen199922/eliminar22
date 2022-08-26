@@ -24,8 +24,7 @@ namespace CarniceriaFinal.ModelsEF
         [StringLength(255)]
         public string Mensaje { get; set; } = null!;
         [Column("estadoHTTP")]
-        [StringLength(255)]
-        public string EstadoHttp { get; set; } = null!;
+        public int EstadoHttp { get; set; }
         [Column("timestamp", TypeName = "datetime")]
         public DateTime Timestamp { get; set; }
         [Column("hostname")]
@@ -36,9 +35,8 @@ namespace CarniceriaFinal.ModelsEF
         public string Endpoint { get; set; } = null!;
         [Column("pathEndpoint")]
         [StringLength(255)]
-        public string? PathEndpoint { get; set; }
+        public string PathEndpoint { get; set; } = null!;
         [Column("idUser")]
-        [StringLength(255)]
-        public string? IdUser { get; set; }
+        public int? IdUser { get; set; }
     }
 }

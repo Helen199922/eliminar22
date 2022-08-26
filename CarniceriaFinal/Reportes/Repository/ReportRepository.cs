@@ -1,17 +1,21 @@
 ﻿using CarniceriaFinal.Core.CustomException;
+using CarniceriaFinal.Core.JWTOKEN.DTOs;
 using CarniceriaFinal.ModelsEF;
 using CarniceriaFinal.Reportes.DTOs;
 using CarniceriaFinal.Reportes.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace CarniceriaFinal.Reportes.Repository
 {
     public class ReportRepository : IReportRepository
     {
         public readonly DBContext Context;
-        public ReportRepository(DBContext _Context)
+        protected readonly IOptions<ModulesConfiguration> modules;
+        public ReportRepository(DBContext _Context, IOptions<ModulesConfiguration> Imodules)
         {
             Context = _Context;
+            this.modules = Imodules;
         }
 
         //Reporte de ventas por fecha
@@ -259,8 +263,132 @@ namespace CarniceriaFinal.Reportes.Repository
             }
         }
 
-        //Guardar Logs
-        
+        //Obtener ids de Modulos Logs
+        public async Task<List<ModulesReports>> GetAllListModules()
+        {
+            try
+            {
+                return this.modules.Value.Modules.Select(x => new ModulesReports()
+                {
+                    id = x.idModule,
+                    value = x.moduleName
+                }).DistinctBy(x => x.id).ToList();
+                var categories = await Context.CategoriaProductos.ToListAsync();
 
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Lista de modulos");
+            }
+        }
+
+        public async Task<List<MiltiFieldReportEntity>> GetAllLogsModulesGraficsByDates(List<int> idModules, DateTime timeStart, DateTime timeEnd)
+        {
+            try
+            {
+                var response = await Context.Logs
+                    .Where(x => idModules.Contains(x.IdModulo))
+                    .ToListAsync();
+
+
+                var logs = response.Where(x => DateTime.Compare(x.Timestamp, timeStart) >= 0
+                                                && DateTime.Compare(x.Timestamp, timeEnd) <= 0
+                                          ).ToList();
+
+                List<MiltiFieldReportEntity> report = new();
+
+                foreach (var module in idModules)
+                {
+                    MiltiFieldReportEntity onlyReport = new();
+                    FieldReportEntity fine = new();
+                    FieldReportEntity error = new();
+                    onlyReport.series = new();
+
+                    onlyReport.name = this.modules.Value.Modules.Where(x => x.idModule == module).FirstOrDefault().moduleName;
+                    fine.name = "Correcta";
+                    fine.value = logs.Where(x => x.IdModulo == module && x.EstadoHttp <= 200).ToList().Count();
+
+                    error.name = "Error";
+                    error.value = logs.Where(x => x.IdModulo == module && x.EstadoHttp >= 400).ToList().Count();
+
+                    onlyReport.series.Add(fine);
+                    onlyReport.series.Add(error);
+
+                    report.Add(onlyReport);
+                }
+
+                return report;
+
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Lista de logs por modulos");
+            }
+        }
+        public async Task<ModulesReportDetail> GetAllLogsModulesByDatesDetail(List<int> idModules, DateTime timeStart, DateTime timeEnd)
+        {
+            try
+            {
+                var response = await Context.Logs
+                    .Where(x => idModules.Contains(x.IdModulo))
+                    .ToListAsync();
+
+
+                var logs = response.Where(x => DateTime.Compare(x.Timestamp, timeStart) >= 0
+                                                && DateTime.Compare(x.Timestamp, timeEnd) <= 0
+                                          ).ToList();
+
+                ModulesReportDetail report = new();
+                report.correcta = new();
+                report.error = new();
+
+
+                foreach (var module in idModules)
+                {
+                    List<LogsEntity> fine = new();
+                    List<LogsEntity> error = new();
+
+                    fine = logs.Where(x => x.IdModulo == module && x.EstadoHttp <= 200).ToList().Select(x => new LogsEntity()
+                    {
+                        endpoint = x.Endpoint,
+                        estadoHTTP = x.EstadoHttp,
+                        hostname = x.Hostname,
+                        idModulo = x.IdModulo,
+                        mensaje = x.Mensaje,
+                        metodo = x.Metodo,
+                        modulo = x.Modulo,
+                        pathEndPoint = x.PathEndpoint,
+                        timestamp = x.Timestamp,
+                        idUser = x.IdUser,
+                    }).ToList();
+
+                    error = logs.Where(x => x.IdModulo == module && x.EstadoHttp >= 400).ToList().Select(x => new LogsEntity()
+                    {
+                        endpoint = x.Endpoint,
+                        estadoHTTP = x.EstadoHttp,
+                        hostname = x.Hostname,
+                        idModulo = x.IdModulo,
+                        mensaje = x.Mensaje,
+                        metodo = x.Metodo,
+                        modulo = x.Modulo,
+                        pathEndPoint = x.PathEndpoint,
+                        timestamp = x.Timestamp,
+                        idLog = x.IdLog,
+                        idUser = x.IdUser,
+                    }).ToList();
+
+
+                    report.correcta.AddRange(fine);
+                    report.error.AddRange(error);
+                }
+
+                return report;
+
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Lista de logs para documento por modulos");
+            }
+        }
     }
 }

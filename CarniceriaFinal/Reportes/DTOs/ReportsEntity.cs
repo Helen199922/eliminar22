@@ -1,4 +1,5 @@
-﻿using CarniceriaFinal.Sales.Models;
+﻿using CarniceriaFinal.Core.JWTOKEN.DTOs;
+using CarniceriaFinal.Sales.Models;
 
 namespace CarniceriaFinal.Reportes.DTOs
 {
@@ -22,6 +23,12 @@ namespace CarniceriaFinal.Reportes.DTOs
     {
         public int idCategory { get; set; }
     }
+
+    public class ReportGraficsByDatesAndModules : ReportByDates
+    {
+        public List<int> idModules { get; set; }
+    }
+
     public class ReportByDates
     {
         public DateTime timeStart { get; set; }
@@ -32,7 +39,11 @@ namespace CarniceriaFinal.Reportes.DTOs
         public string value { get; set; }
         public int id { get; set; }
     }
-
+    public class ModulesReports
+    {
+        public string value { get; set; }
+        public int id { get; set; }
+    }
 
     public class DataSalesReportDetail
     {
@@ -64,5 +75,10 @@ namespace CarniceriaFinal.Reportes.DTOs
         public int ventasPendientes { get; set; }
         public int stock { get; set; }
         public float precio { get; set; }
+    }
+    public class ModulesReportDetail
+    {
+        public List<LogsEntity> correcta { get; set; }
+        public List<LogsEntity> error { get; set; }
     }
 }

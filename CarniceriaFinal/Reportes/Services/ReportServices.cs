@@ -107,5 +107,43 @@ namespace CarniceriaFinal.Reportes.Services
                 throw RSException.ErrorQueryDB("Lista de categorias");
             }
         }
+        public async Task<List<MiltiFieldReportEntity>> GetAllLogsModulesGraficsByDates(List<int> idModules, DateTime timeStart, DateTime timeEnd)
+        {
+            try
+            {
+                return await IReportRepository.GetAllLogsModulesGraficsByDates(idModules, timeStart, timeEnd);
+
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Lista de reporte por modulos");
+            }
+        }
+        public async Task<List<ModulesReports>> GetAllListModules()
+        {
+            try
+            {
+                return await IReportRepository.GetAllListModules();
+
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Lista de modulos");
+            }
+        }
+        public async Task<ModulesReportDetail> GetAllLogsModulesByDatesDetail(List<int> idModules, DateTime timeStart, DateTime timeEnd)
+        {
+            try
+            {
+                return await IReportRepository.GetAllLogsModulesByDatesDetail(idModules, timeStart, timeEnd);
+
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Lista de logs para documento por modulos");
+            }
+        }
+
+
     }
 }

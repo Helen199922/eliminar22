@@ -8,7 +8,7 @@
             this.metodo = "";
             mensaje = "";
             idModulo = 0;
-            estadoHTTP = "";
+            estadoHTTP = 0;
             timestamp = DateTime.Now;
             hostname = "";
             endpoint = "";
@@ -19,12 +19,12 @@
         public string metodo { get; set; }
         public int idModulo { get; set; }
         public string mensaje { get; set; }
-        public string estadoHTTP { get; set; }
+        public int estadoHTTP { get; set; }
         public DateTime timestamp { get; set; }
         public string hostname { get; set; }
         public string endpoint { get; set; }
         public string pathEndPoint { get; set; }
-        public string idUser { get; set; }
+        public int? idUser { get; set; }
     }
 
     public class ModulesConfiguration
