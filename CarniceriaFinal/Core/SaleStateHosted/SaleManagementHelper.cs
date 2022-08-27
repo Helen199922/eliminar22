@@ -25,16 +25,20 @@ namespace CarniceriaFinal.Core.SaleStateHosted
         public List<SaleEntity> getPendingSalesIDs(List<Ventum> sales)
         {
             List<SaleEntity> PendingSalesID = new();
-            DateTime DateNow = DateTime.Now;
             try
             {
                 foreach (var item in sales)
                 {
+                    DateTime times = DateTime.Now;
                     var sale = IMapper.Map<SaleEntity>(item);
-                    TimeSpan difDate = DateNow - sale.fecha.Value;
-                    var maximum = Configuration["AppConstants:MaximumDaysState"];
-                    if (difDate.TotalDays > Int32.Parse(maximum))
+                    DateTime timeEnd = sale.fechaFinal == null ? times : sale.fechaFinal.Value;
+                    DateTime timeStart = sale.fecha.Value;
+
+                    //var maximum = Configuration["AppConstants:MaximumDaysState"];
+                    if(DateTime.Compare(timeEnd, times) <= 0 && sale.status == 1)
+                    {
                         PendingSalesID.Add(sale);
+                    }
                 }
             }
             catch (Exception)
@@ -59,5 +63,6 @@ namespace CarniceriaFinal.Core.SaleStateHosted
             }
             return saleToUpdate;
         }
+
     }
 }

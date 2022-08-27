@@ -55,13 +55,15 @@ namespace CarniceriaFinal.Sales.Services
             this.IMembershipRepository = IMembershipRepository;
             this.IMapper = IMapper;
         }
-        public async Task<string> CreateSaleNoUser(SaleNoUserRequestEntity sale)
+        public async Task<SalesUserInformationResponse> CreateSaleNoUser(SaleNoUserRequestEntity sale)
         {
             try
             {
-                sale.referencia = "Costo de Envío";
-                sale.costosAdicionales = await ICitiesServices.GetCityCostById(sale.idCiudad);
-                float finalAmount = (float)sale.costosAdicionales;
+
+                if (sale.cedula == null || sale.email == null || sale.nombreVenta == null)
+                    throw RSException.BadRequest("Por favor, vuelva a intentar");
+
+                float finalAmount = (float)0;
                 float subTotal = 0;
                 float discount = 0;
 
@@ -70,7 +72,8 @@ namespace CarniceriaFinal.Sales.Services
                 {
                     float discountInDetail = 0;
                     var productValue = await this.IProductoRepository.FindProductById(item.idProducto);
-                    if (productValue == null) throw RSException.BadRequest("El producto no se encontró");
+                    if (productValue == null || productValue.Stock == 0 || productValue.Stock < item.cantidad) 
+                        throw RSException.BadRequest("El producto no se encontró o no hay stock disponible");
 
                     
                     if (item.idPromocion != null)
@@ -99,53 +102,57 @@ namespace CarniceriaFinal.Sales.Services
                         typeDiscount = item.idPromocion != null ? "Promoción vigente" : null
                     });
                 }
-                sale.total = finalAmount;
 
                 //Verificar si el cliente no está registrado como un usuario con clave y contraseña
-                var user = await IUserRepository.GetUserByIdIndentificationPerson(sale.cliente.cedula);
-                if(user != null)
-                {
-                    throw RSException.Unauthorized("Ya existe un usuario registrado con estas credenciales. Por favor, inicie sesión.");
-                }
-                var client = await IClientRepository.GetClientByIdentification(sale.cliente.cedula);
+                //var user = await IUserRepository.GetUserByIdIndentificationPerson(sale.cedula);
+                //if (user != null)
+                //{
+                //    throw RSException.Unauthorized("Ya existe un usuario registrado con estas credenciales. Por favor, inicie sesión.");
+                //}
+                //var client = await IClientRepository.GetClientByIdentification(sale.cliente.cedula);
                 
                 //actualizar persona
-                int idClient = 0;
-                if (client != null)
-                {
-                    idClient = UpdateClientNoUser(sale.cliente, client).Result.IdCliente;
-                    var personUpdated = await UpdatePersonNoUser(sale.cliente, client.IdPersonaNavigation);
-                }
-                else
-                {
-                    var person = await CreatePerson(sale.cliente);
-                    idClient = CreateClient(sale.cliente, person.IdPersona).Result.IdCliente;
-                }
+                //int idClient = 0;
+                //if (client != null)
+                //{
+                //    idClient = UpdateClientNoUser(sale.cliente, client).Result.IdCliente;
+                //    var personUpdated = await UpdatePersonNoUser(sale.cliente, client.IdPersonaNavigation);
+                //}
+                //else
+                //{
+                //    var person = await CreatePerson(sale.cliente);
+                //    idClient = CreateClient(sale.cliente, person.IdPersona).Result.IdCliente;
+                //}
 
-                sale.fecha = DateTime.Now;
-                Ventum saleCreated = await CreateSale(sale, idClient);
+                Ventum saleCreated = await CreateSale(null, finalAmount, sale);
                 
                 //Crear datalle
                 foreach (var detail in sale.detalleVenta)
                 {
                     await CreateDetail(detail, saleCreated.IdVenta);
+                    await IProductoRepository.DisminuirStock(detail.idProducto, detail.cantidad);
                 }
 
 
-                var email = await this.IEmailService.SendEmailToProductRequest(new EmailProductsRequest
-                {
-                    numPedido = saleCreated.IdVenta.ToString(),
-                    amount= finalAmount,
-                    email=sale.cliente.email,
-                    userName=sale.cliente.nombre,
-                    accounts= await GetAllBanks(),
-                    discount = discount.ToString(),
-                    subTotal = Math.Round(subTotal, 2).ToString(),
-                    productDetail = salesDetails,
-                    transporte = sale.costosAdicionales.ToString()
-                });
+                //var email = await this.IEmailService.SendEmailToProductRequest(new EmailProductsRequest
+                //{
+                //    numPedido = saleCreated.IdVenta.ToString(),
+                //    amount= finalAmount,
+                //    email=sale.cliente.email,
+                //    userName=sale.cliente.nombre,
+                //    accounts= await GetAllBanks(),
+                //    discount = discount.ToString(),
+                //    subTotal = Math.Round(subTotal, 2).ToString(),
+                //    productDetail = salesDetails,
+                //    transporte = sale.costosAdicionales.ToString()
+                //});
 
-                return email;
+                return new()
+                {
+                    numVenta = saleCreated.IdVenta,
+                    timeStart = DateTime.Now,
+                    timeEnd = saleCreated.FechaFinal == null ? DateTime.Now : saleCreated.FechaFinal.Value
+                };
 
             }
             catch (RSException err)
@@ -157,15 +164,26 @@ namespace CarniceriaFinal.Sales.Services
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al guardar la venta");
             }
         }
-        public async Task<string> CreateSaleUser(SaleNoUserRequestEntity sale)
+        public async Task<SalesUserInformationResponse> CreateSaleUser(SaleNoUserRequestEntity sale)
         {
             try
             {
+                if (sale.cedula == null || sale.email == null || sale.nombreVenta == null)
+                    RSException.BadRequest("Por favor, vuelva a intentar");
+
+                //Verificar si el cliente está registrado como un usuario con clave y contraseña
+
                 await this.isValidCotizacion(sale);
 
-                sale.referencia = "Costo de Envío";
-                sale.costosAdicionales = await ICitiesServices.GetCityCostById(sale.idCiudad);
-                float finalAmount = (float)sale.costosAdicionales;
+                var user = await IUserRepository.GetUserByIdIndentificationPerson(sale.cedula);
+                var person = await IPersonRepository.GetPersonByIdentification(sale.cedula);
+                var client = await IClientRepository.GetClientByIdentification(sale.cedula);
+
+                sale.email = person.Email;
+                sale.nombreVenta = person.Nombre + person.Apellido + " - user: " + user.Username;
+
+
+                float finalAmount = 0;
                 float subTotal = 0;
                 float discount = 0;
                 List<DetailProductsEntity> salesDetails = new();
@@ -173,7 +191,8 @@ namespace CarniceriaFinal.Sales.Services
                 {
                     float discountInDetail = 0;
                     var productValue = await this.IProductoRepository.FindProductById(item.idProducto);
-                    if (productValue == null) throw RSException.BadRequest("El producto no se encontró");
+                    if (productValue == null || productValue.Stock == 0 || productValue.Stock < item.cantidad)
+                        throw RSException.BadRequest("El producto no se encontró");
 
                     if (item.idPromocion != null || item.idMembresiaInUser != null)
                     {
@@ -203,20 +222,19 @@ namespace CarniceriaFinal.Sales.Services
                     });
 
                 }
-                sale.total = finalAmount;
 
-                //Verificar si el cliente está registrado como un usuario con clave y contraseña
-                var user = await IUserRepository.GetUserByIdIndentificationPerson(sale.cliente.cedula);
+                
                 if (user == null)
                 {
                     throw RSException.Unauthorized("Ha ocurrido un error con su cuenta de usuario. Por favor, contactarse con el administrador.");
                 }
-                var client = await IClientRepository.GetClientByIdentification(sale.cliente.cedula);
+                
+                
                 //actualizar persona
                 int idClient = 0;
                 if (client == null)
                 {
-                    var clientCreated = await CreateClient(sale.cliente, user.IdPersona.Value);
+                    var clientCreated = await CreateClient(person, user.IdPersona.Value);
                     idClient = clientCreated.IdCliente;
                 }
                 else
@@ -224,29 +242,36 @@ namespace CarniceriaFinal.Sales.Services
                     idClient = client.IdCliente;
                 }
 
-                sale.fecha = DateTime.Now;
-                Ventum saleCreated = await CreateSale(sale, idClient);
+                Ventum saleCreated = await CreateSale(idClient, finalAmount, sale);
                 //Crear datella
 
                 foreach (var detail in sale.detalleVenta)
                 {
                     await CreateDetail(detail, saleCreated.IdVenta);
+                    await IProductoRepository.DisminuirStock(detail.idProducto, detail.cantidad);
                 }
 
-                var email = await this.IEmailService.SendEmailToProductRequest(new EmailProductsRequest
-                {
-                    numPedido = saleCreated.IdVenta.ToString(),
-                    amount = finalAmount,
-                    email = sale.cliente.email,
-                    userName = sale.cliente.nombre,
-                    accounts = await GetAllBanks(),
-                    discount = Math.Round(discount, 2).ToString(),
-                    subTotal = Math.Round(subTotal, 2).ToString(),
-                    productDetail = salesDetails,
-                    transporte = sale.costosAdicionales.ToString()
-                });
+                //var email = await this.IEmailService.SendEmailToProductRequest(new EmailProductsRequest
+                //{
+                //    numPedido = saleCreated.IdVenta.ToString(),
+                //    amount = finalAmount,
+                //    email = sale.cliente.email,
+                //    userName = sale.cliente.nombre,
+                //    accounts = await GetAllBanks(),
+                //    discount = Math.Round(discount, 2).ToString(),
+                //    subTotal = Math.Round(subTotal, 2).ToString(),
+                //    productDetail = salesDetails,
+                //    transporte = sale.costosAdicionales.ToString()
+                //});
 
-                return email;
+                //return email;
+                return new()
+                {
+                    numVenta = saleCreated.IdVenta,
+                    timeStart = DateTime.Now,
+                    timeEnd = saleCreated.FechaFinal == null ? DateTime.Now : saleCreated.FechaFinal.Value
+                };
+
 
             }
             catch (RSException err)
@@ -259,16 +284,16 @@ namespace CarniceriaFinal.Sales.Services
             }
         }
 
-        public async Task<ModelsEF.Cliente> CreateClient(ClientEntity clientNewData, int idPerson)
+        public async Task<ModelsEF.Cliente> CreateClient(Persona clientNewData, int idPerson)
         {
             try
             {
                 ModelsEF.Cliente client = new();
-                client.Referencia = clientNewData.referencia;
-                client.IdCiudad = clientNewData.idCiudad;
-                client.Telefono1 = clientNewData.telefono1;
-                client.Telefono2 = clientNewData.telefono2;
-                client.Direccion = clientNewData.direccion;
+                client.Referencia = clientNewData.Direccion1;
+                client.IdCiudad = null;
+                client.Telefono1 = "";
+                client.Telefono2 = "";
+                client.Direccion = clientNewData.Direccion2;
                 client.IdPersona = idPerson;
 
                 return await IClientRepository.CreateClient(client);
@@ -348,22 +373,24 @@ namespace CarniceriaFinal.Sales.Services
             }
         }
 
-        public async Task<Ventum> CreateSale(SaleEntity saleData, int idClient)
+        public async Task<Ventum> CreateSale(int? idClient, float finalAmount, SaleNoUserRequestEntity saleInfo)
         {
             try
             {
                 Ventum sale = new();
                 sale.IdCliente = idClient;
-                sale.Fecha = saleData.fecha;
+                sale.Fecha = DateTime.Now;
                 sale.IdImpuesto = null;
-                sale.Total = saleData.total;
+                sale.Total = finalAmount;
                 sale.IdStatus = 1;
-                sale.CostosAdicionales = saleData.costosAdicionales;
-                sale.MotivoCostosAdicional = saleData.motivoCostosAdicional;
+                sale.CostosAdicionales = 0;
+                sale.MotivoCostosAdicional = "";
                 sale.IdFormaPago = 1;
-                sale.Direccion = saleData.direccion;
-                sale.Referencia = saleData.referencia;
-                sale.IdCiudad = saleData.idCiudad;
+                sale.Direccion = "";
+                sale.Referencia = "";
+                sale.IdCiudad = 1;
+                sale.EmailVenta = saleInfo.email;
+                sale.NombreVenta = saleInfo.nombreVenta;
 
                 return await ISaleRepository.CreateSale(sale);
             }
@@ -505,6 +532,32 @@ namespace CarniceriaFinal.Sales.Services
                 return new();
             }
         }
+        public async Task<SalesUserInformationResponse> GetStatusByIdSale(int idSale)
+        {
+            try
+            {
+                var sale = await ISaleRepository.GetStatusByIdSale(idSale);
+
+                if (sale == null)
+                    throw RSException.NoData("No se encontró información");
+
+                return new()
+                {
+                    numVenta = sale.IdVenta,
+                    timeStart = sale.Fecha.Value,
+                    timeEnd = sale.FechaFinal.Value
+                };
+
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception err)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un al obtener datos de la venta.");
+            }
+        }
         private async Task<float> getDiscountTotalByProduct(SaleDetailEntity sale)
         {
             try
@@ -572,7 +625,7 @@ namespace CarniceriaFinal.Sales.Services
                 if (members.Count == 0) 
                     return true;
 
-                var cedula = sale.cliente.cedula;
+                var cedula = sale.cedula;
 
                 if (cedula == null) 
                     RSException.BadRequest("Tuvimos un error para validar su membresia.");

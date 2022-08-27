@@ -24,7 +24,7 @@ namespace CarniceriaFinal.Sales.Controllers
         [HttpPost("no-user")]
         public async Task<IActionResult> CreateSaleNoUser([FromBody] SaleNoUserRequestEntity saleNoUser)
         {
-            RSEntity<string> rsEntity = new();
+            RSEntity<SalesUserInformationResponse> rsEntity = new();
             try
             {
                 
@@ -35,10 +35,24 @@ namespace CarniceriaFinal.Sales.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [HttpGet("sales-request/{idSale}")]
+        public async Task<IActionResult> GetStatusByIdSale(int idSale)
+        {
+            RSEntity<SalesUserInformationResponse> rsEntity = new();
+            try
+            {
+
+                return Ok(rsEntity.Send(await ISalesService.GetStatusByIdSale(idSale)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
         [HttpPost("user")]
         public async Task<IActionResult> CreateSaleUser([FromBody] SaleNoUserRequestEntity saleNoUser)
         {
-            RSEntity<string> rsEntity = new();
+            RSEntity<SalesUserInformationResponse> rsEntity = new();
             try
             {
 

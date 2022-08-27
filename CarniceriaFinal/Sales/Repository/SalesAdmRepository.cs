@@ -143,16 +143,18 @@ namespace CarniceriaFinal.Sales.Repository
                 throw RSException.ErrorQueryDB("Información sobre el producto");
             }
         }
-        public async Task<Boolean> attendSaleByIdSale(int idSale)
+        public async Task<Ventum> attendSaleByIdSale(int idSale)
         {
             try
             {
                 var sale = await Context.Venta
                     .Where(s => s.IdVenta == idSale)
+                    .Include(x => x.DetalleVenta)
+                    .Include(x => x.IdClienteNavigation.IdPersonaNavigation)
                     .FirstOrDefaultAsync();
                 sale.IdStatus = 2;
                 await Context.SaveChangesAsync();
-                return true;
+                return sale;
             }
             catch (Exception err)
             {

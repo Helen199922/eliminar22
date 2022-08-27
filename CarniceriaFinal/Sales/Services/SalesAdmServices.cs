@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using CarniceriaFinal.Core.CustomException;
+using CarniceriaFinal.Core.Email.DTOs;
+using CarniceriaFinal.Core.Email.Services.IServices;
 using CarniceriaFinal.Marketing.Repository.IRepository;
 using CarniceriaFinal.Productos.Repository;
 using CarniceriaFinal.Sales.DTOs;
 using CarniceriaFinal.Sales.Repository.IRepository;
 using CarniceriaFinal.Sales.Services.IServices;
+using CarniceriaFinal.Security.IRepository;
 
 namespace CarniceriaFinal.Sales.Services
 {
@@ -13,18 +16,24 @@ namespace CarniceriaFinal.Sales.Services
         private readonly ISalesAdmRepository ISalesAdmRepository;
         private readonly IMembershipRepository IMembershipRepository;
         private readonly IProductoRepository IProductoRepository;
+        private readonly IUserRepository IUserRepository;
+        private readonly IEmailService IEmailService;
         private readonly IMapper IMapper;
         public SalesAdmServices(
             IMapper IMapper,
             ISalesAdmRepository ISalesAdmRepository,
             IMembershipRepository IMembershipRepository,
-            IProductoRepository IProductoRepository
+            IProductoRepository IProductoRepository,
+            IEmailService IEmailService,
+            IUserRepository IUserRepository
         )
         {
             this.IMapper = IMapper;
             this.ISalesAdmRepository = ISalesAdmRepository;
             this.IMembershipRepository = IMembershipRepository;
             this.IProductoRepository = IProductoRepository;
+            this.IEmailService = IEmailService;
+            this.IUserRepository = IUserRepository;
         }
 
         public async Task<List<SalesAdmEntity>> GetAllSales(int idStatus)
@@ -211,7 +220,7 @@ namespace CarniceriaFinal.Sales.Services
 
                 var isAttend = await ISalesAdmRepository.attendSaleByIdSale(idSale);
 
-                if (isAttend != true) throw RSException.NoData("Tuvimos un error al registrar la venta.");
+                if (isAttend == null) throw RSException.NoData("Tuvimos un error al registrar la venta.");
 
                 foreach (var detail in details)
                 {
@@ -223,6 +232,55 @@ namespace CarniceriaFinal.Sales.Services
                     //Reducir Stock
                     await this.IProductoRepository.DisminuirStock(detail.idProduct, detail.cantidad);
                 }
+
+                //Obtener el usuario - Datos
+                var userResponse = await IUserRepository.GetUserByIdIndentificationPerson(isAttend.IdClienteNavigation.IdPersonaNavigation.Cedula);
+                List<DetailProductsEntity> salesDetails = new();
+                float discount = 0;
+                float subTotal = 0;
+
+                foreach (var detail in isAttend.DetalleVenta)
+                {
+                    var title = await IProductoRepository.FindProductById(detail.IdProducto.Value);
+                    subTotal = subTotal +  (detail.Cantidad.Value * detail.Precio.Value);
+                    discount += detail.Descuento == null ? 0 : detail.Descuento.Value;
+
+
+                    var value = new DetailProductsEntity()
+                    {
+                        amount = title.Precio.ToString(),
+                        product = title.Titulo,
+                        quantity = detail.Cantidad.Value.ToString(),
+                        finalAmount = detail.Precio.ToString(),
+                        discount = detail.Descuento == null ? "0" : detail.Descuento.Value.ToString(),
+                        typeDiscount = null
+                    };
+
+                    salesDetails.Add(value);
+                }
+
+
+
+                
+
+
+
+                if (userResponse != null)
+                {
+                    await this.IEmailService.SendEmailToProductRequest(new EmailProductsRequest
+                    {
+                        numPedido = isAttend.IdVenta.ToString(),
+                        amount = isAttend.Total.Value,
+                        email = isAttend.IdClienteNavigation.IdPersonaNavigation.Email,
+                        userName = userResponse.Username,
+                        discount = Math.Round(discount, 2).ToString(),
+                        subTotal = Math.Round(subTotal, 2).ToString(),
+                        productDetail = salesDetails
+                    });
+                }
+
+                //return email;
+
 
                 //Revisar si el cliente aplica para la membresía o se le acabó
                 return await this.AdmNewMemberWhenAttendSaleByIdSale(idSale);

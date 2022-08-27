@@ -70,14 +70,7 @@ namespace CarniceriaFinal.Core.Email.Services
             try
             {
                 string accounts = "";
-                foreach (var account in mailRequest.accounts)
-                {
-                    accounts = accounts + ("<tr>" +
-                            "<td style='border: 1px dotted black;color: #002F5E;padding:15px;width:100px;'> " + account.bankName + "</td>" +
-                            "<td style='border: 1px dotted black;color: #002F5E;padding:15px;width:100px;'>" + account.typeAccount + "</td>" +
-                            "<td style='border: 1px dotted black;color: #002F5E;padding:15px;width:100px;'>" + account.numAccount + "</td>" +
-                        "</tr>");
-                }
+
                 string productsDetail = "";
                 foreach (var detail in mailRequest.productDetail)
                 {
@@ -98,7 +91,7 @@ namespace CarniceriaFinal.Core.Email.Services
                     new KeyValuePair<string, string>("{{productDetail}}", productsDetail),
                     new KeyValuePair<string, string>("{{numPedido}}", mailRequest.numPedido),
 
-                    new KeyValuePair<string, string>("{{transporte}}", mailRequest.transporte),
+
                     new KeyValuePair<string, string>("{{descuento}}", mailRequest.discount),
                     new KeyValuePair<string, string>("{{subTotal}}", mailRequest.subTotal),
                     new KeyValuePair<string, string>("{{total}}", Math.Round((decimal)mailRequest.amount, 2).ToString())

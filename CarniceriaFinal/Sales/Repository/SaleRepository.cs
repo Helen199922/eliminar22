@@ -12,17 +12,20 @@ namespace CarniceriaFinal.Security.Repository
     public class SaleRepository : ISaleRepository
     {
         public readonly DBContext Context;
-        public SaleRepository(DBContext _Context)
+        private readonly IConfiguration Configuration;
+        public SaleRepository(DBContext _Context, IConfiguration configuration)
         {
             Context = _Context;
+            Configuration = configuration;
         }
         public async Task<Ventum> CreateSale(Ventum sale)
         {
             try
             {
+                sale.FechaFinal = DateTime.Now.AddMilliseconds(int.Parse(Configuration["AppConstants:MiliSegToDisableSale"]));
+
                 await Context.Venta.AddAsync(sale);
-                //Context.Entry(sale.IdClienteNavigation).State = EntityState.Detached;
-                //Context.ChangeTracker.DetectChanges();
+
                 await Context.SaveChangesAsync();
                 return sale;
             }
@@ -104,6 +107,18 @@ namespace CarniceriaFinal.Security.Repository
             catch (Exception err)
             {
                 throw RSException.ErrorQueryDB("Obtener las ventas.");
+            }
+        }
+        public async Task<Ventum> GetStatusByIdSale(int idSale)
+        {
+            try
+            {
+                return await Context.Venta.Include(x => x.DetalleVenta)
+                    .Where(x => x.IdVenta == idSale).FirstOrDefaultAsync();
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Obtener el detalle de la venta.");
             }
         }
         public async Task<List<Ventum>> FindAllSalesByIdClient(int idClient)
