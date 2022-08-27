@@ -50,6 +50,7 @@ namespace CarniceriaFinal.Productos.Repository
             try
             {
                 return await Context.CategoriaProductos
+                    .Where(x => x.Status == 1 && x.CategoriaInProductos.Count > 0)
                 .ToListAsync();
             }
             catch (Exception err)
