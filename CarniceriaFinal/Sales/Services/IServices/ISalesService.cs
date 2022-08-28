@@ -24,5 +24,7 @@ namespace CarniceriaFinal.Sales.IServices
         Task<List<SalesCompleteEntity>> GetAllSales();
         Task<List<SalesCompleteEntity>> GetAllSalesByIdClient(int idClient);
         Task<SalesUserInformationResponse> GetStatusByIdSale(int idSale);
+        Task<SaleDetailCotizacionEntity> FindCompleteSaleByIdSale(int idSale);
+        Task<List<SaleDetailCotizacionEntity>> FindAllCompleteSaleByIdClient(int idUser);
     }
 }

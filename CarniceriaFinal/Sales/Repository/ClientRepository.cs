@@ -66,5 +66,26 @@ namespace CarniceriaFinal.Cliente.Repository
                 throw RSException.ErrorQueryDB("Crear cliente");
             }
         }
+        public async Task<ModelsEF.Cliente> GetClientByIdUser(int idUser)
+        {
+            try
+            {
+                //obtener persona
+                var person = await Context
+                    .Personas
+                    .Where(x => x.Usuarios.Where(y => y.IdUsuario == idUser && y.IdRol == 3).FirstOrDefault() != null)
+                    .Include(x => x.Clientes)
+                    .FirstOrDefaultAsync();
+
+                if (person == null)
+                    return null;
+
+                return person.Clientes.FirstOrDefault();
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Obtener cliente cliente");
+            }
+        }
     }
 }

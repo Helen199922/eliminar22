@@ -673,5 +673,95 @@ namespace CarniceriaFinal.Sales.Services
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al validar la cotización");
             }
         }
+        public async Task<SaleDetailCotizacionEntity> FindCompleteSaleByIdSale(int idSale)
+        {
+            try
+            {
+                var saleDetail = await this.ISaleRepository.FindCompleteSaleByIdSale(idSale);
+                if (saleDetail == null) throw RSException.NoData("No hemos encontrado información sobre la venta");
+
+                SaleDetailCotizacionEntity sale = new();
+                sale.idVenta = saleDetail.IdVenta;
+                sale.total = saleDetail.Total.Value;
+                sale.products = new();
+
+                foreach (var product in saleDetail.DetalleVenta)
+                {
+                    sale.descuentoTotalVenta += (product.Descuento == null ? 0 : product.Descuento.Value);
+                    sale.subtotalVenta += (product.Precio == null ? 0 : product.Precio.Value);
+
+                    sale.products.Add(new ProductsDetailCotizacionEntity()
+                    {
+                        cantidad = product.Cantidad.Value,
+                        titulo = product.IdProductoNavigation.Titulo,
+                        descuentoTotalProducto = (product.Descuento == null ? 0 : product.Descuento.Value),
+                        motivoDesc = product.IdPromocion != null ? "Promocion" : "Membresía de Usuario",
+                        precioFinalProducto = (float)Math.Round(product.Precio.Value - (product.Descuento == null ? 0 : product.Descuento.Value), 2)
+                    });
+                }
+
+                return sale;
+
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener los detalles de la venta");
+            }
+        }
+        public async Task<List<SaleDetailCotizacionEntity>> FindAllCompleteSaleByIdClient(int idUser)
+        {
+            try
+            {
+                var client = await IClientRepository.GetClientByIdUser(idUser);
+
+                if (client == null) return new List<SaleDetailCotizacionEntity>();
+
+
+                var saleDetail = await this.ISaleRepository.FindAllCompleteSaleByIdClient(client.IdCliente);
+
+                List<SaleDetailCotizacionEntity> sales = new();
+
+
+                foreach (var saleVal in saleDetail)
+                {
+                    SaleDetailCotizacionEntity sale = new();
+                    sale.idVenta = saleVal.IdVenta;
+                    sale.total = saleVal.Total.Value;
+                    sale.products = new();
+
+                    foreach (var product in saleVal.DetalleVenta)
+                    {
+                        sale.descuentoTotalVenta += (product.Descuento == null ? 0 : product.Descuento.Value);
+                        sale.subtotalVenta += (product.Precio == null ? 0 : product.Precio.Value);
+                        sale.products.Add(new ProductsDetailCotizacionEntity()
+                        {
+                            cantidad = product.Cantidad.Value,
+                            titulo = product.IdProductoNavigation.Titulo,
+                            descuentoTotalProducto = (product.Descuento == null ? 0 : product.Descuento.Value),
+                            motivoDesc = product.IdPromocion != null ? "Promocion" : "Membresía de Usuario",
+                            precioFinalProducto = (float)Math.Round(product.Precio.Value - (product.Descuento == null ? 0 : product.Descuento.Value), 2)
+                        });
+                    }
+                    sales.Add(sale);
+
+                }
+
+                return sales;
+
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Obtener lista detalle de las ventas del cliente");
+            }
+        }
+
     }
 }

@@ -17,5 +17,7 @@ namespace CarniceriaFinal.Security.IRepository
         Task<List<Ventum>> GetAllSales();
         Task<List<Ventum>> FindAllSalesByIdClient(int idClient);
         Task<Ventum> GetStatusByIdSale(int idSale);
+        Task<Ventum> FindCompleteSaleByIdSale(int idSale);
+        Task<List<Ventum>> FindAllCompleteSaleByIdClient(int idClient);
     }
 }

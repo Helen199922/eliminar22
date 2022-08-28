@@ -133,5 +133,33 @@ namespace CarniceriaFinal.Sales.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [HttpGet("consultar-venta/{idSale}")]
+        public async Task<IActionResult> FindCompleteSaleByIdSale(int idSale)
+        {
+            RSEntity<SaleDetailCotizacionEntity> rsEntity = new();
+            try
+            {
+
+                return Ok(rsEntity.Send(await ISalesService.FindCompleteSaleByIdSale(idSale)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
+        [HttpGet("consultar-todas-venta-user/{idUser}")]
+        public async Task<IActionResult> FindAllCompleteSaleByIdClient(int idUser)
+        {
+            RSEntity<List<SaleDetailCotizacionEntity>> rsEntity = new();
+            try
+            {
+
+                return Ok(rsEntity.Send(await ISalesService.FindAllCompleteSaleByIdClient(idUser)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
     }
 }

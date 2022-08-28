@@ -134,5 +134,39 @@ namespace CarniceriaFinal.Security.Repository
                 throw RSException.ErrorQueryDB("Obtener las ventas por cliente.");
             }
         }
+
+        public async Task<Ventum> FindCompleteSaleByIdSale(int idSale)
+        {
+            try
+            {
+                return await Context
+                        .Venta
+                        .Where(x => x.IdVenta == idSale)
+                        .Include(x => x.DetalleVenta)
+                        .ThenInclude(x => x.IdProductoNavigation)
+                        .FirstOrDefaultAsync();
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Obtener detalle de la venta especificada.");
+            }
+        }
+
+        public async Task<List<Ventum>> FindAllCompleteSaleByIdClient(int idClient)
+        {
+            try
+            {
+                return await Context
+                        .Venta
+                        .Where(x => x.IdClienteNavigation.IdCliente == idClient && x.IdStatus == 2 && x.IsAuthUser == 1)
+                        .Include(x => x.DetalleVenta)
+                        .ThenInclude(x => x.IdProductoNavigation)
+                        .ToListAsync();
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Obtener lista detalle de las ventas del cliente.");
+            }
+        }
     }
 }

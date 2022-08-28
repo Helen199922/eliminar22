@@ -62,7 +62,7 @@ namespace CarniceriaFinal.Core.CustomException
         public static RSException ErrorQueryDB(string db)
         {
             RSException except = new RSException("No Data", 500);
-            except.MessagesError.Add("Ha ocurrido un error al consultar la base de datos: " + db);
+            except.MessagesError.Add("Ha ocurrido un error: " + db);
             return except;
         }
         public static RSException Unauthorized(string message)
