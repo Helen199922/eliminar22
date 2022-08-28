@@ -36,9 +36,8 @@ namespace CarniceriaFinal.Sales.Models
         public int idFormaPago {get; set;}
         public string? direccion { get; set; }
         public string? referencia { get; set; }
+        public int? isAuthUser { get; set; }
         public int idCiudad { get; set; }
         public DateTime? fechaFinal { get; set;}
-        public string? emailVenta { get; set; }
-        public string? nombreVenta { get; set; }
     }
 }

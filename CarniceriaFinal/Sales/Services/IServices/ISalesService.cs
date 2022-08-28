@@ -12,7 +12,7 @@ namespace CarniceriaFinal.Sales.IServices
     public interface ISalesService
     {
         Task<SalesUserInformationResponse> CreateSaleNoUser(SaleNoUserRequestEntity sale);
-        Task<ModelsEF.Cliente> CreateClient(Persona clientNewData, int idPerson);
+        Task<ModelsEF.Cliente> CreateClient(int idPerson);
         Task<Persona> CreatePerson(ClientEntity clientNewData);
         Task<ModelsEF.Cliente> UpdateClientNoUser(ClientEntity clientNewData, ModelsEF.Cliente client);
         Task<Persona> UpdatePersonNoUser(ClientEntity clientNewData, Persona person);

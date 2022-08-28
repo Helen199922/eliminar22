@@ -15,66 +15,33 @@ using System.Threading.Tasks;
 
 namespace CarniceriaFinal.Core
 {
-    internal class SaleStateManagement : IHostedService
+
+    public class ConsumeScopedServiceHostedService : BackgroundService
     {
-        private readonly IServiceProvider IServiceProvider;
         private readonly IConfiguration Configuration;
-        private Timer _timer;
-        private readonly ILogger _logger;
-        public SaleStateManagement(IServiceProvider IServiceProvider, ILogger<SaleStateManagement> logger, IConfiguration configuration)
+        private readonly IServiceProvider IServiceProvider;
+
+        public ConsumeScopedServiceHostedService(IConfiguration configuration, IServiceProvider serviceProvider)
         {
-            this.IServiceProvider = IServiceProvider;
-            _logger = logger;
-            Configuration = configuration;
+           this.Configuration = configuration;
+            this.IServiceProvider = serviceProvider;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public IServiceProvider Services { get; }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _timer = new Timer(
-            ProcessToHandle,
-            null,
-            TimeSpan.FromSeconds(20),
-            TimeSpan.FromDays(5)
-            );
-
-            Timer _t = new Timer(
-                HandleStatusSales,
-                null,
-                TimeSpan.Zero,
-                TimeSpan.FromMilliseconds(int.Parse(Configuration["AppConstants:MiliSegToCheckSale"]))
-            );
-
-            
-
-            return Task.CompletedTask;
-        }
-
-
-        private async void ProcessToHandle(object state)
-        {
-            
-            await this.HandleLogs(state);
-        }
-
-        public async Task<Boolean> HandleLogs(object state)
-        {
-            using (var scope = IServiceProvider.CreateScope())
+            while (!stoppingToken.IsCancellationRequested)
             {
-                var ILogs = scope.ServiceProvider.GetRequiredService<ILogsRepository>();
-
-                try
-                {
-                    await ILogs.DeleteLogs(DateTime.Now.AddDays(-5));
-                }
-                catch (Exception err)
-                {
-                    return true;
-                }
-                _logger.LogInformation("Estado cambiado de forma automática");
-                return true;
+                Console.WriteLine("asdfasdfasdf");
+                //await DoWork(stoppingToken);
+                await HandleStatusSales();
+                await Task.Delay(
+                    TimeSpan.FromMilliseconds(int.Parse(Configuration["AppConstants:MiliSegToCheckSale"]))
+                    , stoppingToken);
             }
         }
-        public async void HandleStatusSales(object state)
+        public async Task<Boolean> HandleStatusSales()
         {
             using (var scope = IServiceProvider.CreateScope())
             {
@@ -86,13 +53,13 @@ namespace CarniceriaFinal.Core
                 {
                     sale = await Context.Venta.Where(x => x.IdStatus == 1).AsNoTracking().ToListAsync();
                     if (sale == null)
-                        return;
+                        return false;
 
                     var response = ISaleManagementHelper.getPendingSalesIDs(sale);
 
 
                     if (response.Count == 0)
-                        return;
+                        return false;
                     var tasks = new List<Task>();
 
                     foreach (var item in response)
@@ -115,10 +82,10 @@ namespace CarniceriaFinal.Core
                 }
                 catch (Exception err)
                 {
-                    return;
+                    return false;
                 }
             }
-                return;
+            return true;
         }
 
         public async Task<Boolean> restoreStockByIdSale(int idSale)
@@ -156,6 +123,62 @@ namespace CarniceriaFinal.Core
             }
             return true;
         }
+
+    }
+
+    internal class SaleStateManagement : IHostedService
+    {
+        private readonly IServiceProvider IServiceProvider;
+        
+        private Timer _timer;
+        private readonly ILogger _logger;
+        public SaleStateManagement(IServiceProvider IServiceProvider, ILogger<SaleStateManagement> logger, IConfiguration configuration)
+        {
+            this.IServiceProvider = IServiceProvider;
+            _logger = logger;
+            
+        }
+
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            _timer = new Timer(
+            ProcessToHandle,
+            null,
+            TimeSpan.FromSeconds(20),
+            TimeSpan.FromDays(5)
+            );
+
+            
+
+            return Task.CompletedTask;
+        }
+
+
+        private async void ProcessToHandle(object state)
+        {
+            
+            await this.HandleLogs(state);
+        }
+
+        public async Task<Boolean> HandleLogs(object state)
+        {
+            using (var scope = IServiceProvider.CreateScope())
+            {
+                var ILogs = scope.ServiceProvider.GetRequiredService<ILogsRepository>();
+
+                try
+                {
+                    await ILogs.DeleteLogs(DateTime.Now.AddDays(-5));
+                }
+                catch (Exception err)
+                {
+                    return true;
+                }
+                _logger.LogInformation("Estado cambiado de forma automática");
+                return true;
+            }
+        }
+        
 
         public Task StopAsync(CancellationToken cancellationToken)
         {

@@ -59,9 +59,16 @@ namespace CarniceriaFinal.Sales.Services
         {
             try
             {
+                sale.isAuthUser = 0;
 
-                if (sale.cedula == null || sale.email == null || sale.nombreVenta == null)
-                    throw RSException.BadRequest("Por favor, vuelva a intentar");
+                if (sale.cliente == null || sale.cliente.cedula == null || sale.cliente.apellido == null
+                    || sale.cliente.direccion == null || sale.cliente.email == null)
+                    throw RSException.BadRequest("Por favor, vuelva a intentar. Datos incompletos");
+
+                var person = await IPersonRepository.GetPersonByIdentification(sale.cliente.cedula);
+                var client = await IClientRepository.GetClientByIdentification(sale.cliente.cedula);
+                var user = await IUserRepository.GetUserByIdIndentificationPerson(sale.cliente.cedula);
+
 
                 float finalAmount = (float)0;
                 float subTotal = 0;
@@ -110,21 +117,37 @@ namespace CarniceriaFinal.Sales.Services
                 //    throw RSException.Unauthorized("Ya existe un usuario registrado con estas credenciales. Por favor, inicie sesión.");
                 //}
                 //var client = await IClientRepository.GetClientByIdentification(sale.cliente.cedula);
-                
-                //actualizar persona
-                //int idClient = 0;
-                //if (client != null)
-                //{
-                //    idClient = UpdateClientNoUser(sale.cliente, client).Result.IdCliente;
-                //    var personUpdated = await UpdatePersonNoUser(sale.cliente, client.IdPersonaNavigation);
-                //}
-                //else
-                //{
-                //    var person = await CreatePerson(sale.cliente);
-                //    idClient = CreateClient(sale.cliente, person.IdPersona).Result.IdCliente;
-                //}
 
-                Ventum saleCreated = await CreateSale(null, finalAmount, sale);
+                //actualizar persona
+                int idClient = 0;
+
+                if(person == null)
+                {
+                    ClientEntity personToAdd = new()
+                    {
+
+                        email = sale.cliente.email,
+                        nombre = sale.cliente.nombre,
+                        apellido = sale.cliente.apellido,
+                        cedula = sale.cliente.cedula,
+                    };
+                    person = await CreatePerson(personToAdd);
+                    client = await CreateClient(person.IdPersona);
+                    idClient = client.IdCliente;
+                }
+
+                if (client == null)
+                {
+                    var clientCreated = await CreateClient(user.IdPersona.Value);
+                    client = clientCreated;
+                    idClient = clientCreated.IdCliente;
+                }
+                else
+                {
+                    idClient = client.IdCliente;
+                }
+
+                Ventum saleCreated = await CreateSale(idClient, finalAmount, sale);
                 
                 //Crear datalle
                 foreach (var detail in sale.detalleVenta)
@@ -150,7 +173,7 @@ namespace CarniceriaFinal.Sales.Services
                 return new()
                 {
                     numVenta = saleCreated.IdVenta,
-                    timeStart = DateTime.Now,
+                    timeStart = saleCreated.Fecha == null ? DateTime.Now : saleCreated.Fecha.Value,
                     timeEnd = saleCreated.FechaFinal == null ? DateTime.Now : saleCreated.FechaFinal.Value
                 };
 
@@ -168,19 +191,28 @@ namespace CarniceriaFinal.Sales.Services
         {
             try
             {
-                if (sale.cedula == null || sale.email == null || sale.nombreVenta == null)
-                    RSException.BadRequest("Por favor, vuelva a intentar");
+                sale.isAuthUser = 1;
+                if (sale.cliente.cedula == null)
+                    RSException.BadRequest("Información con error. Por favor, vuelva a intentar");
 
                 //Verificar si el cliente está registrado como un usuario con clave y contraseña
 
                 await this.isValidCotizacion(sale);
 
-                var user = await IUserRepository.GetUserByIdIndentificationPerson(sale.cedula);
-                var person = await IPersonRepository.GetPersonByIdentification(sale.cedula);
-                var client = await IClientRepository.GetClientByIdentification(sale.cedula);
+                var user = await IUserRepository.GetUserByIdIndentificationPerson(sale.cliente.cedula);
 
-                sale.email = person.Email;
-                sale.nombreVenta = person.Nombre + person.Apellido + " - user: " + user.Username;
+                if (user == null)
+                    throw RSException.Unauthorized("Ha ocurrido un error con su cuenta de usuario. Por favor, contactarse con el administrador.");
+                
+
+
+                var person = await IPersonRepository.GetPersonByIdentification(sale.cliente.cedula);
+                var client = await IClientRepository.GetClientByIdentification(sale.cliente.cedula);
+
+                sale.cliente.email = person.Email;
+                sale.cliente.nombre = person.Nombre;
+                sale.cliente.apellido = person.Apellido;
+                sale.cliente.direccion = person.Direccion1;
 
 
                 float finalAmount = 0;
@@ -224,17 +256,14 @@ namespace CarniceriaFinal.Sales.Services
                 }
 
                 
-                if (user == null)
-                {
-                    throw RSException.Unauthorized("Ha ocurrido un error con su cuenta de usuario. Por favor, contactarse con el administrador.");
-                }
+                
                 
                 
                 //actualizar persona
                 int idClient = 0;
                 if (client == null)
                 {
-                    var clientCreated = await CreateClient(person, user.IdPersona.Value);
+                    var clientCreated = await CreateClient(user.IdPersona.Value);
                     idClient = clientCreated.IdCliente;
                 }
                 else
@@ -243,6 +272,7 @@ namespace CarniceriaFinal.Sales.Services
                 }
 
                 Ventum saleCreated = await CreateSale(idClient, finalAmount, sale);
+                DateTime expireTransa = DateTime.Now;
                 //Crear datella
 
                 foreach (var detail in sale.detalleVenta)
@@ -268,7 +298,7 @@ namespace CarniceriaFinal.Sales.Services
                 return new()
                 {
                     numVenta = saleCreated.IdVenta,
-                    timeStart = DateTime.Now,
+                    timeStart = saleCreated.Fecha == null ? DateTime.Now : saleCreated.Fecha.Value,
                     timeEnd = saleCreated.FechaFinal == null ? DateTime.Now : saleCreated.FechaFinal.Value
                 };
 
@@ -284,16 +314,16 @@ namespace CarniceriaFinal.Sales.Services
             }
         }
 
-        public async Task<ModelsEF.Cliente> CreateClient(Persona clientNewData, int idPerson)
+        public async Task<ModelsEF.Cliente> CreateClient(int idPerson)
         {
             try
             {
                 ModelsEF.Cliente client = new();
-                client.Referencia = clientNewData.Direccion1;
+                client.Referencia = "";
                 client.IdCiudad = null;
                 client.Telefono1 = "";
                 client.Telefono2 = "";
-                client.Direccion = clientNewData.Direccion2;
+                client.Direccion = "";
                 client.IdPersona = idPerson;
 
                 return await IClientRepository.CreateClient(client);
@@ -316,7 +346,7 @@ namespace CarniceriaFinal.Sales.Services
                 person.Email = clientNewData.email;
                 person.Nombre = clientNewData.nombre;
                 person.Apellido = clientNewData.apellido;
-                person.IdSexo = clientNewData.idSexo;
+                person.IdSexo = 1;
                 person.Cedula = clientNewData.cedula;
 
                 return await IPersonRepository.CreatePerson(person);
@@ -389,9 +419,7 @@ namespace CarniceriaFinal.Sales.Services
                 sale.Direccion = "";
                 sale.Referencia = "";
                 sale.IdCiudad = 1;
-                sale.EmailVenta = saleInfo.email;
-                sale.NombreVenta = saleInfo.nombreVenta;
-
+                sale.IsAuthUser = saleInfo.isAuthUser;
                 return await ISaleRepository.CreateSale(sale);
             }
             catch (RSException err)
@@ -625,7 +653,7 @@ namespace CarniceriaFinal.Sales.Services
                 if (members.Count == 0) 
                     return true;
 
-                var cedula = sale.cedula;
+                var cedula = sale.cliente.cedula;
 
                 if (cedula == null) 
                     RSException.BadRequest("Tuvimos un error para validar su membresia.");

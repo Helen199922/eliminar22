@@ -49,12 +49,8 @@ namespace CarniceriaFinal.ModelsEF
         public int? IdStatus { get; set; }
         [Column("fechaFinal", TypeName = "datetime")]
         public DateTime? FechaFinal { get; set; }
-        [Column("emailVenta")]
-        [StringLength(255)]
-        public string? EmailVenta { get; set; }
-        [Column("nombreVenta")]
-        [StringLength(255)]
-        public string? NombreVenta { get; set; }
+        [Column("isAuthUser")]
+        public int? IsAuthUser { get; set; }
 
         [ForeignKey("IdCiudad")]
         [InverseProperty("Venta")]

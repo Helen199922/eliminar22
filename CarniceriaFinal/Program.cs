@@ -116,6 +116,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddTransient<IHostedService, SaleStateManagement>();
+builder.Services.AddHostedService<ConsumeScopedServiceHostedService>();
 
 var mapperConfig = new MapperConfiguration(m =>
 {

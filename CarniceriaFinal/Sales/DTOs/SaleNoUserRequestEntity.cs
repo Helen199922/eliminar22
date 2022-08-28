@@ -8,13 +8,19 @@ namespace CarniceriaFinal.Sales.Models
 {
     public class SaleNoUserRequestEntity
     {
-        public string? email { get; set; }
-        public string? nombreVenta { get; set; }
-        public string? cedula { get; set; }
         public List<SaleDetailEntity> detalleVenta { get; set; }
-        //public ClientEntity cliente { get; set; }
+        public ClientdetailRquest cliente { get; set; }
+        public int isAuthUser { get; set; }
     }
 
+    public class ClientdetailRquest
+    {
+        public string? email { get; set; }
+        public string? apellido { get; set; }
+        public string? nombre { get; set; }
+        public string? direccion { get; set; }
+        public string? cedula { get; set; }
+    }
     public class SalesUserInformationResponse {
         public int numVenta { get; set; }
         public DateTime timeStart { get; set; }
