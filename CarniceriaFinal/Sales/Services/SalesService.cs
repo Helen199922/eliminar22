@@ -688,18 +688,20 @@ namespace CarniceriaFinal.Sales.Services
                 foreach (var product in saleDetail.DetalleVenta)
                 {
                     sale.descuentoTotalVenta += (product.Descuento == null ? 0 : product.Descuento.Value);
-                    sale.subtotalVenta += (product.Precio == null ? 0 : product.Precio.Value);
+                    sale.subtotalVenta += (product.Precio.Value * product.Cantidad.Value);
 
+                    var discount = (product.Descuento == null || product.Descuento == 0 ? 0 : (float)Math.Round(product.Descuento.Value / product.Cantidad.Value, 2));
                     sale.products.Add(new ProductsDetailCotizacionEntity()
                     {
                         cantidad = product.Cantidad.Value,
                         titulo = product.IdProductoNavigation.Titulo,
-                        descuentoTotalProducto = (product.Descuento == null ? 0 : product.Descuento.Value),
+                        descuentoTotalProducto = discount,
                         motivoDesc = product.IdPromocion != null ? "Promocion" : "Membresía de Usuario",
-                        precioFinalProducto = (float)Math.Round(product.Precio.Value - (product.Descuento == null ? 0 : product.Descuento.Value), 2)
+                        precioFinalProducto = (float)Math.Round(((product.Precio.Value * product.Cantidad.Value) - (product.Descuento == null ? 0 : product.Descuento.Value)) / product.Cantidad.Value, 2)
                     });
                 }
-
+                sale.subtotalVenta = (float)Math.Round(sale.subtotalVenta, 2);
+                sale.descuentoTotalVenta = (float)Math.Round(sale.descuentoTotalVenta, 2);
                 return sale;
 
             }
@@ -735,17 +737,21 @@ namespace CarniceriaFinal.Sales.Services
 
                     foreach (var product in saleVal.DetalleVenta)
                     {
+                        var discount = (product.Descuento == null || product.Descuento == 0 ? 0 : (float)Math.Round(product.Descuento.Value / product.Cantidad.Value, 2));
+
                         sale.descuentoTotalVenta += (product.Descuento == null ? 0 : product.Descuento.Value);
-                        sale.subtotalVenta += (product.Precio == null ? 0 : product.Precio.Value);
+                        sale.subtotalVenta += (product.Precio.Value * product.Cantidad.Value);
                         sale.products.Add(new ProductsDetailCotizacionEntity()
                         {
                             cantidad = product.Cantidad.Value,
                             titulo = product.IdProductoNavigation.Titulo,
-                            descuentoTotalProducto = (product.Descuento == null ? 0 : product.Descuento.Value),
+                            descuentoTotalProducto = discount,
                             motivoDesc = product.IdPromocion != null ? "Promocion" : "Membresía de Usuario",
-                            precioFinalProducto = (float)Math.Round(product.Precio.Value - (product.Descuento == null ? 0 : product.Descuento.Value), 2)
+                            precioFinalProducto = (float)Math.Round(((product.Precio.Value * product.Cantidad.Value) - (product.Descuento == null ? 0 : product.Descuento.Value)) / product.Cantidad.Value, 2)
                         });
                     }
+                    sale.descuentoTotalVenta = (float)Math.Round(sale.descuentoTotalVenta, 2);
+                    sale.subtotalVenta = (float)Math.Round(sale.subtotalVenta, 2);
                     sales.Add(sale);
 
                 }
