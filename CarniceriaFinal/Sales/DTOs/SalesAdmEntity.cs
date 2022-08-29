@@ -67,6 +67,7 @@ namespace CarniceriaFinal.Sales.DTOs
     }
     public class SaleAdmRequestSaleDetail
     {
+        public int idSale { get; set; }
         public string response { get; set; }
         public DateTime? startTime { get; set; }
         public DateTime? endTime { get; set; }

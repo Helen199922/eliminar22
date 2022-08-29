@@ -306,7 +306,7 @@ namespace CarniceriaFinal.Sales.Services
 
                 //es válido activar esta venta (porque ya caducó o porque ya fue expandida una vez anterior
                 //+)
-
+                detail.idSale = idSale;
                 var sale = await this.ISalesAdmRepository.GetSaleDetailById(idSale);
                 if (sale == null)
                 {
