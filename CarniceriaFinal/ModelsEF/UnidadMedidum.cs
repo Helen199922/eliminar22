@@ -11,6 +11,7 @@ namespace CarniceriaFinal.ModelsEF
     {
         public UnidadMedidum()
         {
+            DetalleVenta = new HashSet<DetalleVentum>();
             Productos = new HashSet<Producto>();
         }
 
@@ -21,6 +22,8 @@ namespace CarniceriaFinal.ModelsEF
         [StringLength(10)]
         public string Unidad { get; set; } = null!;
 
+        [InverseProperty("IdUnidadNavigation")]
+        public virtual ICollection<DetalleVentum> DetalleVenta { get; set; }
         [InverseProperty("IdUnidadNavigation")]
         public virtual ICollection<Producto> Productos { get; set; }
     }

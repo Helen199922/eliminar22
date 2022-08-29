@@ -6,6 +6,7 @@ using CarniceriaFinal.Core.Email.Services.IServices;
 using CarniceriaFinal.Marketing.Repository.IRepository;
 using CarniceriaFinal.Marketing.Services.IService;
 using CarniceriaFinal.ModelsEF;
+using CarniceriaFinal.Productos.IServicios;
 using CarniceriaFinal.Productos.Repository;
 using CarniceriaFinal.Sales.DTOs;
 using CarniceriaFinal.Sales.IRepository;
@@ -34,6 +35,7 @@ namespace CarniceriaFinal.Sales.Services
         private readonly IBankInfoRepository IBankInfoRepository;
         private readonly IMembershipService IMembershipService;
         private readonly IMembershipRepository IMembershipRepository;
+        private readonly IMeasureUnitService IMeasureUnitService;
         private readonly IMapper IMapper;
         public SalesService(IUserRepository IUserRepository, IPersonRepository IPersonRepository, 
             IClientRepository IClientRepository, ISaleRepository ISaleRepository, 
@@ -41,7 +43,8 @@ namespace CarniceriaFinal.Sales.Services
             ICitiesServices ICitiesServices, IEmailService IEmailService,
             IBankInfoRepository IBankInfoRepository,
             IMembershipService IMembershipService,
-            IMembershipRepository IMembershipRepository)
+            IMembershipRepository IMembershipRepository,
+            IMeasureUnitService IMeasureUnitService)
         {
             this.IUserRepository = IUserRepository;
             this.IPersonRepository = IPersonRepository;
@@ -54,6 +57,7 @@ namespace CarniceriaFinal.Sales.Services
             this.IMembershipService = IMembershipService;
             this.IMembershipRepository = IMembershipRepository;
             this.IMapper = IMapper;
+            this.IMeasureUnitService = IMeasureUnitService;
         }
         public async Task<SalesUserInformationResponse> CreateSaleNoUser(SaleNoUserRequestEntity sale)
         {
@@ -79,6 +83,7 @@ namespace CarniceriaFinal.Sales.Services
                 {
                     float discountInDetail = 0;
                     var productValue = await this.IProductoRepository.FindProductById(item.idProducto);
+                    item.idUnidad = productValue.IdUnidad;
                     if (productValue == null || productValue.Stock == 0 || productValue.Stock < item.cantidad) 
                         throw RSException.BadRequest("El producto no se encontró o no hay stock disponible");
 
@@ -223,6 +228,7 @@ namespace CarniceriaFinal.Sales.Services
                 {
                     float discountInDetail = 0;
                     var productValue = await this.IProductoRepository.FindProductById(item.idProducto);
+                    item.idUnidad = productValue.IdUnidad;
                     if (productValue == null || productValue.Stock == 0 || productValue.Stock < item.cantidad)
                         throw RSException.BadRequest("El producto no se encontró");
 
@@ -443,6 +449,7 @@ namespace CarniceriaFinal.Sales.Services
                 saleDetail.IdMembresiaInUsuario = detail.idMembresiaInUser;
                 saleDetail.IdProducto = detail.idProducto;
                 saleDetail.Descuento = detail.descuentoTotal;
+                saleDetail.IdUnidad = detail.idUnidad;
 
                 return await ISaleRepository.CreateDetail(saleDetail);
             }
@@ -679,6 +686,8 @@ namespace CarniceriaFinal.Sales.Services
             {
                 var saleDetail = await this.ISaleRepository.FindCompleteSaleByIdSale(idSale);
                 if (saleDetail == null) throw RSException.NoData("No hemos encontrado información sobre la venta");
+                var productUnidad = await this.IMeasureUnitService.GetAllMeasureUnit();
+
 
                 SaleDetailCotizacionEntity sale = new();
                 sale.idVenta = saleDetail.IdVenta;
@@ -690,12 +699,15 @@ namespace CarniceriaFinal.Sales.Services
                 {
                     sale.descuentoTotalVenta += (product.Descuento == null ? 0 : product.Descuento.Value);
                     sale.subtotalVenta += (product.Precio.Value * product.Cantidad.Value);
+                    
+                    var productUnit = productUnidad.Where(x => x.idUnidad == product.IdUnidad).Select(x => x.unidad).FirstOrDefault();
 
                     var discount = (product.Descuento == null || product.Descuento == 0 ? 0 : (float)Math.Round(product.Descuento.Value / product.Cantidad.Value, 2));
                     sale.products.Add(new ProductsDetailCotizacionEntity()
                     {
                         cantidad = product.Cantidad.Value,
                         titulo = product.IdProductoNavigation.Titulo,
+                        unidad = productUnit == null ? "lb" : productUnit,
                         descuentoTotalProducto = discount,
                         motivoDesc = product.IdPromocion != null ? "Promocion" : "Membresía de Usuario",
                         precioFinalProducto = (float)Math.Round(((product.Precio.Value * product.Cantidad.Value) - (product.Descuento == null ? 0 : product.Descuento.Value)) / product.Cantidad.Value, 2)
@@ -719,6 +731,7 @@ namespace CarniceriaFinal.Sales.Services
         {
             try
             {
+
                 var client = await IClientRepository.GetClientByIdUser(idUser);
 
                 if (client == null) return new List<SaleDetailCotizacionEntity>();
@@ -727,6 +740,7 @@ namespace CarniceriaFinal.Sales.Services
                 var saleDetail = await this.ISaleRepository.FindAllCompleteSaleByIdClient(client.IdCliente);
 
                 List<SaleDetailCotizacionEntity> sales = new();
+                var productUnidad = await this.IMeasureUnitService.GetAllMeasureUnit();
 
 
                 foreach (var saleVal in saleDetail)
@@ -741,6 +755,8 @@ namespace CarniceriaFinal.Sales.Services
                     {
                         var discount = (product.Descuento == null || product.Descuento == 0 ? 0 : (float)Math.Round(product.Descuento.Value / product.Cantidad.Value, 2));
 
+                        var productUnit = productUnidad.Where(x => x.idUnidad == product.IdUnidad).Select(x => x.unidad).FirstOrDefault();
+
                         sale.descuentoTotalVenta += (product.Descuento == null ? 0 : product.Descuento.Value);
                         sale.subtotalVenta += (product.Precio.Value * product.Cantidad.Value);
                         sale.products.Add(new ProductsDetailCotizacionEntity()
@@ -748,6 +764,7 @@ namespace CarniceriaFinal.Sales.Services
                             cantidad = product.Cantidad.Value,
                             titulo = product.IdProductoNavigation.Titulo,
                             descuentoTotalProducto = discount,
+                            unidad = productUnit == null ? "lb" : productUnit,
                             motivoDesc = product.IdPromocion != null ? "Promocion" : "Membresía de Usuario",
                             precioFinalProducto = (float)Math.Round(((product.Precio.Value * product.Cantidad.Value) - (product.Descuento == null ? 0 : product.Descuento.Value)) / product.Cantidad.Value, 2)
                         });

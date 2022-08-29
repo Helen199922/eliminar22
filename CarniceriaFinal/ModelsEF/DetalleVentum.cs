@@ -9,6 +9,7 @@ namespace CarniceriaFinal.ModelsEF
     [Table("detalle_venta")]
     [Index("IdMembresiaInUsuario", Name = "detalle_venta_ibfk_2")]
     [Index("IdProducto", Name = "idProducto")]
+    [Index("IdUnidad", Name = "idUnidad")]
     [Index("IdPromocion", Name = "promocion_promocion")]
     [Index("IdVenta", Name = "venta_venta")]
     public partial class DetalleVentum
@@ -30,6 +31,8 @@ namespace CarniceriaFinal.ModelsEF
         public float? Descuento { get; set; }
         [Column("idMembresiaInUsuario")]
         public int? IdMembresiaInUsuario { get; set; }
+        [Column("idUnidad")]
+        public int? IdUnidad { get; set; }
 
         [ForeignKey("IdMembresiaInUsuario")]
         [InverseProperty("DetalleVenta")]
@@ -40,6 +43,9 @@ namespace CarniceriaFinal.ModelsEF
         [ForeignKey("IdPromocion")]
         [InverseProperty("DetalleVenta")]
         public virtual Promocion? IdPromocionNavigation { get; set; }
+        [ForeignKey("IdUnidad")]
+        [InverseProperty("DetalleVenta")]
+        public virtual UnidadMedidum? IdUnidadNavigation { get; set; }
         [ForeignKey("IdVenta")]
         [InverseProperty("DetalleVenta")]
         public virtual Ventum? IdVentaNavigation { get; set; }
