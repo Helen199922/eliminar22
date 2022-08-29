@@ -33,7 +33,6 @@ namespace CarniceriaFinal.Core
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                Console.WriteLine("asdfasdfasdf");
                 //await DoWork(stoppingToken);
                 await HandleStatusSales();
                 await Task.Delay(

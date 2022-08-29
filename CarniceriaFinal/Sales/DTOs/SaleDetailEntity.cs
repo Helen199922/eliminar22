@@ -20,6 +20,7 @@ namespace CarniceriaFinal.Sales.Models
     {
         public float idVenta { get; set; }
         public float descuentoTotalVenta { get; set; }
+        public DateTime? dateCreated { get; set; }
         public float subtotalVenta { get; set; }
         public float total { get; set; }
         public List<ProductsDetailCotizacionEntity> products { get; set; }
