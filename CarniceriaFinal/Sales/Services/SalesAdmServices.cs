@@ -332,6 +332,7 @@ namespace CarniceriaFinal.Sales.Services
                     endTime = sale.FechaFinal,
                     startTime = sale.Fecha,
                     response = "",
+                    idSale = idSale,
                     detail = await this.ISalesService.FindCompleteSaleByIdSale(idSale)
             };
 
