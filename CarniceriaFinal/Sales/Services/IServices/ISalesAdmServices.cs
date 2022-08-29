@@ -8,5 +8,6 @@ namespace CarniceriaFinal.Sales.Services.IServices
         Task<ResumeSaleDetail> GetDetailByIdSale(int idSale);
         Task<string> attendSale(int idSale);
         Task<string> declineSale(int idSale);
+        Task<SaleAdmRequestSaleDetail> GetSaleDetailById(int idSale);
     }
 }

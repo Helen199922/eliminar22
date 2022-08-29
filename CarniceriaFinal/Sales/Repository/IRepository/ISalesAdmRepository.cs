@@ -14,5 +14,8 @@ namespace CarniceriaFinal.Sales.Repository.IRepository
         Task<Ventum> attendSaleByIdSale(int idSale);
         Task<Boolean> declineSaleByIdSale(int idSale);
         Task<Boolean> pendingSaleByIdSale(int idSale);
+        Task<Ventum> GetSaleDetailById(int idSale);
+        Task<Boolean> IsValidExpandTimeSaleDetailById(int idSale);
+        Task<Ventum> ExpandTimeSaleDetailById(int idSale);
     }
 }

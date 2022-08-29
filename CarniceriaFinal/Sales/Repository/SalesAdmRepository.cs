@@ -193,5 +193,63 @@ namespace CarniceriaFinal.Sales.Repository
                 throw RSException.ErrorQueryDB("Venta pendiente");
             }
         }
+        public async Task<Ventum> GetSaleDetailById(int idSale)
+        {
+            try
+            {
+                var sale = await Context.Venta
+                    .Where(s => s.IdVenta == idSale && s.IdStatus == 1)
+                    .FirstOrDefaultAsync();
+
+                if(DateTime.Compare(sale.FechaFinal.Value, DateTime.Now) < 0)
+                {
+                    sale.IdStatus = 3;
+                    await Context.SaveChangesAsync();
+                    return null;
+                }
+
+                return sale;
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Detalle de venta");
+            }
+        }
+        public async Task<Boolean> IsValidExpandTimeSaleDetailById(int idSale)
+        {
+            try
+            {
+                var sale = await Context.Venta
+                    .Where(s => s.IdVenta == idSale && s.IdStatus == 1)
+                    .FirstOrDefaultAsync();
+
+                return DateTime
+                    .Compare(sale.FechaFinal.Value, sale.Fecha.Value.AddMinutes(5))
+                    < 0;
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Es válida el registro de venta");
+            }
+        }
+        public async Task<Ventum> ExpandTimeSaleDetailById(int idSale)
+        {
+            try
+            {
+                var sale = await Context.Venta
+                    .Where(s => s.IdVenta == idSale)
+                    .FirstOrDefaultAsync();
+
+                sale.FechaFinal = sale.FechaFinal.Value.AddMinutes(5);
+
+                await Context.SaveChangesAsync();
+
+                return sale;
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Ha ocurrido un error al consultar la venta.");
+            }
+        }
     }
 }

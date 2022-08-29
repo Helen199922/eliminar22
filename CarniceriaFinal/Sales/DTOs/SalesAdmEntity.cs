@@ -63,4 +63,10 @@
     {
         public int idSale { get; set; }
     }
+    public class SaleAdmRequestSaleDetail
+    {
+        public string response { get; set; }
+        public DateTime? startTime { get; set; }
+        public DateTime? endTime { get; set; }
+    }
 }

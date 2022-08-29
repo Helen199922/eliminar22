@@ -76,5 +76,20 @@ namespace CarniceriaFinal.Sales.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        
+        [HttpGet("sales-detail-to-sale/{idSale}")]
+        public async Task<IActionResult> GetSaleDetailById(int idSale)
+        {
+            RSEntity<SaleAdmRequestSaleDetail> rsEntity = new();
+            try
+            {
+
+                return Ok(rsEntity.Send(await ISalesAdmServices.GetSaleDetailById(idSale)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
     }
 }

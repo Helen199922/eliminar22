@@ -213,7 +213,7 @@ namespace CarniceriaFinal.Sales.Services
                                 (membershipUser.IdMembresiaNavigation.CantProductosMembresia - membershipUser.CantProductosComprados)
                          )
                         {
-                            throw RSException.BadRequest("lamentablemebte, hay una inconsistencia en cuanto a la membresía. Revise los detalles de la compra");
+                            throw RSException.BadRequest("lamentablemente, hay una inconsistencia en cuanto a la membresía.");
                         }
                     }
                 }
@@ -292,6 +292,51 @@ namespace CarniceriaFinal.Sales.Services
             catch (Exception)
             {
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al registrar la venta");
+            }
+        }
+        public async Task<SaleAdmRequestSaleDetail> GetSaleDetailById(int idSale)
+        {
+            try
+            {
+                SaleAdmRequestSaleDetail detail = new SaleAdmRequestSaleDetail();
+
+                //es válido activar esta venta (porque ya caducó o porque ya fue expandida una vez anterior
+                //+)
+
+                var sale = await this.ISalesAdmRepository.GetSaleDetailById(idSale);
+                if (sale == null)
+                {
+                    detail.response = "la venta no se encuentra habilitada para el registro. Por favor, indicarle al cliente volver a ingresar.";
+                    return detail;
+                }
+
+                var isValidExpandTime = await this.ISalesAdmRepository.IsValidExpandTimeSaleDetailById(idSale);
+
+                if (isValidExpandTime)
+                {
+                    var expandSale = await this.ISalesAdmRepository.ExpandTimeSaleDetailById(idSale);
+                    detail.response = "";
+                    detail.endTime = expandSale.FechaFinal;
+                    detail.startTime = expandSale.Fecha;
+                    
+                    return detail;
+                }
+
+                return new SaleAdmRequestSaleDetail()
+                {
+                    endTime = sale.FechaFinal,
+                    startTime = sale.Fecha,
+                    response = ""
+                };
+
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al consultar la venta");
             }
         }
         public async Task<string> declineSale(int idSale)
