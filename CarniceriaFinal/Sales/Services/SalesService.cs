@@ -683,6 +683,7 @@ namespace CarniceriaFinal.Sales.Services
                 SaleDetailCotizacionEntity sale = new();
                 sale.idVenta = saleDetail.IdVenta;
                 sale.total = saleDetail.Total.Value;
+                sale.dateCreated = saleDetail.Fecha;
                 sale.products = new();
 
                 foreach (var product in saleDetail.DetalleVenta)
