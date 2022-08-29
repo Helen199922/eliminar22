@@ -1,4 +1,6 @@
-﻿namespace CarniceriaFinal.Sales.DTOs
+﻿using CarniceriaFinal.Sales.Models;
+
+namespace CarniceriaFinal.Sales.DTOs
 {
     public class SalesAdmEntity
     {
@@ -68,5 +70,6 @@
         public string response { get; set; }
         public DateTime? startTime { get; set; }
         public DateTime? endTime { get; set; }
+        public SaleDetailCotizacionEntity? detail { get; set; }
     }
 }

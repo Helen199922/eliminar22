@@ -200,6 +200,8 @@ namespace CarniceriaFinal.Sales.Repository
                 var sale = await Context.Venta
                     .Where(s => s.IdVenta == idSale && s.IdStatus == 1)
                     .FirstOrDefaultAsync();
+                
+                if (sale == null) return null;
 
                 if(DateTime.Compare(sale.FechaFinal.Value, DateTime.Now) < 0)
                 {

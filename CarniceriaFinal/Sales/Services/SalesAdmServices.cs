@@ -5,6 +5,7 @@ using CarniceriaFinal.Core.Email.Services.IServices;
 using CarniceriaFinal.Marketing.Repository.IRepository;
 using CarniceriaFinal.Productos.Repository;
 using CarniceriaFinal.Sales.DTOs;
+using CarniceriaFinal.Sales.IServices;
 using CarniceriaFinal.Sales.Repository.IRepository;
 using CarniceriaFinal.Sales.Services.IServices;
 using CarniceriaFinal.Security.IRepository;
@@ -14,6 +15,7 @@ namespace CarniceriaFinal.Sales.Services
     public class SalesAdmServices: ISalesAdmServices
     {
         private readonly ISalesAdmRepository ISalesAdmRepository;
+        private readonly ISalesService ISalesService;
         private readonly IMembershipRepository IMembershipRepository;
         private readonly IProductoRepository IProductoRepository;
         private readonly IUserRepository IUserRepository;
@@ -25,7 +27,8 @@ namespace CarniceriaFinal.Sales.Services
             IMembershipRepository IMembershipRepository,
             IProductoRepository IProductoRepository,
             IEmailService IEmailService,
-            IUserRepository IUserRepository
+            IUserRepository IUserRepository,
+            ISalesService ISalesService
         )
         {
             this.IMapper = IMapper;
@@ -34,6 +37,7 @@ namespace CarniceriaFinal.Sales.Services
             this.IProductoRepository = IProductoRepository;
             this.IEmailService = IEmailService;
             this.IUserRepository = IUserRepository;
+            this.ISalesService = ISalesService;
         }
 
         public async Task<List<SalesAdmEntity>> GetAllSales(int idStatus)
@@ -318,7 +322,8 @@ namespace CarniceriaFinal.Sales.Services
                     detail.response = "";
                     detail.endTime = expandSale.FechaFinal;
                     detail.startTime = expandSale.Fecha;
-                    
+                    detail.detail = await this.ISalesService.FindCompleteSaleByIdSale(idSale);
+
                     return detail;
                 }
 
@@ -326,8 +331,9 @@ namespace CarniceriaFinal.Sales.Services
                 {
                     endTime = sale.FechaFinal,
                     startTime = sale.Fecha,
-                    response = ""
-                };
+                    response = "",
+                    detail = await this.ISalesService.FindCompleteSaleByIdSale(idSale)
+            };
 
             }
             catch (RSException err)
