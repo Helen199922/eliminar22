@@ -314,18 +314,18 @@ namespace CarniceriaFinal.Sales.Services
                     return detail;
                 }
 
-                var isValidExpandTime = await this.ISalesAdmRepository.IsValidExpandTimeSaleDetailById(idSale);
+                //var isValidExpandTime = await this.ISalesAdmRepository.IsValidExpandTimeSaleDetailById(idSale);
 
-                if (isValidExpandTime)
-                {
-                    var expandSale = await this.ISalesAdmRepository.ExpandTimeSaleDetailById(idSale);
-                    detail.response = "";
-                    detail.endTime = expandSale.FechaFinal;
-                    detail.startTime = expandSale.Fecha;
-                    detail.detail = await this.ISalesService.FindCompleteSaleByIdSale(idSale);
+                //if (isValidExpandTime)
+                //{
+                //    var expandSale = await this.ISalesAdmRepository.ExpandTimeSaleDetailById(idSale);
+                //    detail.response = "";
+                //    detail.endTime = expandSale.FechaFinal;
+                //    detail.startTime = expandSale.Fecha;
+                //    detail.detail = await this.ISalesService.FindCompleteSaleByIdSale(idSale);
 
-                    return detail;
-                }
+                //    return detail;
+                //}
 
                 return new SaleAdmRequestSaleDetail()
                 {
