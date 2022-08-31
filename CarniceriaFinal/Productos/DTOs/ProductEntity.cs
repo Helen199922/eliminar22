@@ -32,4 +32,9 @@ namespace CarniceriaFinal.Productos.DTOs
         public string? minimaUnidad { get; set; }
         public ProductPromotionEntity? ProductPromotionEntity { get; set; }
     }
+    public class ProductSimpleIdsEntity
+    {
+        public int IdProducto { get; set; }
+        public string? Titulo { get; set; }
+    }
 }

@@ -78,7 +78,6 @@ namespace CarniceriaFinal.Sales.Services
                 float subTotal = 0;
                 float discount = 0;
 
-                List<DetailProductsEntity> salesDetails = new();
                 foreach (var item in sale.detalleVenta)
                 {
                     float discountInDetail = 0;
@@ -104,15 +103,7 @@ namespace CarniceriaFinal.Sales.Services
                     discount += discountInDetail;
 
 
-                    salesDetails.Add(new DetailProductsEntity
-                    {
-                        amount = productValue.Precio.Value.ToString(),
-                        product = productValue.Titulo,
-                        quantity = item.cantidad.ToString(),
-                        finalAmount = Math.Round((productValue.Precio.Value * item.cantidad), 2).ToString(),
-                        discount = discountInDetail > 0 ? Math.Round((discountInDetail), 2).ToString() : null,
-                        typeDiscount = item.idPromocion != null ? "Promoción vigente" : null
-                    });
+
                 }
 
                 //Verificar si el cliente no está registrado como un usuario con clave y contraseña
@@ -162,18 +153,6 @@ namespace CarniceriaFinal.Sales.Services
                 }
 
 
-                //var email = await this.IEmailService.SendEmailToProductRequest(new EmailProductsRequest
-                //{
-                //    numPedido = saleCreated.IdVenta.ToString(),
-                //    amount= finalAmount,
-                //    email=sale.cliente.email,
-                //    userName=sale.cliente.nombre,
-                //    accounts= await GetAllBanks(),
-                //    discount = discount.ToString(),
-                //    subTotal = Math.Round(subTotal, 2).ToString(),
-                //    productDetail = salesDetails,
-                //    transporte = sale.costosAdicionales.ToString()
-                //});
 
                 return new()
                 {
@@ -223,7 +202,6 @@ namespace CarniceriaFinal.Sales.Services
                 float finalAmount = 0;
                 float subTotal = 0;
                 float discount = 0;
-                List<DetailProductsEntity> salesDetails = new();
                 foreach (var item in sale.detalleVenta)
                 {
                     float discountInDetail = 0;
@@ -249,15 +227,6 @@ namespace CarniceriaFinal.Sales.Services
 
                     discount += discountInDetail;
 
-                    salesDetails.Add(new DetailProductsEntity
-                    {
-                        amount = productValue.Precio.Value.ToString(),
-                        product = productValue.Titulo,
-                        quantity = item.cantidad.ToString(),
-                        finalAmount = Math.Round((productValue.Precio.Value * item.cantidad), 2).ToString(),
-                        discount = discountInDetail > 0 ? Math.Round((discountInDetail), 2).ToString() : null,
-                        typeDiscount = item.idPromocion != null ? "Promoción vigente" : "Membresía"
-                    });
 
                 }
 

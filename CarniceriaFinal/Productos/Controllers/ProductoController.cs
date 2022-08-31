@@ -68,6 +68,19 @@ namespace CarniceriaFinal.Productos.Controllers
             }
         }
 
+        [HttpGet("simple-products-with-ids")]
+        public async Task<IActionResult> GetSimpleProductsIds()
+        {
+            RSEntity<List<ProductSimpleIdsEntity>> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await ProductoService.GetSimpleProductsIds()));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
 
 
 

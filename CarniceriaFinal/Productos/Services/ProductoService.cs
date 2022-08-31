@@ -114,6 +114,21 @@ namespace CarniceriaFinal.Productos.Servicios
                 throw new RSException("error", 500).SetMessage(err.Message);
             }
         }
+        public async Task<List<ProductSimpleIdsEntity>> GetSimpleProductsIds()
+        {
+            try
+            {
+                return await this.IProductoRepo.GetSimpleProductsIds();
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception err)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener datos de los productos");
+            }
+        }
         public async Task<List<ProductEntity>> GetProductosInCar(List<int> idProducts)
         {
             try

@@ -257,7 +257,11 @@ namespace CarniceriaFinal.Sales.Services
                         quantity = detail.Cantidad.Value.ToString(),
                         finalAmount = detail.Precio.ToString(),
                         discount = detail.Descuento == null ? "0" : detail.Descuento.Value.ToString(),
-                        typeDiscount = null
+                        typeDiscount = detail.IdPromocion != null 
+                            ? "Promoción vigente" 
+                            : detail.IdMembresiaInUsuario != null
+                                ? "Membresía"
+                                : null
                     };
 
                     salesDetails.Add(value);

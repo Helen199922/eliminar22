@@ -12,5 +12,6 @@ namespace CarniceriaFinal.Productos.DTOs
         public string? descripcion { get; set; }
         public int? status { get; set; }
         public string? UrlImage { get; set; }
+
     }
 }

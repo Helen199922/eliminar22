@@ -11,7 +11,8 @@ namespace CarniceriaFinal.Productos.DTOs
     {
         public int idProducto { get; set; }
         public string? titulo { get; set; }
-        public Boolean isActivated { get; set; }
+        public Boolean? isInCategory { get; set; }
+        public string? imgUrl { get; set; }
 
     }
     public class CreateSubCategory : SubCategoriaProductoEntity

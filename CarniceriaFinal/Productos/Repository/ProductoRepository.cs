@@ -1,5 +1,6 @@
 ﻿using CarniceriaFinal.Core.CustomException;
 using CarniceriaFinal.ModelsEF;
+using CarniceriaFinal.Productos.DTOs;
 using CarniceriaFinal.Productos.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -58,6 +59,24 @@ namespace CarniceriaFinal.Productos
             catch (Exception)
             {
                 throw RSException.ErrorQueryDB("Producto");
+            }
+        }
+        public async Task<List<ProductSimpleIdsEntity>> GetSimpleProductsIds()
+        {
+            try
+            {
+                return await Context.Productos
+                    .Select(x => new ProductSimpleIdsEntity()
+                    {
+                        IdProducto = x.IdProducto,
+                        Titulo = x.Titulo,
+                    })
+                    .ToListAsync();
+
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Simple Producto");
             }
         }
         public async Task<List<Producto>> GetProductosInCar(List<int> products)

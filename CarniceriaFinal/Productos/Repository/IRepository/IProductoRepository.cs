@@ -1,4 +1,5 @@
 ﻿using CarniceriaFinal.ModelsEF;
+using CarniceriaFinal.Productos.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace CarniceriaFinal.Productos.Repository
         Task<List<Producto>> GetSimpleProducts();
         Task<Producto> ProductById(int id);
         Task<string> SaveDetalles(List<DetalleProducto> detalleProducto);
-
+        Task<List<ProductSimpleIdsEntity>> GetSimpleProductsIds();
 
         Task<Producto> SaveProduct(Producto producto);
         Task<List<Producto>> FindProductByCategoryId(int idCategory);

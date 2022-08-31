@@ -1,5 +1,6 @@
 ﻿using CarniceriaFinal.Core.CustomException;
 using CarniceriaFinal.ModelsEF;
+using CarniceriaFinal.Productos.DTOs;
 using CarniceriaFinal.Productos.IRepository;
 using CarniceriaFinal.Productos.Models;
 using Microsoft.EntityFrameworkCore;
@@ -70,6 +71,8 @@ namespace CarniceriaFinal.Productos.Repository
                 if (response == null) return false;
                 response.Status = idStatus;
 
+                await Context.SaveChangesAsync();
+
                 return true;
 
             }
@@ -78,6 +81,20 @@ namespace CarniceriaFinal.Productos.Repository
                 throw RSException.ErrorQueryDB("Actualizar estado de categoria");
             }
         }
+
+        public async Task<List<CategoriaProducto>> GetAllAdmCategories()
+        {
+            try
+            {
+                return await Context.CategoriaProductos
+                    .ToListAsync();
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Obtener las categorias");
+            }
+        }
+
         public async Task<Boolean> DelateCategoryById(int idCategory)
         {
             try
@@ -141,6 +158,62 @@ namespace CarniceriaFinal.Productos.Repository
                     .ToListAsync();
 
                 return productsInSubCategory;
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Obtener las relaciones de productos con categorias");
+            }
+        }
+        
+            public async Task<List<SimpleProductInSubCategory>> GetAllProductsToCategory()
+        {
+            try
+            {
+                var allProducts = await Context.Productos
+                    .AsNoTracking()
+                    .Select(x => new SimpleProductInSubCategory()
+                    {
+                        idProducto = x.IdProducto,
+                        isInCategory = false,
+                        titulo = x.Titulo
+                    })
+                    .ToListAsync();
+
+                //.Where(x => x.IdCategoria == idCategory)
+                return allProducts;
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Obtener las relaciones de productos con categorias");
+            }
+        }
+        public async Task<List<SimpleProductInSubCategory>> GetAllProductsByIdCategory(int idCategory)
+        {
+            try
+            {
+                var allProducts = await Context.Productos
+                    .AsNoTracking()
+                    .ToListAsync();
+
+
+                var productsInSubCategory = await Context.CategoriaInProductos
+                    .Where(x => x.IdCategoria.Value == idCategory)
+                    .AsNoTracking()
+                    .Select(x => x.IdProducto)
+                    .ToListAsync();
+
+                var productsToCompare = productsInSubCategory.DistinctBy(x => x).ToList();
+
+
+                //.Where(x => x.IdCategoria == idCategory)
+                return allProducts
+                    .Select(x => new SimpleProductInSubCategory()
+                    {
+                        idProducto = x.IdProducto,
+                        isInCategory = productsToCompare.Contains(x.IdProducto),
+                        titulo = x.Titulo
+                    })
+                    .ToList();
             }
             catch (Exception err)
             {

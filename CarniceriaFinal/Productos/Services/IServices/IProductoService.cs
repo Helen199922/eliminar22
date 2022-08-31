@@ -13,6 +13,7 @@ namespace CarniceriaFinal.Productos.Servicios
         Task<string> SaveProduct(ProductSaveRequestEntity product);
         Task<string> SaveDetails(List<ProductDetailEntity> detalleProducto);
 
+        Task<List<ProductSimpleIdsEntity>> GetSimpleProductsIds();
 
         Task<List<ProductEntity>> FindProductsByCategoryId(int idCategory);
         Task<List<ProductTableAdminEntity>> GetSimpleProductos();

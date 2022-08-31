@@ -1,4 +1,5 @@
 ﻿using CarniceriaFinal.ModelsEF;
+using CarniceriaFinal.Productos.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,10 @@ namespace CarniceriaFinal.Productos.Repository
         CategoriaProducto UpdateCategory(CategoriaProducto category);
         Task<Boolean> DelateCategoryById(int idCategory);
         Task<List<CategoriaProducto>> GetAllCategories();
+        Task<List<CategoriaProducto>> GetAllAdmCategories();
+        Task<List<SimpleProductInSubCategory>> GetAllProductsByIdCategory(int idCategory);
+        Task<List<SimpleProductInSubCategory>> GetAllProductsToCategory();
+        
         Task<List<CategoriaInProducto>> GetAllProductsInCategory(List<Producto> products, int idCategory);
         Task<List<CategoriaInProducto>> GetAllProductsExistInCategory(int idCategory);
         Task<CategoriaInProducto> CrearCategoriaInProduct(int idCategory, int idProduct);

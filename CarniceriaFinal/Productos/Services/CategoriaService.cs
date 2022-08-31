@@ -41,6 +41,25 @@ namespace CarniceriaFinal.Productos.Servicios
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener las categorias.");
             }
         }
+        public async Task<List<CategoryEntity>> GetAllAdmCategories()
+        {
+            try
+            {
+                var category = await ICategoriaRepo.GetAllAdmCategories();
+
+                var categories = IMapper.Map<List<CategoryEntity>>(category);
+
+                return categories;
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener las categorias.");
+            }
+        }
         public async Task<List<CategoryEntity>> GetAllCategoriesByProductId(int idProduct)
         {
             try
@@ -60,6 +79,42 @@ namespace CarniceriaFinal.Productos.Servicios
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener las categorias por id de producto.");
             }
         }
+        public async Task<List<SimpleProductInSubCategory>> GetAllProductsByIdCategory(int idCategory)
+        {
+            try
+            {
+                var productResponse = await ICategoriaRepo.GetAllProductsByIdCategory(idCategory);
+
+
+                return productResponse;
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener los detalles de la categoria.");
+            }
+        }
+        public async Task<List<SimpleProductInSubCategory>> GetAllProductsToCategory()
+        {
+            try
+            {
+                var productResponse = await ICategoriaRepo.GetAllProductsToCategory();
+
+
+                return productResponse;
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener los detalles de la categoria.");
+            }
+        }
         public async Task<CategoriaProductoEntity> GetCategoryById(int idCategory)
         {
             try
@@ -76,9 +131,6 @@ namespace CarniceriaFinal.Productos.Servicios
                 var productResponse =  await ICategoriaRepo.GetAllProductsExistInCategory(idCategory);
                 response.Products = new();
 
-                if (productResponse == null)
-
-                //List<Producto> products = new();
 
                 foreach (var item in productResponse)
                 {
@@ -179,6 +231,7 @@ namespace CarniceriaFinal.Productos.Servicios
                     .Where(x => !products.Select(z => z.idProducto).ToList().Contains(x.IdProducto.Value))
                     .ToList();
 
+                if (toDelete.Count == 0) return "response";
 
                 await ICategoriaRepo.DeleteCategoriaInProduct(toDelete);
 
