@@ -337,20 +337,26 @@ namespace CarniceriaFinal.Marketing.Repository
             {
                 var lastMembership = await this.GetLastMembershipByIdUser(idUser);
 
-                if (lastMembership == null) return 0;
-                if (lastMembership.Status == 1) return 0;
+                
+
+                
+
+                if (lastMembership != null && lastMembership.Status == 1) return 0;
 
                 //Si aún no se cumple el año, debemos mandar 0 de monto
-                if (DateTime.Compare(lastMembership.FechaFin.AddYears(1), DateTime.Now) > 0) return 0;
+                if (lastMembership != null)
+                    if (DateTime.Compare(lastMembership.FechaFin.AddYears(1), DateTime.Now) > 0) return 0;
 
+                var minDate = DateTime.Now.AddYears(-2);
+                if (lastMembership != null)
+                    minDate = lastMembership.FechaFin;
 
                 using (var _Context = new DBContext())
                 {
-                    var minDate = DateTime.Now.AddYears(-2);
-                    if (lastMembership != null)
-                        minDate = lastMembership.FechaFin;
+                
 
-                    var salesValue = await _Context.Venta.Where(x => x.IdCliente == idClient && x.IdStatus == 1
+                    var salesValue = await _Context.Venta.Where(x => x.IdCliente == idClient && x.IdStatus == 2
+                                            && x.IsAuthUser == 1
                     //Obtenemos todas las ventas mayores a la fecha de finalización de membresía
                     )
                     .AsNoTracking()
