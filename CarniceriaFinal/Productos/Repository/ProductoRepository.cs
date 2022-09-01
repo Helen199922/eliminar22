@@ -292,7 +292,6 @@ namespace CarniceriaFinal.Productos
                 productDetail.Status = product.Status;
                 productDetail.IdUnidad = product.IdUnidad;
                 productDetail.Stock = product.Stock;
-                productDetail.MinimaUnidad = product.MinimaUnidad;
 
                 await Context.SaveChangesAsync();
                 return productDetail;

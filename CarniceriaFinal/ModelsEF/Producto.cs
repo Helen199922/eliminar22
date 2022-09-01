@@ -40,9 +40,6 @@ namespace CarniceriaFinal.ModelsEF
         public int IdUnidad { get; set; }
         [Column("stock")]
         public int Stock { get; set; }
-        [Column("minimaUnidad")]
-        [StringLength(5)]
-        public string? MinimaUnidad { get; set; }
 
         [ForeignKey("IdUnidad")]
         [InverseProperty("Productos")]
