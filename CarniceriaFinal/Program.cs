@@ -59,6 +59,7 @@ using CarniceriaFinal.Reportes.Services.IServices;
 using CarniceriaFinal.Reportes.Repository;
 using CarniceriaFinal.Reportes.Repository.IRepository;
 using CarniceriaFinal.Core.JWTOKEN.DTOs;
+using CarniceriaFinal.Security.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -184,6 +185,7 @@ builder.Services.AddScoped<IReportServices, ReportServices>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<ILogsServices, LogsServices>();
 builder.Services.AddScoped<ILogsRepository, LogsRepository>();
+builder.Services.AddScoped<ICaptchaServices, CaptchaServices>();
 
 builder.Services.AddSingleton<IMultiEmailService, MultiEmailService>();
 
