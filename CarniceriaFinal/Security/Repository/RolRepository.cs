@@ -146,7 +146,7 @@ namespace CarniceriaFinal.Roles.Repository
             try
             {
                 return await Context.Rols
-                    .Where(x => x.IdRol != 3)
+                    .Where(x => x.IdRol != 3 && x.IdRol != 1)
                     .ToListAsync();
             }
             catch (Exception)

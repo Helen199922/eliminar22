@@ -440,7 +440,7 @@ namespace CarniceriaFinal.Productos.Servicios
                     await IProductoRepo.getAllProductsPromotions()
                 );
 
-                var productsDetail = await promotionConvert(products);
+                var productsDetail = await promotionConvert(products.OrderBy(x => x.IdProducto).ToList());
 
                 productsWithPromo.products = productsDetail;
                 

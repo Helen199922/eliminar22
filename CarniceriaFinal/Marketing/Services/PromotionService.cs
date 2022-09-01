@@ -141,7 +141,7 @@ namespace CarniceriaFinal.Marketing.Services
                 if (response == null)
                     return new();
 
-                return response;
+                return response.DistinctBy(x => x.idProduct).ToList();
             }
             catch (RSException err)
             {
