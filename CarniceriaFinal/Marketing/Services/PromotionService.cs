@@ -71,11 +71,14 @@ namespace CarniceriaFinal.Marketing.Services
                 promotionDetail.FechaUpdate = DateTime.Now;
                 Promocion promo = IMapper.Map<Promocion>(promotionDetail);
 
-                var lastPromotion = await IPromotionRepository.getLastPromotionByIdPromotion(promotionDetail.fechaFin, promotionDetail.fechaInicio, promotionDetail.idPromocion.Value);
-                if (lastPromotion != null)
-                    throw RSException.BadRequest(String
-                        .Format("Ya existe una promoción activa. Por favor, espere a que termine o desactívela: {0}",
-                        lastPromotion.Titulo));
+                if(promotionDetail.Status == 1)
+                {
+                    var lastPromotion = await IPromotionRepository.getLastPromotionByIdPromotion(promotionDetail.fechaFin, promotionDetail.fechaInicio, promotionDetail.idPromocion.Value);
+                    if (lastPromotion != null)
+                        throw RSException.BadRequest(String
+                            .Format("Ya existe una promoción activa. Por favor, espere a que termine o desactívela: {0}",
+                            lastPromotion.Titulo));
+                }
 
                 await IPromotionRepository.UpdatePromotion(promo);
 
@@ -109,11 +112,44 @@ namespace CarniceriaFinal.Marketing.Services
             }
 
         }
+        public async Task<String> isAvailabilityToActivatePromotion(IsAvailabilityCreatePromoEntity data)
+        {
+            try
+            {
+                var isAvailability = false;
+                if (data.idPromocion == null) return "Ha ocurrido un error con la promoción. Por favor intente pronto.";
+
+                var promotionData = await IPromotionRepository.GetPromotionById(data.idPromocion.Value);
+
+                if (promotionData.Status == 1) return "";
+
+                var response = await IPromotionRepository
+                    .getLastPromotionByIdPromotion(data.fechaFin, data.fechaInicio, data.idPromocion.Value);
+
+
+                return response == null ? "" : String
+                        .Format("Ya existe una promoción activa. Por favor, espere a que termine o desactívela: {0}",
+                        response.Titulo);
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al consultar estado de promociones.");
+            }
+
+        }
         public async Task<String> isAvailabilityToCreatePromotion(IsAvailabilityCreatePromoEntity data)
         {
             try
             {
                 var isAvailability = false;
+
+                var promotionData = await IPromotionRepository.GetPromotionById(data.idPromocion.Value);
+
+                if (promotionData.Status == 0) return "";
 
                 var response = data.idPromocion != null
                     ? await IPromotionRepository.getLastPromotionByIdPromotion(data.fechaFin, data.fechaInicio, data.idPromocion.Value)

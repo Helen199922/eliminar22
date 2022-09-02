@@ -330,5 +330,21 @@ namespace CarniceriaFinal.Marketing.Repository
                 throw RSException.ErrorQueryDB("Lista de Dsctos");
             }
         }
+        public async Task<Promocion> GetPromotionById(int idPromotion)
+        {
+            try
+            {
+                using (var _Context = new DBContext())
+                {
+                    return await _Context.Promocions
+                        .Where(x => x.IdPromocion == idPromotion)
+                    .FirstOrDefaultAsync();
+                }
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Promoción");
+            }
+        }
     }
 }

@@ -16,5 +16,6 @@ namespace CarniceriaFinal.Marketing.Interfaces.IService
         Task<List<PromotionProductEntity>> GetAllProductsByIdPromotion(int? idPromotion);
         Task<String> isAvailabilityToCreatePromotion(IsAvailabilityCreatePromoEntity data);
         Task<List<PorcentajeDscto>> GetAllDsctPromotion();
+        Task<String> isAvailabilityToActivatePromotion(IsAvailabilityCreatePromoEntity data);
     }
 }
