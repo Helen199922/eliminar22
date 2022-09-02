@@ -26,10 +26,6 @@ namespace CarniceriaFinal.ModelsEF
         [Column("urlImage")]
         [StringLength(255)]
         public string UrlImage { get; set; } = null!;
-        [Column("hora_inicio", TypeName = "time")]
-        public TimeOnly? HoraInicio { get; set; }
-        [Column("hora_fin", TypeName = "time")]
-        public TimeOnly? HoraFin { get; set; }
         [Column("status")]
         public int Status { get; set; }
 

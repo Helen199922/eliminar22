@@ -267,9 +267,7 @@ namespace CarniceriaFinal.Marketing.Repository
                     throw RSException.NoData("No se ha encontrado información del momento de degustación");
 
                 timeToEatDetail.Descripcion = tomesToEat.Descripcion;
-                timeToEatDetail.HoraInicio = tomesToEat.HoraInicio;
                 timeToEatDetail.UrlImage = tomesToEat.UrlImage;
-                timeToEatDetail.HoraFin = tomesToEat.HoraFin;
                 timeToEatDetail.Titulo = tomesToEat.Titulo;
 
 
