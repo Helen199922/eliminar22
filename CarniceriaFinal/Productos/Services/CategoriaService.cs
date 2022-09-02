@@ -60,25 +60,7 @@ namespace CarniceriaFinal.Productos.Servicios
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener las categorias.");
             }
         }
-        public async Task<List<CategoryEntity>> GetAllCategoriesByProductId(int idProduct)
-        {
-            try
-            {
-                var category = await ICategoriaRepo.GetAllCategoriesByProductId(idProduct);
-
-                var categories = IMapper.Map<List<CategoryEntity>>(category);
-
-                return categories;
-            }
-            catch (RSException err)
-            {
-                throw new RSException(err.TypeError, err.Code, err.MessagesError);
-            }
-            catch (Exception)
-            {
-                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener las categorias por id de producto.");
-            }
-        }
+       
         public async Task<List<SimpleProductInSubCategory>> GetAllProductsByIdCategory(int idCategory)
         {
             try
@@ -308,6 +290,11 @@ namespace CarniceriaFinal.Productos.Servicios
             {
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener al actualizar el estado de la categoría.");
             }
+        }
+
+        public Task<CategoriaProductoEntity> GetCategoryByProductId(int idCategory)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -220,18 +220,19 @@ namespace CarniceriaFinal.Productos.Repository
                 throw RSException.ErrorQueryDB("Obtener las relaciones de productos con categorias");
             }
         }
-        public async Task<List<CategoriaProducto>> GetAllCategoriesByProductId(int idProduct)
+        public async Task<CategoriaProducto> GetCategoryByProductId(int idProduct)
         {
             try
             {
-                var productsInSubCategory = await Context.CategoriaInProductos
+                var category = await Context.CategoriaInProductos
                     .Include(x => x.IdCategoriaNavigation)
                     .Include(x => x.IdProductoNavigation)
                     .Where(x => x.IdProducto == idProduct)
                     .AsNoTracking()
-                    .ToListAsync();
+                    .FirstOrDefaultAsync();
 
-                return productsInSubCategory.Select(x => x.IdCategoriaNavigation).DistinctBy(x => x.IdCategoria).ToList();
+                if (category == null || category.IdCategoriaNavigation == null) return null;
+                return category.IdCategoriaNavigation;
             }
             catch (Exception err)
             {

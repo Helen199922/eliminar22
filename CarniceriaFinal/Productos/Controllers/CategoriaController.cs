@@ -39,20 +39,20 @@ namespace CarniceriaFinal.Productos.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
-        [HttpGet("get-all-products-by-category/{idCategory}")]
-        public async Task<IActionResult> GetAllProductsByIdCategory(int idCategory)
-        {
-            RSEntity<List<SimpleProductInSubCategory>> rsEntity = new();
-            try
-            {
-                return Ok(rsEntity.Send(await CategoriaService.GetAllProductsByIdCategory(idCategory)));
+        //[HttpGet("get-all-products-by-category/{idCategory}")]
+        //public async Task<IActionResult> GetAllProductsByIdCategory(int idCategory)
+        //{
+        //    RSEntity<List<SimpleProductInSubCategory>> rsEntity = new();
+        //    try
+        //    {
+        //        return Ok(rsEntity.Send(await CategoriaService.GetAllProductsByIdCategory(idCategory)));
 
-            }
-            catch (RSException err)
-            {
-                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
-            }
-        }
+        //    }
+        //    catch (RSException err)
+        //    {
+        //        return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+        //    }
+        //}
         [HttpGet("get-all-products-forAll-categories")]
         public async Task<IActionResult> GetAllProductsToCategory()
         {

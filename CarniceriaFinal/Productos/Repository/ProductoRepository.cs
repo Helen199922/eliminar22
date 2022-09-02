@@ -39,6 +39,7 @@ namespace CarniceriaFinal.Productos
                 return await Context.Productos
                     .Include(x => x.IdUnidadNavigation)
                     .Include(x => x.DetalleProductos)
+                    .Include(x => x.CategoriaInProductos)
                     .Where(x => x.IdProducto == idProduct)
                     .FirstOrDefaultAsync();
 
@@ -295,6 +296,43 @@ namespace CarniceriaFinal.Productos
 
                 await Context.SaveChangesAsync();
                 return productDetail;
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Actualizar el producto");
+            }
+        }
+
+        public async Task<CategoriaInProducto> ManagementProductInCategory(int idProduct, int idCategory)
+        {
+            try
+            {
+                using (var _Context = new DBContext())
+                {
+                    var productCategory = await _Context.CategoriaInProductos
+                    .Where(c => c.IdProducto == idProduct)
+                    .FirstOrDefaultAsync();
+
+                    if(productCategory == null)
+                    {
+                        var valueCreated = new CategoriaInProducto()
+                        {
+                            IdCategoria = idCategory,
+                            IdProducto = idProduct,
+                        };
+                        await _Context.CategoriaInProductos.AddAsync(valueCreated);
+                        await _Context.SaveChangesAsync();
+
+                        return valueCreated;
+                    }
+
+                    productCategory.IdCategoria = idCategory;
+
+                    await _Context.SaveChangesAsync();
+                    
+                    return productCategory;
+                }
+
             }
             catch (Exception)
             {

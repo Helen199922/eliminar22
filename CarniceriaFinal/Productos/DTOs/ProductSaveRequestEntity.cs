@@ -7,6 +7,7 @@ namespace CarniceriaFinal.Productos.DTOs
 {
     public class ProductSaveRequestEntity : ProductEntity
     {
+        public int? CategoriyId { get; set; }
         public List<ProductDetailEntity> detail { get; set; }
     }
 }

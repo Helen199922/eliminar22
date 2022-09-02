@@ -82,8 +82,10 @@ namespace CarniceriaFinal.Productos.Servicios
                 productComplete.product = responsePromotion[0];
                 productComplete.unidadMedida = IMapper.Map<MeasureUnitEntity>(productsRepo.IdUnidadNavigation);
                 productComplete.detail = IMapper.Map<List<ProductDetailEntity>>(productsRepo.DetalleProductos);
-                var categoriesResponse = await this.ICategoriaService.GetAllCategoriesByProductId(idProduct);
-                productComplete.categories = IMapper.Map<List<CategoriaProductoEntity>>(categoriesResponse);
+                var categoriesResponse = await ICategoriaRepo.GetCategoryByProductId(idProduct);
+
+                if (categoriesResponse != null)
+                    productComplete.category = IMapper.Map<CategoriaProductoEntity>(categoriesResponse);
 
                 return productComplete;
             }
@@ -169,6 +171,8 @@ namespace CarniceriaFinal.Productos.Servicios
                 }
                 if(product.detail != null && product.detail.Count > 0)
                     await this.SaveDetails(product.detail);
+
+                await IProductoRepo.ManagementProductInCategory(productRepo.IdProducto, product.CategoriyId.Value);
 
                 return "Producto guardado correctamente";
             }
@@ -314,6 +318,8 @@ namespace CarniceriaFinal.Productos.Servicios
                 }
 
                 await IProductoRepo.UpdateProduct(IMapper.Map<Producto>(product));
+
+                await IProductoRepo.ManagementProductInCategory(product.IdProducto.Value, product.CategoriyId.Value);
 
                 return "Producto actualizado correctamente";
             }

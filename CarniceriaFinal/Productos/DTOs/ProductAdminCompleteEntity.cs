@@ -12,6 +12,6 @@ namespace CarniceriaFinal.Productos.DTOs
         public ProductEntity product { get; set; }
         public MeasureUnitEntity unidadMedida { get; set; }
         public List<ProductDetailEntity> detail { get; set; }
-        public List<CategoriaProductoEntity> categories { get; set; }
+        public CategoriaProductoEntity category { get; set; }
     }
 }

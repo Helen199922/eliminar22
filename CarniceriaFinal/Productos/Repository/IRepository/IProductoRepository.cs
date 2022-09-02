@@ -35,5 +35,7 @@ namespace CarniceriaFinal.Productos.Repository
         Task<PromocionInProducto> getPromotionByIdAndProduct(int idPromotion, int idProduct);
         Task<string> DisminuirStock(int idProduct, int cant);
         Task<string> AumentarStock(int idProduct, int cant);
+        Task<CategoriaInProducto> ManagementProductInCategory(int idProduct, int idCategory);
+
     }
 }
