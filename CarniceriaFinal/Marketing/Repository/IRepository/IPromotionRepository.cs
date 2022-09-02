@@ -18,5 +18,6 @@ namespace CarniceriaFinal.Marketing.Interfaces.IRepository
         Task<List<PromotionProductEntity>> GetAllProductsByIdPromotion(int? idPromotion);
         Task<Boolean> UpdateListPruductsInPromo(List<int> pruductsInPromo, int idPromotion);
         Task<Promocion> getLastPromotionByIdPromotion(DateTime? upperLimit, DateTime? lowerLimit, int idPromotion);
+        Task<List<PorcentajeDscto>> GetAllDsctPromotion();
     }
 }

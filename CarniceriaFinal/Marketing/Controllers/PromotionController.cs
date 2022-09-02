@@ -107,5 +107,18 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [HttpGet("all-dscts-promotions")]
+        public async Task<IActionResult> GetAllDsctPromotion()
+        {
+            RSEntity<List<PorcentajeDscto>> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IPromotionService.GetAllDsctPromotion()));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
     }
 }

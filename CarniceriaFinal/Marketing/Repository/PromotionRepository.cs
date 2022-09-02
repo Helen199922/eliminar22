@@ -315,7 +315,20 @@ namespace CarniceriaFinal.Marketing.Repository
                 throw RSException.ErrorQueryDB("Cambiar estado de promoción");
             }
         }
-
-        
+        public async Task<List<PorcentajeDscto>> GetAllDsctPromotion()
+        {
+            try
+            {
+                using (var _Context = new DBContext())
+                {
+                    return await _Context.PorcentajeDsctos
+                    .ToListAsync();
+                }
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Lista de Dsctos");
+            }
+        }
     }
 }

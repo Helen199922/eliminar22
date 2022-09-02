@@ -41,6 +41,7 @@ namespace CarniceriaFinal.ModelsEF
         public virtual DbSet<Opcion> Opcions { get; set; } = null!;
         public virtual DbSet<OptionInEndpoint> OptionInEndpoints { get; set; } = null!;
         public virtual DbSet<Persona> Personas { get; set; } = null!;
+        public virtual DbSet<PorcentajeDscto> PorcentajeDsctos { get; set; } = null!;
         public virtual DbSet<PreparacionProducto> PreparacionProductos { get; set; } = null!;
         public virtual DbSet<PreparacionProductoInProducto> PreparacionProductoInProductos { get; set; } = null!;
         public virtual DbSet<Producto> Productos { get; set; } = null!;
@@ -368,6 +369,12 @@ namespace CarniceriaFinal.ModelsEF
                     .HasForeignKey(d => d.IdSexo)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("persona_ibfk_1");
+            });
+
+            modelBuilder.Entity<PorcentajeDscto>(entity =>
+            {
+                entity.HasKey(e => e.IdPorcentajeDscto)
+                    .HasName("PRIMARY");
             });
 
             modelBuilder.Entity<PreparacionProducto>(entity =>
