@@ -757,5 +757,25 @@ namespace CarniceriaFinal.Sales.Services
             }
         }
 
+        public async Task<int> getStatusOfSaleByIdSale(int idSale)
+        {
+            try
+            {
+                var sale = await this.ISaleRepository.getStatusOfSaleByIdSale(idSale);
+
+                if (sale == null || sale.IdStatus == null) return 3;
+
+                return sale.IdStatus.Value;
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Obtener el estatus de la venta.");
+            }
+        }
+
     }
 }

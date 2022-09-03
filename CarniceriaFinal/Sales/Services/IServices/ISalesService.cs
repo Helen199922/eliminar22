@@ -26,5 +26,6 @@ namespace CarniceriaFinal.Sales.IServices
         Task<SalesUserInformationResponse> GetStatusByIdSale(int idSale);
         Task<SaleDetailCotizacionEntity> FindCompleteSaleByIdSale(int idSale);
         Task<List<SaleDetailCotizacionEntity>> FindAllCompleteSaleByIdClient(int idUser);
+        Task<int> getStatusOfSaleByIdSale(int idSale);
     }
 }

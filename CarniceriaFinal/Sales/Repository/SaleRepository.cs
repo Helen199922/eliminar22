@@ -168,5 +168,19 @@ namespace CarniceriaFinal.Security.Repository
                 throw RSException.ErrorQueryDB("Obtener lista detalle de las ventas del cliente.");
             }
         }
+        public async Task<Ventum> getStatusOfSaleByIdSale(int idSale)
+        {
+            try
+            {
+                return await Context
+                        .Venta
+                        .Where(x => x.IdVenta == idSale)
+                        .FirstOrDefaultAsync();
+            }
+            catch (Exception err)
+            {
+                throw RSException.ErrorQueryDB("Obtener el estatus de la venta.");
+            }
+        }
     }
 }
