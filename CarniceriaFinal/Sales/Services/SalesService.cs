@@ -764,7 +764,6 @@ namespace CarniceriaFinal.Sales.Services
                 var sale = await this.ISaleRepository.getStatusOfSaleByIdSale(idSale);
 
                 if (sale == null || sale.IdStatus == null) return 3;
-                throw new Exception("asdf");
                 return sale.IdStatus.Value;
             }
             catch (RSException err)
