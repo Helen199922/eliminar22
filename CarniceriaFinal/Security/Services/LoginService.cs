@@ -35,7 +35,7 @@ namespace CarniceriaFinal.Autenticacion.Services
                 var response = IMapper.Map<UserEntity>(responseRepo);
 
                 if (response == null)
-                    throw RSException.Unauthorized("Las credenciales son incorrectas");
+                    throw RSException.Unauthorized("Las claves de acceso son incorrectas");
                 
                 if (response.status == 0 || responseRepo.IdRolNavigation.Status == 0)
                     throw RSException.Unauthorized("El usuario está inhabilitado. Por favor, comuníquese con un administrador del sistema.");

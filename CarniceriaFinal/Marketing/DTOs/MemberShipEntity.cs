@@ -39,4 +39,12 @@
         public int CantProductosComprados { get; set; }
 
     }
+
+
+    public class CatalogoMembershipEntity
+    {
+        public string oro { get; set; }
+        public string plata { get; set; }
+        public string bronce { get; set; }
+    }
 }

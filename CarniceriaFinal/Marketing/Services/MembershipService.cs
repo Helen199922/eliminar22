@@ -119,5 +119,38 @@ namespace CarniceriaFinal.Marketing.Services
             }
 
         }
+
+        public async Task<CatalogoMembershipEntity> GetMembershipCatelog()
+        {
+            try
+            {
+                var membersDetail = await IMembershipRepository.GetMembershipCatelog();
+
+
+                CatalogoMembershipEntity response = new();
+                foreach (var member in membersDetail)
+                {
+                    if (member.IdMembresia == 3)
+                        response.oro = "Beneficio de %" + member.PorcentajeDescuento + " de descuento en " + member.CantProductosMembresia + " productos que elijas (hasta un máximo de $" + member.MontoMaxDescPorProducto + " c/u). Para acceder al beneficio, tu monto mínimo de acceso es de $" + member.MontoMinAcceso + " y tiene un vigencia de " + member.DuracionMembresiaDias + " días.";
+
+                    if (member.IdMembresia == 2)
+                        response.plata = "Beneficio de %" + member.PorcentajeDescuento + " de descuento en " + member.CantProductosMembresia + " productos que elijas (hasta un máximo de $" + member.MontoMaxDescPorProducto + " c/u). Para acceder al beneficio, tu monto mínimo de acceso es de $" + member.MontoMinAcceso + " y tiene un vigencia de " + member.DuracionMembresiaDias + " días.";
+
+                    if (member.IdMembresia == 1)
+                        response.bronce = "Beneficio de %" + member.PorcentajeDescuento + " de descuento en " + member.CantProductosMembresia + " productos que elijas (hasta un máximo de $" + member.MontoMaxDescPorProducto + " c/u). Para acceder al beneficio, tu monto mínimo de acceso es de $" + member.MontoMinAcceso + " y tiene un vigencia de " + member.DuracionMembresiaDias + " días.";
+                }
+
+                return response;
+            }
+            catch (RSException err)
+            {
+                throw new RSException(err.TypeError, err.Code, err.MessagesError);
+            }
+            catch (Exception)
+            {
+                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener información sobre la membresía.");
+            }
+
+        }
     }
 }

@@ -20,5 +20,6 @@ namespace CarniceriaFinal.Marketing.Repository.IRepository
         Task<String> RemoveProductsToMembershipByIdUser(int idMembresiaInUser, int cantProduct);
         Task<float> AmountToMemberUserDeclineSale(int idUser, int idClient);
         Task<Boolean> BlockMembershipToUser(int idMembershipInUser);
+        Task<List<Membresium>> GetMembershipCatelog();
     }
 }

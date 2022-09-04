@@ -9,5 +9,6 @@ namespace CarniceriaFinal.Marketing.Services.IService
         Task<Boolean> AdministrationMembershipTimes();
         Task<Boolean> isValidMembership(List<SaleDetailEntity> details, int idUser);
         Task<MembershipUserEntity> GetMembershipByIdUser(int idUser);
+        Task<CatalogoMembershipEntity> GetMembershipCatelog();
     }
 }

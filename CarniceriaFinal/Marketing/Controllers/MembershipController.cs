@@ -55,5 +55,18 @@ namespace CarniceriaFinal.Marketing.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [HttpGet("membership-catalogo")]
+        public async Task<IActionResult> GetMembershipCatelog()
+        {
+            RSEntity<CatalogoMembershipEntity> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IMembershipService.GetMembershipCatelog()));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
     }
 }

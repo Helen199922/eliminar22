@@ -407,5 +407,21 @@ namespace CarniceriaFinal.Marketing.Repository
                 throw RSException.ErrorQueryDB("Tuvimos un error al re-validar el momnto para acceso a membresía.");
             }
         }
+
+        public async Task<List<Membresium>> GetMembershipCatelog()
+        {
+            try
+            {
+
+                var member = await Context.Membresia
+                    .ToListAsync();
+
+                return member;
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Catálogo de Membresías.");
+            }
+        }
     }
 }
