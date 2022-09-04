@@ -17,6 +17,7 @@ namespace CarniceriaFinal.Reportes.Controllers
             IReportServices = reportServi;
             this.IReportServices = reportServi;
         }
+        [Authorize]
         [HttpPost("report-sale-by-dates")]
         public async Task<IActionResult> GetAllSalesToReportByDates([FromBody] ReportByDates data)
         {
@@ -30,6 +31,7 @@ namespace CarniceriaFinal.Reportes.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPost("report-sale-by-dates-document")]
         public async Task<IActionResult> GetDetailSalesToReportByDates([FromBody] ReportByDates data)
         {
@@ -43,6 +45,7 @@ namespace CarniceriaFinal.Reportes.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPost("report-sale-by-dates-and-category")]
         public async Task<IActionResult> GetAllProductsMostSalesByCategoryAndDates([FromBody] ReportByDatesAndCategory data)
         {
@@ -56,6 +59,7 @@ namespace CarniceriaFinal.Reportes.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPost("report-products-top-by-dates-and-category")]
         public async Task<IActionResult> GetTopTenProductsMostSalesAndDates([FromBody] ReportByDates data)
         {
@@ -70,6 +74,7 @@ namespace CarniceriaFinal.Reportes.Controllers
             }
         }
         
+        [Authorize]
         [HttpPost("report-sale-by-dates-and-category-document")]
         public async Task<IActionResult> GetAllProductsMostSalesByCategoryAndDatesDetail([FromBody] ReportByDatesAndCategory data)
         {
@@ -83,6 +88,7 @@ namespace CarniceriaFinal.Reportes.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpGet("categories-for-report")]
         public async Task<IActionResult> GetListCategories()
         {
@@ -96,6 +102,7 @@ namespace CarniceriaFinal.Reportes.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPost("report-modules-by-dates")]
         public async Task<IActionResult> GetAllLogsModulesGraficsByDates([FromBody] ReportGraficsByDatesAndModules data)
         {
@@ -109,6 +116,7 @@ namespace CarniceriaFinal.Reportes.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpGet("modules-for-report")]
         public async Task<IActionResult> GetAllListModules()
         {
@@ -122,6 +130,7 @@ namespace CarniceriaFinal.Reportes.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpPost("report-modules-by-dates-document")]
         public async Task<IActionResult> GetAllLogsModulesByDatesDetail([FromBody] ReportGraficsByDatesAndModules data)
         {
@@ -135,6 +144,7 @@ namespace CarniceriaFinal.Reportes.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpGet("miembros-for-simple-report")]
         public async Task<IActionResult> GetSimpleMembershipReport()
         {
@@ -148,6 +158,7 @@ namespace CarniceriaFinal.Reportes.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [Authorize]
         [HttpGet("miembros-for-detail-report")]
         public async Task<IActionResult> GetDetailMembershipReport()
         {
@@ -162,6 +173,7 @@ namespace CarniceriaFinal.Reportes.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost("users-adm-report-sales")]
         public async Task<IActionResult> GetAllSalesToAdms([FromBody] ReportByDates dates)
         {
@@ -176,6 +188,7 @@ namespace CarniceriaFinal.Reportes.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost("users-adm-detail-report-sales")]
         public async Task<IActionResult> GetDetailSalesToAdms([FromBody] ReportByDates dates)
         {
