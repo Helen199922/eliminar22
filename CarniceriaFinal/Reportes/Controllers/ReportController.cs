@@ -56,6 +56,20 @@ namespace CarniceriaFinal.Reportes.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
+        [HttpPost("report-products-top-by-dates-and-category")]
+        public async Task<IActionResult> GetTopTenProductsMostSalesAndDates([FromBody] ReportByDates data)
+        {
+            RSEntity<ReportResponse<List<FieldReportAmountEntity>>> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IReportServices.GetTopTenProductsMostSalesAndDates(data.timeStart, data.timeEnd)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
+        
         [HttpPost("report-sale-by-dates-and-category-document")]
         public async Task<IActionResult> GetAllProductsMostSalesByCategoryAndDatesDetail([FromBody] ReportByDatesAndCategory data)
         {
@@ -121,7 +135,60 @@ namespace CarniceriaFinal.Reportes.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
-        
+        [HttpGet("miembros-for-simple-report")]
+        public async Task<IActionResult> GetSimpleMembershipReport()
+        {
+            RSEntity<List<FieldReportEntity>> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IReportServices.GetSimpleMembershipReport()));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
+        [HttpGet("miembros-for-detail-report")]
+        public async Task<IActionResult> GetDetailMembershipReport()
+        {
+            RSEntity<List<MembershipUserDetailEntity>> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IReportServices.GetDetailMembershipReport()));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
 
+        [HttpPost("users-adm-report-sales")]
+        public async Task<IActionResult> GetAllSalesToAdms([FromBody] ReportByDates dates)
+        {
+            RSEntity<List<FieldReportAmountEntity>> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IReportServices.GetAllSalesToAdms(dates.timeStart, dates.timeEnd)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
+
+        [HttpPost("users-adm-detail-report-sales")]
+        public async Task<IActionResult> GetDetailSalesToAdms([FromBody] ReportByDates dates)
+        {
+            RSEntity<List<SaleDetailAdmReportEntity>> rsEntity = new();
+            try
+            {
+                return Ok(rsEntity.Send(await IReportServices.GetDetailSalesToAdms(dates.timeStart, dates.timeEnd)));
+            }
+            catch (RSException err)
+            {
+                return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
+            }
+        }
+        
     }
 }

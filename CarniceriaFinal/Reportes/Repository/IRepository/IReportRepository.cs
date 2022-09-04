@@ -13,5 +13,10 @@ namespace CarniceriaFinal.Reportes.Repository.IRepository
         Task<List<ModulesReports>> GetAllListModules();
         Task<List<MiltiFieldReportEntity>> GetAllLogsModulesGraficsByDates(List<int> idModules, DateTime timeStart, DateTime timeEnd);
         Task<ModulesReportDetail> GetAllLogsModulesByDatesDetail(List<int> idModules, DateTime timeStart, DateTime timeEnd);
+        Task<ReportResponse<List<FieldReportAmountEntity>>> GetTopTenProductsMostSalesAndDates(DateTime timeStart, DateTime timeEnd);
+        Task<List<FieldReportEntity>> GetSimpleMembershipReport();
+        Task<List<MembershipUserDetailEntity>> GetDetailMembershipReport();
+        Task<List<FieldReportAmountEntity>> GetAllSalesToAdms(DateTime timeStart, DateTime timeEnd);
+        Task<List<SaleDetailAdmReportEntity>> GetDetailSalesToAdms(DateTime timeStart, DateTime timeEnd);
     }
 }

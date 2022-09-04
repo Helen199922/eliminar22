@@ -169,6 +169,10 @@ namespace CarniceriaFinal.Core.Security
 
                 var auth = await JwtService.FindOptionByIdRolAndMethodAndEndPoint(user.idRol.Value, endPoint, method);
 
+                if(user.idRol == 1 || user.idRol == 2)
+                {
+                    context.Items["idUser"] = user.idUsuario;
+                }
                 if (!auth) return;
 
                 

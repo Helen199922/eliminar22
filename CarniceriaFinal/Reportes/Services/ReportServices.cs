@@ -36,21 +36,29 @@ namespace CarniceriaFinal.Reportes.Services
             try
             {
                 DataSalesReportDetail dataSalesReportDetail = new DataSalesReportDetail();
-                var response = (await IReportRepository.GetDetailSalesToReportByDates(timeStart, timeEnd))
-                    .Select(x => new SalesReportDetail()
+                var responseRepo = (await IReportRepository.GetDetailSalesToReportByDates(timeStart, timeEnd));
+
+
+                List<SalesReportDetail> response = new();
+
+                foreach (var x in responseRepo)
                 {
-                    cedula = x.IdClienteNavigation.IdPersonaNavigation.Cedula,
-                    ciudad = x.IdCiudadNavigation.Ciudad1,
-                    direccion = x.Direccion,
-                    costosAdicionales = x.CostosAdicionales.Value,
-                    fecha = x.Fecha,
-                    formaPago = x.IdFormaPagoNavigation.TipoFormaPago,
-                    idVenta = x.IdVenta,
-                    referencia = x.Referencia,
-                    status = x.IdStatus.Value,
-                    motivoCostosAdicional = x.MotivoCostosAdicional,
-                    total = x.Total.Value
-                });
+                    var value = new SalesReportDetail()
+                    {
+                        cedula = x?.IdClienteNavigation?.IdPersonaNavigation?.Cedula != null ? x?.IdClienteNavigation?.IdPersonaNavigation?.Cedula : "",
+                        ciudad = x?.IdCiudadNavigation?.Ciudad1 != null ? x?.IdCiudadNavigation?.Ciudad1 : "",
+                        direccion = x?.Direccion != null ? x?.Direccion : "",
+                        costosAdicionales = x?.CostosAdicionales != null ? x.CostosAdicionales.Value : 0,
+                        fecha = x.Fecha,
+                        formaPago = x?.IdFormaPagoNavigation?.TipoFormaPago != null ? x?.IdFormaPagoNavigation?.TipoFormaPago : "Compra en local",
+                        idVenta = x.IdVenta,
+                        referencia = x.Referencia,
+                        status = x.IdStatus.Value,
+                        motivoCostosAdicional = x.MotivoCostosAdicional,
+                        total = x.Total.Value
+                    };
+                    response.Add(value);
+                }
 
                 dataSalesReportDetail.pendiente = response
                                                 .Where(x => x.status == 1)
@@ -83,6 +91,19 @@ namespace CarniceriaFinal.Reportes.Services
                 throw RSException.ErrorQueryDB("Reporte de productos");
             }
         }
+        public async Task<ReportResponse<List<FieldReportAmountEntity>>> GetTopTenProductsMostSalesAndDates(DateTime timeStart, DateTime timeEnd)
+        {
+            try
+            { 
+                return await IReportRepository.GetTopTenProductsMostSalesAndDates(timeStart, timeEnd);
+
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Reporte de productos más vendidos");
+            }
+        }
+        
         public async Task<List<ProductReportDetail>> GetAllProductsMostSalesByCategoryAndDatesDetail(DateTime timeStart, DateTime timeEnd, int idCategory)
         {
             try
@@ -141,6 +162,55 @@ namespace CarniceriaFinal.Reportes.Services
             catch (Exception)
             {
                 throw RSException.ErrorQueryDB("Lista de logs para documento por modulos");
+            }
+        }
+        public async Task<List<FieldReportEntity>> GetSimpleMembershipReport()
+        {
+            try
+            {
+                return await IReportRepository.GetSimpleMembershipReport();
+
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Reporte de mimebros");
+            }
+        }
+
+        public async Task<List<MembershipUserDetailEntity>> GetDetailMembershipReport()
+        {
+            try
+            {
+                return await IReportRepository.GetDetailMembershipReport();
+
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Reporte detalle de mimebros");
+            }
+        }
+
+        public async Task<List<FieldReportAmountEntity>> GetAllSalesToAdms(DateTime timeStart, DateTime timeEnd)
+        {
+            try
+            {
+                return await IReportRepository.GetAllSalesToAdms(timeStart, timeEnd);
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Lista de vendedores y valores vendidos");
+            }
+        }
+
+        public async Task<List<SaleDetailAdmReportEntity>> GetDetailSalesToAdms(DateTime timeStart, DateTime timeEnd)
+        {
+            try
+            {
+                return await IReportRepository.GetDetailSalesToAdms(timeStart, timeEnd);
+            }
+            catch (Exception)
+            {
+                throw RSException.ErrorQueryDB("Lista de vendedores y valores vendidos");
             }
         }
 

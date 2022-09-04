@@ -485,7 +485,7 @@ namespace CarniceriaFinal.Marketing.Repository
             try
             {
                 var events = await Context.EventoEspecials
-                    .Where(x => x.IdEventoEspecial != specialEvent.IdEventoEspecial)
+                    .Where(x => x.IdEventoEspecial != specialEvent.IdEventoEspecial && x.Status == 1)
                     .AsNoTracking()
                     .ToListAsync();
 

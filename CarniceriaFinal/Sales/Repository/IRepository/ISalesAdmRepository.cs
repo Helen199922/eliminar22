@@ -11,7 +11,7 @@ namespace CarniceriaFinal.Sales.Repository.IRepository
         Task<Ventum> GetSalesById(int idSale);
         Task<int> GetUserIdByIdSale(int idSale);
         Task<List<VentaStatus>> GetSalesStatusAdm();
-        Task<Ventum> attendSaleByIdSale(int idSale);
+        Task<Ventum> attendSaleByIdSale(int idSale, int idUser);
         Task<Boolean> declineSaleByIdSale(int idSale);
         Task<Boolean> pendingSaleByIdSale(int idSale);
         Task<Ventum> GetSaleDetailById(int idSale);

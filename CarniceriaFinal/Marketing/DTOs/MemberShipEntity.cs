@@ -6,6 +6,8 @@
         public MemberCommEntity? Oro { get; set; }
         public MemberCommEntity? Plata { get; set; }
     }
+
+
     public class MemberCommEntity
     {
         public string? memberName { get; set; }

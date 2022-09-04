@@ -4,6 +4,7 @@ using CarniceriaFinal.Core.Email.DTOs;
 using CarniceriaFinal.Core.Email.Services.IServices;
 using CarniceriaFinal.Marketing.Repository.IRepository;
 using CarniceriaFinal.Productos.Repository;
+using CarniceriaFinal.Reportes.DTOs;
 using CarniceriaFinal.Sales.DTOs;
 using CarniceriaFinal.Sales.IServices;
 using CarniceriaFinal.Sales.Repository.IRepository;
@@ -199,7 +200,7 @@ namespace CarniceriaFinal.Sales.Services
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al obtener el detalle de la venta");
             }
         }
-        public async Task<string> attendSale(int idSale)
+        public async Task<string> attendSale(int idSale, int idUser)
         {
             try
             {
@@ -222,7 +223,7 @@ namespace CarniceriaFinal.Sales.Services
                     }
                 }
 
-                var isAttend = await ISalesAdmRepository.attendSaleByIdSale(idSale);
+                var isAttend = await ISalesAdmRepository.attendSaleByIdSale(idSale, idUser);
 
                 if (isAttend == null) throw RSException.NoData("Tuvimos un error al registrar la venta.");
 
@@ -451,5 +452,6 @@ namespace CarniceriaFinal.Sales.Services
                 throw new RSException("error", 500).SetMessage("Ha ocurrido un error al ver beneficios del usuario");
             }
         }
+
     }
 }

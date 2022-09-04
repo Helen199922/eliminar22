@@ -6,7 +6,7 @@ namespace CarniceriaFinal.Sales.Services.IServices
     {
         Task<List<SalesAdmEntity>> GetAllSales(int idStatus);
         Task<ResumeSaleDetail> GetDetailByIdSale(int idSale);
-        Task<string> attendSale(int idSale);
+        Task<string> attendSale(int idSale, int idUser);
         Task<string> declineSale(int idSale);
         Task<SaleAdmRequestSaleDetail> GetSaleDetailById(int idSale);
     }

@@ -1,4 +1,5 @@
 ﻿using CarniceriaFinal.Core.JWTOKEN.DTOs;
+using CarniceriaFinal.Marketing.DTOs;
 using CarniceriaFinal.Sales.Models;
 
 namespace CarniceriaFinal.Reportes.DTOs
@@ -17,6 +18,12 @@ namespace CarniceriaFinal.Reportes.DTOs
     {
         public string name { get; set; }
         public int value { get; set; }
+    }
+    //SaleDetailEntity
+    public class FieldReportAmountEntity
+    {
+        public string name { get; set; }
+        public float value { get; set; }
     }
 
     public class ReportByDatesAndCategory : ReportByDates
@@ -80,5 +87,26 @@ namespace CarniceriaFinal.Reportes.DTOs
     {
         public List<LogsEntity> correcta { get; set; }
         public List<LogsEntity> error { get; set; }
+    }
+
+    public class MembershipUserDetailEntity
+    {
+        public int IdUsuario { get; set; }
+        public string usuario { get; set; }
+        public string membresiaTitulo { get; set; }
+        public DateTime FechaFin { get; set; }
+        public DateTime FechaInicio { get; set; }
+        public int CantProductosComprados { get; set; }
+
+    }
+
+    public class SaleDetailAdmReportEntity
+    {
+        public string cedulaCliente { get; set; }
+        public string usuarioAdministrador { get; set; }
+        public float montoTotal { get; set; }
+        public DateTime FechaAceptacionVenta { get; set; }
+        public string detalleVenta { get; set; }
+
     }
 }

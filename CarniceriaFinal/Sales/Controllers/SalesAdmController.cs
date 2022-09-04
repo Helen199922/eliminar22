@@ -12,9 +12,11 @@ namespace CarniceriaFinal.Sales.Controllers
     public class SalesAdmController : ControllerBase
     {
         public readonly ISalesAdmServices ISalesAdmServices;
-        public SalesAdmController(ISalesAdmServices ISalesAdmServices)
+        public readonly IHttpContextAccessor httpContextAccessor;
+        public SalesAdmController(ISalesAdmServices ISalesAdmServices, IHttpContextAccessor httpContextAccessor)
         {
             this.ISalesAdmServices = ISalesAdmServices;
+            this.httpContextAccessor = httpContextAccessor;
         }
         [Authorize]
         [HttpGet("sales-by-status/{idStatus}")]
@@ -53,8 +55,16 @@ namespace CarniceriaFinal.Sales.Controllers
             RSEntity<string> rsEntity = new();
             try
             {
-
-                return Ok(rsEntity.Send(await ISalesAdmServices.attendSale(sale.idSale)));
+                try
+                {
+                    var idUser = (int)(httpContextAccessor.HttpContext.Items["idUser"]);
+                    return Ok(rsEntity.Send(await ISalesAdmServices.attendSale(sale.idSale, idUser)));
+                }
+                catch (Exception err)
+                {
+                    return StatusCode(400, rsEntity.Fail("Hemos detectado una inconsistencía en el registro de la venta. Vuelva a intentar más tarde."));
+                }
+                
             }
             catch (RSException err)
             {
@@ -76,7 +86,8 @@ namespace CarniceriaFinal.Sales.Controllers
                 return StatusCode(err.Code, rsEntity.Fail(err.MessagesError));
             }
         }
-        
+
+
         [HttpGet("sales-detail-to-sale/{idSale}")]
         public async Task<IActionResult> GetSaleDetailById(int idSale)
         {

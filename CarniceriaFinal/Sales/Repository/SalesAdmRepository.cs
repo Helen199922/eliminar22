@@ -143,7 +143,7 @@ namespace CarniceriaFinal.Sales.Repository
                 throw RSException.ErrorQueryDB("Información sobre el producto");
             }
         }
-        public async Task<Ventum> attendSaleByIdSale(int idSale)
+        public async Task<Ventum> attendSaleByIdSale(int idSale, int idUser)
         {
             try
             {
@@ -152,6 +152,7 @@ namespace CarniceriaFinal.Sales.Repository
                     .Include(x => x.DetalleVenta)
                     .Include(x => x.IdClienteNavigation.IdPersonaNavigation)
                     .FirstOrDefaultAsync();
+                sale.IdAdm = idUser;
                 sale.IdStatus = 2;
                 await Context.SaveChangesAsync();
                 return sale;

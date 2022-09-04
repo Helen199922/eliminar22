@@ -8,6 +8,7 @@ namespace CarniceriaFinal.ModelsEF
 {
     [Table("venta")]
     [Index("IdCliente", Name = "cliente_cliente")]
+    [Index("IdAdm", Name = "idAdm")]
     [Index("IdCiudad", Name = "idCiudad")]
     [Index("IdFormaPago", Name = "idFormaPago")]
     [Index("IdStatus", Name = "idStatus")]
@@ -51,7 +52,12 @@ namespace CarniceriaFinal.ModelsEF
         public DateTime? FechaFinal { get; set; }
         [Column("isAuthUser")]
         public int? IsAuthUser { get; set; }
+        [Column("idAdm")]
+        public int? IdAdm { get; set; }
 
+        [ForeignKey("IdAdm")]
+        [InverseProperty("Venta")]
+        public virtual Usuario? IdAdmNavigation { get; set; }
         [ForeignKey("IdCiudad")]
         [InverseProperty("Venta")]
         public virtual Ciudad? IdCiudadNavigation { get; set; }
