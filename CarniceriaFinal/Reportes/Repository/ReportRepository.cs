@@ -37,14 +37,6 @@ namespace CarniceriaFinal.Reportes.Repository
                 List<FieldReportEntity> lista = new();
                 var totalProducts = 0;
 
-                FieldReportEntity Pendiente = new()
-                {
-                    name = "Pendiente",
-                    value = salesSelected.Where(x => x.IdStatus == 1).ToList().Count()
-                };
-                totalProducts += Pendiente.value;
-                lista.Add(Pendiente);
-
                 FieldReportEntity Atendido = new()
                 {
                     name = "Atendido",
@@ -60,6 +52,14 @@ namespace CarniceriaFinal.Reportes.Repository
                 };
                 totalProducts += Rechazado.value;
                 lista.Add(Rechazado);
+
+                FieldReportEntity Pendiente = new()
+                {
+                    name = "Pendiente",
+                    value = salesSelected.Where(x => x.IdStatus == 1).ToList().Count()
+                };
+                totalProducts += Pendiente.value;
+                lista.Add(Pendiente);
 
                 report.totalData = totalProducts;
                 report.dataReport = lista;
