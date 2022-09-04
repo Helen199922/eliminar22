@@ -116,17 +116,20 @@ namespace CarniceriaFinal.Productos.Repository
         {
             try
             {
-                var categoryToUpdate = await Context.CategoriaProductos
+                using (var _Context = new DBContext())
+                {
+                    var categoryToUpdate = await _Context.CategoriaProductos
                     .Where(x => x.IdCategoria == category.IdCategoria)
                     .FirstOrDefaultAsync();
 
-                categoryToUpdate.Titulo = category.Titulo;
-                categoryToUpdate.Descripcion = category.Descripcion;
-                categoryToUpdate.UrlImage = category.UrlImage;
+                    categoryToUpdate.Titulo = category.Titulo;
+                    categoryToUpdate.Descripcion = category.Descripcion;
+                    categoryToUpdate.UrlImage = category.UrlImage;
 
-                await Context.SaveChangesAsync();
+                    await _Context.SaveChangesAsync();
 
-                return category;
+                    return category;
+                }
 
             }
             catch (Exception err)
