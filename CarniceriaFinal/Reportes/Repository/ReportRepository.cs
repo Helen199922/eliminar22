@@ -1,4 +1,5 @@
-﻿using CarniceriaFinal.Core.CustomException;
+﻿using CarniceriaFinal.Core;
+using CarniceriaFinal.Core.CustomException;
 using CarniceriaFinal.Core.JWTOKEN.DTOs;
 using CarniceriaFinal.Marketing.DTOs;
 using CarniceriaFinal.ModelsEF;
@@ -590,7 +591,7 @@ namespace CarniceriaFinal.Reportes.Repository
 
                         fields.Add(new SaleDetailAdmReportEntity()
                         {
-                            cedulaCliente = sale.IdClienteNavigation.IdPersonaNavigation.Cedula,
+                            cedulaCliente = Helper.toMaskCedula(sale.IdClienteNavigation.IdPersonaNavigation.Cedula),
                             FechaAceptacionVenta = sale.FechaFinal.Value,
                             montoTotal = (float)Math
                                         .Round(sale.Total.Value == null ? 0 : sale.Total.Value, 2),
@@ -607,5 +608,7 @@ namespace CarniceriaFinal.Reportes.Repository
                 throw RSException.ErrorQueryDB("detalle de las ventas");
             }
         }
+
+
     }
 }

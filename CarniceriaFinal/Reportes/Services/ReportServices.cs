@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CarniceriaFinal.Core;
 using CarniceriaFinal.Core.CustomException;
 using CarniceriaFinal.ModelsEF;
 using CarniceriaFinal.Reportes.DTOs;
@@ -45,7 +46,7 @@ namespace CarniceriaFinal.Reportes.Services
                 {
                     var value = new SalesReportDetail()
                     {
-                        cedula = x?.IdClienteNavigation?.IdPersonaNavigation?.Cedula != null ? x?.IdClienteNavigation?.IdPersonaNavigation?.Cedula : "",
+                        cedula = Helper.toMaskCedula(x?.IdClienteNavigation?.IdPersonaNavigation?.Cedula != null ? x?.IdClienteNavigation?.IdPersonaNavigation?.Cedula : ""),
                         ciudad = x?.IdCiudadNavigation?.Ciudad1 != null ? x?.IdCiudadNavigation?.Ciudad1 : "",
                         direccion = x?.Direccion != null ? x?.Direccion : "",
                         costosAdicionales = x?.CostosAdicionales != null ? x.CostosAdicionales.Value : 0,
