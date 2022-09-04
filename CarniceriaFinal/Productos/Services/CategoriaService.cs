@@ -159,10 +159,10 @@ namespace CarniceriaFinal.Productos.Servicios
                 }
 
 
-                foreach (var category in categories)
-                {
-                    await this.UpdateProductsInCategory(category.Products, category.idCategoria.Value);
-                }
+                //foreach (var category in categories)
+                //{
+                //    await this.UpdateProductsInCategory(category.Products, category.idCategoria.Value);
+                //}
                 if (problems.Count > 0)
                 {
                     throw RSException.WithData(
@@ -186,51 +186,51 @@ namespace CarniceriaFinal.Productos.Servicios
         }
 
 
-        private async Task<string> UpdateProductsInCategory(List<SimpleProductInSubCategory> products, int idCategory)
-        {
-            try
-            {
+        //private async Task<string> UpdateProductsInCategory(List<SimpleProductInSubCategory> products, int idCategory)
+        //{
+        //    try
+        //    {
 
-                List<CategoriaInProducto> productsDetected = await ICategoriaRepo.GetAllProductsInCategory(
-                    IMapper.Map<List<Producto>>(products), idCategory
-                );
-                List<CategoriaInProducto> allCategoriesInProducts = await ICategoriaRepo.GetAllProductsExistInCategory(
-                    idCategory
-                );
+        //        List<CategoriaInProducto> productsDetected = await ICategoriaRepo.GetAllProductsInCategory(
+        //            IMapper.Map<List<Producto>>(products), idCategory
+        //        );
+        //        List<CategoriaInProducto> allCategoriesInProducts = await ICategoriaRepo.GetAllProductsExistInCategory(
+        //            idCategory
+        //        );
 
-                ///Agregat nuevos productos en categorias
-                foreach (var product in products)
-                {
-                    if (productsDetected.Where(x => x.IdProducto.Value == product.idProducto).FirstOrDefault() == null)
-                    {
-                        await ICategoriaRepo.CrearCategoriaInProduct(idCategory, product.idProducto);
-                    }
+        //        ///Agregat nuevos productos en categorias
+        //        foreach (var product in products)
+        //        {
+        //            if (productsDetected.Where(x => x.IdProducto.Value == product.idProducto).FirstOrDefault() == null)
+        //            {
+        //                await ICategoriaRepo.CrearCategoriaInProduct(idCategory, product.idProducto);
+        //            }
                     
-                }
+        //        }
 
-                ///Quitar antiguos productos en categorias
-                var toDelete = allCategoriesInProducts
-                    .Where(x => !products.Select(z => z.idProducto).ToList().Contains(x.IdProducto.Value))
-                    .ToList();
+        //        ///Quitar antiguos productos en categorias
+        //        var toDelete = allCategoriesInProducts
+        //            .Where(x => !products.Select(z => z.idProducto).ToList().Contains(x.IdProducto.Value))
+        //            .ToList();
 
-                if (toDelete.Count == 0) return "response";
+        //        if (toDelete.Count == 0) return "response";
 
-                await ICategoriaRepo.DeleteCategoriaInProduct(toDelete);
+        //        await ICategoriaRepo.DeleteCategoriaInProduct(toDelete);
 
 
 
-                return "response";
-            }
-            catch (RSException err)
-            {
-                throw new RSException(err.TypeError, err.Code, err.MessagesError);
-            }
-            catch (Exception err)
-            {
-                throw new RSException("error", 500).SetMessage("Ha ocurrido un error al crear la sub Categoria y Producto.");
-            }
+        //        return "response";
+        //    }
+        //    catch (RSException err)
+        //    {
+        //        throw new RSException(err.TypeError, err.Code, err.MessagesError);
+        //    }
+        //    catch (Exception err)
+        //    {
+        //        throw new RSException("error", 500).SetMessage("Ha ocurrido un error al crear la sub Categoria y Producto.");
+        //    }
 
-        }
+        //}
 
         public async Task<CategoriaProducto> CreateCategory(string titulo, string descripcion, string urlImage)
         {
@@ -261,7 +261,7 @@ namespace CarniceriaFinal.Productos.Servicios
             try
             {
                 ICategoriaRepo.UpdateCategory(IMapper.Map<CategoriaProducto>(category));
-                await this.UpdateProductsInCategory(category.Products, category.idCategoria.Value);
+                //await this.UpdateProductsInCategory(category.Products, category.idCategoria.Value);
 
                 return await GetCategoryById(category.idCategoria.Value);
 

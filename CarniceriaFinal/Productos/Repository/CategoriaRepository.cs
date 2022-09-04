@@ -112,13 +112,19 @@ namespace CarniceriaFinal.Productos.Repository
             }
         }
 
-        public CategoriaProducto UpdateCategory(CategoriaProducto category)
+        public async Task<CategoriaProducto> UpdateCategory(CategoriaProducto category)
         {
             try
             {
-                Context.CategoriaProductos.Update(category);
-                
-                Context.SaveChanges();
+                var categoryToUpdate = await Context.CategoriaProductos
+                    .Where(x => x.IdCategoria == category.IdCategoria)
+                    .FirstOrDefaultAsync();
+
+                categoryToUpdate.Titulo = category.Titulo;
+                categoryToUpdate.Descripcion = category.Descripcion;
+                categoryToUpdate.UrlImage = category.UrlImage;
+
+                await Context.SaveChangesAsync();
 
                 return category;
 

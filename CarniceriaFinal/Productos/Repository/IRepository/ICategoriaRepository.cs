@@ -11,7 +11,7 @@ namespace CarniceriaFinal.Productos.Repository
     {
         Task<CategoriaProducto> GetCategoriaById(int id);
         Task<CategoriaProducto> CreateCategory(CategoriaProducto categoria);
-        CategoriaProducto UpdateCategory(CategoriaProducto category);
+        Task<CategoriaProducto> UpdateCategory(CategoriaProducto category);
         Task<Boolean> DelateCategoryById(int idCategory);
         Task<List<CategoriaProducto>> GetAllCategories();
         Task<List<CategoriaProducto>> GetAllAdmCategories();
