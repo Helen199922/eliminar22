@@ -146,10 +146,15 @@ namespace CarniceriaFinal.Marketing.Services
             try
             {
                 var isAvailability = false;
+  
 
-                var promotionData = await IPromotionRepository.GetPromotionById(data.idPromocion.Value);
+                if(data.idPromocion != null)
+                {
+                    var promotionData = await IPromotionRepository.GetPromotionById(data.idPromocion.Value);
+                    if (promotionData.Status == 0) return "";
+                }
 
-                if (promotionData.Status == 0) return "";
+
 
                 var response = data.idPromocion != null
                     ? await IPromotionRepository.getLastPromotionByIdPromotion(data.fechaFin, data.fechaInicio, data.idPromocion.Value)
